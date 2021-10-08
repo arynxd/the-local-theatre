@@ -6,8 +6,8 @@ require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../route/Route.php';
 
 class UserListRoute extends Route {
-    public function __construct($database) {
-        parent::__construct($database, "user/list", [RequestMethod::GET]);
+    public function __construct() {
+        parent::__construct("user/list", [RequestMethod::GET], []);
     }
 
     public function handle($conn, $res) {

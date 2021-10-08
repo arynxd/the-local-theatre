@@ -1,5 +1,5 @@
 {
-    "db_url": "",
+    "db_url": "mysql:host=__;dbname=__",
     "db_username": "",
     "db_password": "",
     "db_name": ""

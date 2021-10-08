@@ -1,82 +1,31 @@
 <?php
-require_once __DIR__ . "/../util/ErrorHandling.php";
+require_once __DIR__ . "/../util/ErrorHandler.php";
 
 class Database {
-    protected $connection = null;
+    private $dbh;
 
-    public function __construct($host, $username, $password, $db_name) {
-        try {
-            $this -> connection = new mysqli($host, $username, $password, $db_name);
-
-            if (mysqli_connect_errno()) {
-                $ex = new mysqli_sql_exception("Could not connect to database.");
-                ErrorHandling::log($ex);
-                throw $ex;
-            }
-        }
-        catch (Exception $exc) {
-            $ex = new mysqli_sql_exception($exc -> getMessage());
-            ErrorHandling::log($ex);
-            throw $ex;
-        }
-
-        $this -> init();
+    public function __construct($url, $username, $password) {
+        $this -> dbh = new PDO($url, $username, $password);
     }
 
-    public function select($query = "" , $params = []) {
-        try {
-            $stmt = $this -> executeStatement($query, $params);
-            $result = $stmt-> get_result() -> fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            return $result;
-        }
-        catch(Exception $e) {
-            ErrorHandling::log($e);
-            return false;
-        }
+    /**
+     * Performs the given $sql query using the $params.
+     *
+     *
+     * @param $sql      string   the sql string
+     * @param $params   array    associative array of params to prepare
+     * @return          array | false    the associative array representing the query, false if the query failed
+     */
+    public function query($sql, $params) {
+        return $this -> prepare($sql, $params) -> fetch(PDO::FETCH_ASSOC);
     }
 
-    private function init() {
-        $tables = [];
-
-        $sqlPath = __DIR__ . "/../sql/";
-        $dir = opendir($sqlPath);
-
-        while ($file = readdir($dir)) {
-            if ($file == '.' || $file == '..') {
-                continue;
-            }
-
-            $content = file_get_contents($sqlPath . $file);
-            array_push($tables, $content);
+    private function prepare($sql, $params) {
+        $stmt = $this -> dbh -> prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt -> bindParam($key, $value);
         }
-        closedir($dir);
 
-        foreach ($tables as $table) {
-            $this -> executeStatement($table);
-        }
-    }
-
-    private function executeStatement($query = "" , $params = []) {
-        try {
-            $stmt = $this->connection->prepare($query);
-
-            if(!$stmt) {
-                throw new mysqli_sql_exception("Unable to prepare statement: " . $query);
-            }
-
-            foreach ($params as $key => $val){
-               $stmt->bind_param($key, $value);
-            }
-
-            $stmt->execute();
-
-            return $stmt;
-        }
-        catch(Exception $ex) {
-            ErrorHandling::log($ex);
-            return false;
-        }
+        return $stmt;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
 class ParamSource {
-    const QUERY = 'querystring';
-    const JSON = 'json';
+    const QUERY = 0;
+    const JSON = 1;
 }

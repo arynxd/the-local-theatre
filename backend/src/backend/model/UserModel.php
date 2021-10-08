@@ -6,7 +6,6 @@ class UserModel extends Model {
     public $id;
     public $name;
 
-
     public function __construct($id, $name) {
         $this -> id = $id;
         $this -> name = $name;
@@ -17,9 +16,5 @@ class UserModel extends Model {
             'id' => $this -> id,
             'name' => $this -> name
         ]);
-    }
-
-    public static function keys() {
-        return ["id", "name"];
     }
 }

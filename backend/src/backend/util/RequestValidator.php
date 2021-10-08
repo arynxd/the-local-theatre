@@ -9,10 +9,14 @@ class RequestValidator {
 
     public function validate($data) {
         foreach ($this -> required as $key) {
-            if (!isset($this -> data[$key])) {
+            if (!isset($data[$key])) {
                 return false;
             }
         }
         return true;
     }
-} 
+}
+
+class Keys {
+    const USER_MODEL = ['id', 'name'];
+}

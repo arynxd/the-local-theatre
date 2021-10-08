@@ -2,15 +2,15 @@
 require_once __DIR__ . '/../util/constant/StatusCode.php';
 
 abstract class Route {
-    public $database;
     public $path;
+    public $middlewares;
 
     private $methods;
 
-    public function __construct($database, $path, $methods) {
-        $this -> database = $database;
+    public function __construct($path, $methods, $middlewares) {
         $this -> path = $path;
         $this -> methods = $methods;
+        $this -> middlewares = $middlewares;
     }
 
     /**

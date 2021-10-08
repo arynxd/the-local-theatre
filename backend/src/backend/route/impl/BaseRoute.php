@@ -8,12 +8,12 @@ require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . "/../../util/RequestValidator.php";
 
 class BaseRoute extends Route {
-    public function __construct($database) {
-        parent::__construct($database, "", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT]);
+    public function __construct() {
+        parent::__construct("", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT], []);
     }
 
     public function handle($conn, $res) {
-        $res -> sendJSON([
+        $res->sendJSON([
             "ok" => true
         ], StatusCode::OK);
     }
