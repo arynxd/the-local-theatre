@@ -12,13 +12,13 @@ if (!$conn -> route -> validateMethod($conn)) {
     exit;
 }
 
-$route_result = $conn -> route -> validateRequest($conn, $conn -> res);
+$routeResult = $conn -> route -> validateRequest($conn, $conn -> res);
 
-if ($route_result[0]) {
+if (!$routeResult -> isError()) {
     $conn -> route -> handle($conn, $conn -> res);
 }
 else {
-    $conn -> res -> sendError($route_result[1], ...array_slice($route_result, 2));
+    $conn -> res -> sendError($routeResult -> error, $routeResult -> code, ...$routeResult -> headers);
     exit;
 }
 

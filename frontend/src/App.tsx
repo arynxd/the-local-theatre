@@ -10,29 +10,29 @@ import Signup from "./page/Signup";
 function App() {
     return (
         <BrowserRouter>
-                <Navbar/>
-                <Switch>
-                    <Route exact path="/">
-                        <Home />
-                    </Route>
+            <Navbar/>
+            <Switch>
+                <Route exact path="/">
+                    <Home />
+                </Route>
 
-                    <Route path="/blog">
-                        <Blog />
-                    </Route>
+                <Route path="/blog">
+                    <Blog />
+                </Route>
 
-                    <Route path="/contact">
-                        <Contact />
-                    </Route>
+                <Route path="/contact">
+                    <Contact />
+                </Route>
 
-                    <Route path="/login">
-                        <Login />
-                    </Route>
+                <Route path="/login">
+                    <Login />
+                </Route>
 
-                    <Route path="/signup">
-                        <Signup />
-                    </Route>
-                </Switch>
-            </BrowserRouter>
+                <Route path="/signup">
+                    <Signup />
+                </Route>
+            </Switch>
+        </BrowserRouter>
     )
 }
 

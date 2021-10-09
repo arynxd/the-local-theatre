@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../request/Response.php";
 require_once __DIR__ . '/constant/ErrorStrings.php';
+require_once __DIR__ . '/constant/StatusCode.php';
 
 class ErrorHandler {
     const DEBUG = true;
@@ -22,7 +23,7 @@ class ErrorHandler {
     }
 
     public function log($ex) {
-        if (self::DEBUG) {
+        if (ErrorHandler::DEBUG) {
             echo "An unexpected error occurred:";
             echo $ex -> getCode();
             echo $ex -> getMessage();
@@ -30,12 +31,12 @@ class ErrorHandler {
     }
 
     public function addInterceptor() {
-        set_error_handler('this -> handleError');
+        set_error_handler(
+            function ($errno, $errstr, $errfile, $errline) {
+                self::log(new Exception("<h1>An internal error has occurred.</h1> <br> Line $errline in $errfile <br><br> <strong>Error</strong>: $errstr"));
+                $this -> res -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
+            }
+        );
     }
 
-    public function handleError($errno, $errstr, $errfile, $errline) {
-        echo 'error handler';
-        $this -> res -> sendError(ErrorStrings::INTERNAL_ERROR);
-        self::log(new Exception("<h1>An internal error has occurred.</h1> <br> Line $errline in $errfile <br><br> <strong>Error</strong>: $errstr"));
-    }
 }

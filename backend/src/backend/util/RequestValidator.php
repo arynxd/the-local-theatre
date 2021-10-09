@@ -18,5 +18,5 @@ class RequestValidator {
 }
 
 class Keys {
-    const USER_MODEL = ['id', 'name'];
+    const USER_MODEL = ['id', 'name', 'permissions', 'dob', 'joinDate', 'username'];
 }

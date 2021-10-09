@@ -1,13 +1,15 @@
 <?php
 
-// Get the login details for a user with the given <email> and <password> combo (hashed)
-// GET
+// Post the login details for a user with the given <email> and <password> combo (hashed)
+// POST
 
 require_once __DIR__ . '/../../route/Route.php';
+require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
+require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 
 class LoginRoute extends Route {
     public function __construct() {
-        parent::__construct("signup", [RequestMethod::PUT], []);
+        parent::__construct("signup", [RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {
@@ -17,6 +19,6 @@ class LoginRoute extends Route {
     }
 
     public function validateRequest($conn, $res) {
-        return [true];
+        return Ok();
     }
 }

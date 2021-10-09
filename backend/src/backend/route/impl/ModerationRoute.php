@@ -1,13 +1,15 @@
 <?php
 
 // Set a new moderation log entry
-// PUT
+// POST
 
 require_once __DIR__ . '/../../route/Route.php';
+require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 
 class ModerationRoute extends Route {
     public function __construct() {
-        parent::__construct("signup", [RequestMethod::PUT], []);
+        parent::__construct("signup", [RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {
@@ -19,6 +21,6 @@ class ModerationRoute extends Route {
     }
 
     public function validateRequest($conn, $res) {
-        return [true];
+        return Ok();
     }
 }
