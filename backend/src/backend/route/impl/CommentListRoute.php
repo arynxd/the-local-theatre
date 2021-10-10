@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 
 class CommentListRoute extends Route {
     public function __construct() {
-        parent::__construct("comment/list", [RequestMethod::GET]);
+        parent ::__construct("comment/list", [RequestMethod::GET]);
     }
 
     public function handle($conn, $res) {

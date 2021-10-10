@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../util/constant/Constants.php";
 require_once __DIR__ . "/../util/constant/ParamSource.php";
 require_once __DIR__ . "/../util/ErrorHandler.php";
+require_once __DIR__ . "/../util/Map.php";
 require_once __DIR__ . "/../util/JSONLoader.php";
 require_once __DIR__ . "/../util/string.php";
 require_once __DIR__ . "/../db/Database.php";
@@ -21,35 +22,29 @@ class Connection {
     public $errorHandler;
 
     public function __construct() {
-        $this -> res          = $this -> generateResponse();
-        $this -> config       = $this -> loadConfig();
-        $this -> database     = $this -> loadDatabase();
-        $this -> router       = $this -> loadRouter();
-        $this -> rawUri       = $this -> parseRawURI();
-        $this -> uri          = $this -> parseURI();
-        $this -> router       = $this -> loadRouter();
-        $this -> route        = $this -> parseRoute();
-        $this -> method       = $this -> parseMethod();
+        $this -> res = $this -> generateResponse();
+        $this -> config = $this -> loadConfig();
+        $this -> database = $this -> loadDatabase();
+        $this -> router = $this -> loadRouter();
+        $this -> rawUri = $this -> parseRawURI();
+        $this -> uri = $this -> parseURI();
+        $this -> router = $this -> loadRouter();
+        $this -> route = $this -> parseRoute();
+        $this -> method = $this -> parseMethod();
         $this -> errorHandler = $this -> loadErrorHandler();
 
         $this -> router -> handleCors();
-        $this -> errorHandler -> addInterceptor();
+        //$this -> errorHandler -> addInterceptor();
+    }
+
+    private function generateResponse() {
+        return new Response();
     }
 
     private function loadConfig() {
         $loader = new JSONLoader("./config.json");
         $loader -> load();
         return $loader -> data();
-    }
-
-    private function loadRouter() {
-        $db = $this -> database;
-
-        if (!isset($db)) {
-            throw new UnexpectedValueException("Database was not initialised before loading router.");
-        }
-
-        return new Router();
     }
 
     private function loadDatabase() {
@@ -61,6 +56,16 @@ class Connection {
 
 
         return new Database($cfg['db_url'], $cfg['db_username'], $cfg['db_password']);
+    }
+
+    private function loadRouter() {
+        $db = $this -> database;
+
+        if (!isset($db)) {
+            throw new UnexpectedValueException("Database was not initialised before loading router.");
+        }
+
+        return new Router();
     }
 
     private function parseRawURI() {
@@ -82,24 +87,6 @@ class Connection {
         return $result;
     }
 
-    private function parseParams($source) {
-        if ($source == ParamSource::QUERY) {
-            return $_GET;
-        }
-        else if ($source == ParamSource::JSON) {
-            $result = json_decode(file_get_contents('php://input'));
-            if (!isset($result)) {
-                return [];
-            }
-            return $result; // read the body
-        }
-        throw new UnexpectedValueException("Unexpected ParamSource $source");
-    }
-
-    private function parseMethod() {
-        return $_SERVER["REQUEST_METHOD"];
-    }
-
     private function parseRoute() {
         $result = $this -> router -> getRouteForPath($this -> uri);
 
@@ -111,12 +98,40 @@ class Connection {
         return $result;
     }
 
-    private function generateResponse() {
-        return new Response();
+    private function parseMethod() {
+        return $_SERVER["REQUEST_METHOD"];
+    }
+
+    private function loadErrorHandler() {
+        return new ErrorHandler($this -> res);
     }
 
     public function jsonParams() {
         return $this -> parseParams(ParamSource::JSON);
+    }
+
+    private function parseParams($source) {
+        if ($source == ParamSource::QUERY) {
+            return new Map($_GET);
+        }
+        else if ($source == ParamSource::JSON) {
+            $result = json_decode(file_get_contents('php://input'), true);
+            if (!isset($result)) {
+                return new Map([]);
+            }
+
+            $result = new Map($result);
+
+            return $result -> mapRecursive(function ($_, $value) {
+                if (is_array($value)) {
+                    return new Map($value);
+                }
+                return $value;
+            });
+
+        }
+
+        throw new UnexpectedValueException("Unexpected ParamSource $source");
     }
 
     public function queryParams() {
@@ -126,11 +141,7 @@ class Connection {
     public function applyMiddleware($middleware) {
         $wareResult = $middleware -> apply($this);
         if ($wareResult -> isError()) {
-            $this -> res -> sendError($wareResult -> error, $wareResult -> code, ...$wareResult -> headers);
+            $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
         }
-    }
-
-    private function loadErrorHandler() {
-        return new ErrorHandler($this -> res);
     }
 }

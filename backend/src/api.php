@@ -1,6 +1,6 @@
 <?php
 require_once 'backend/util/ErrorHandler.php';
-ErrorHandler::enableErrors();
+ErrorHandler ::enableErrors();
 
 require_once 'backend/util/constant/StatusCode.php';
 require_once 'backend/request/Connection.php';
@@ -18,7 +18,7 @@ if (!$routeResult -> isError()) {
     $conn -> route -> handle($conn, $conn -> res);
 }
 else {
-    $conn -> res -> sendError($routeResult -> error, $routeResult -> code, ...$routeResult -> headers);
+    $conn -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
     exit;
 }
 

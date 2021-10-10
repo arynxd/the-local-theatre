@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 
 class BlogRoute extends Route {
     public function __construct() {
-        parent::__construct("blog", [RequestMethod::GET, RequestMethod::POST]);
+        parent ::__construct("blog", [RequestMethod::GET, RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {

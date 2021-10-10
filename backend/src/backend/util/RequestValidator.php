@@ -2,14 +2,16 @@
 
 class RequestValidator {
     private $required;
+    private $data;
 
-    public function __construct($required) {
+    public function __construct($required, $data) {
         $this -> required = $required;
+        $this -> data = $data;
     }
 
-    public function validate($data) {
+    public function validate() {
         foreach ($this -> required as $key) {
-            if (!isset($data[$key])) {
+            if (!$this -> data -> exists($key)) {
                 return false;
             }
         }

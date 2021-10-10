@@ -5,17 +5,6 @@ require_once __DIR__ . '/../util/constant/StatusCode.php';
 require_once __DIR__ . '/../util/constant/CORS.php';
 
 class Response {
-    public function send($data, ...$headers) {
-        header_remove('Set-Cookie');
-
-        foreach ($headers as $header) {
-            header($header);
-        }
-
-        echo $data;
-        exit;
-    }
-
     public function sendJSON($data, ...$headers) {
         if (is_array($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
@@ -26,6 +15,17 @@ class Response {
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
         }
+    }
+
+    public function send($data, ...$headers) {
+        header_remove('Set-Cookie');
+
+        foreach ($headers as $header) {
+            header($header);
+        }
+
+        echo $data;
+        exit;
     }
 
     public function sendError($message, ...$headers) {

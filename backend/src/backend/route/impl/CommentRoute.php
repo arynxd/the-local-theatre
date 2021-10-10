@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../route/RouteValidationResult.php';
 
 class CommentRoute extends Route {
     public function __construct() {
-        parent::__construct("comment", [RequestMethod::GET, RequestMethod::PUT]);
+        parent ::__construct("comment", [RequestMethod::GET, RequestMethod::PUT]);
     }
 
     public function handle($conn, $res) {

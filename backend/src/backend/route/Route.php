@@ -29,7 +29,7 @@ abstract class Route {
      *
      * @param $conn       Connection the current connection
      * @param $res        Response   the response to send data to
-     * @return            Array      an array with at least 3 elements, 
+     * @return            Array      an array with at least 3 elements,
      *                               the first being the result of the validation, ideally a boolean,
      *                               the second being an error to display when validation fails,
      *                               the third onward being the headers to send when validation fails.

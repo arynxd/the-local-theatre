@@ -10,11 +10,11 @@ require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
 
 class BaseRoute extends Route {
     public function __construct() {
-        parent::__construct("", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT]);
+        parent ::__construct("", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT]);
     }
 
     public function handle($conn, $res) {
-        $res->sendJSON([
+        $res -> sendJSON([
             "ok" => true
         ], StatusCode::OK);
     }

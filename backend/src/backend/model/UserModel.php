@@ -19,14 +19,25 @@ class UserModel extends Model {
         $this -> username = $username;
     }
 
+    public static function fromJSON($data) {
+        return new UserModel(
+            $data['id'],
+            $data['name'],
+            $data['permissions'],
+            $data['dob'],
+            $data['joinDate'],
+            $data['username']
+        );
+    }
+
     public function toJSON() {
-        return json_encode([
-            'id'          => $this -> id,
-            'name'        => $this -> name,
+        return [
+            'id' => $this -> id,
+            'name' => $this -> name,
             'permissions' => $this -> permissions,
-            'dob'         => $this -> dob,
-            'joinDate'    => $this -> joinDate,
-            'username'    => $this -> username
-        ]);
+            'dob' => $this -> dob,
+            'joinDate' => $this -> joinDate,
+            'username' => $this -> username
+        ];
     }
 }

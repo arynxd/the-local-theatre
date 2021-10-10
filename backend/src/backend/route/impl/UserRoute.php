@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
 
 class UserRoute extends Route {
     public function __construct() {
-        parent::__construct("user", [RequestMethod::GET, RequestMethod::POST]);
+        parent ::__construct("user", [RequestMethod::GET, RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {
@@ -58,14 +58,14 @@ class UserRoute extends Route {
                 return BadRequest("No Data Provided");
             }
 
-            $conn -> applyMiddleware(new ModelValidatorMiddleware(new RequestValidator(Keys::USER_MODEL), 'data', "Malformed / Invalid Data Provided"));
-            
+            $validator = new ModelValidatorMiddleware(Keys::USER_MODEL, $data, "Invalid Data Provided");
+            $conn -> applyMiddleware($validator);
+
             if ($conn -> jsonParams()['id'] !== $data['id']) {
-                return Unprocessable("Malformed / Invalid Data Provided");
+                return Unprocessable("Malformed or Invalid Data Provided");
             }
         }
 
-        
         return Ok();
     }
 }

@@ -23,7 +23,7 @@ function Ok(...$headers) {
 }
 
 function BadRequest($error, ...$headers) {
-    return new RouteValidationResult(StatusCode::BAD_REQUEST, $error,  $headers);
+    return new RouteValidationResult(StatusCode::BAD_REQUEST, $error, $headers);
 }
 
 function Unprocessable($error, ...$headers) {

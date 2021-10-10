@@ -5,20 +5,35 @@
 
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
-require_once __DIR__ . '/../../util/constant/RequestMethod.php';
+require_once __DIR__ . '/../../context/UserContext.php';
+require_once __DIR__ . '/../../model/UserModel.php';
 
 class SignupRoute extends Route {
     public function __construct() {
-        parent::__construct("signup", [RequestMethod::POST]);
+        parent ::__construct("signup", [RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {
-        $res -> sendJSON([
-            "token" => "aaaaabbbbbbcccccddddddeeeeefffff",
-        ], StatusCode::OK);
+        $model = UserModel ::fromJSON($conn -> jsonParams()['data']);
+        $ctx = new UserContext($conn, $model);
+
+        if ($ctx -> hasAccount()) {
+            $res -> sendJSON([
+                "token" => $ctx -> login()
+            ], StatusCode::OK);
+        }
     }
 
     public function validateRequest($conn, $res) {
+        $data = $conn -> jsonParams()['data'];
+
+        if (!isset($data)) {
+            return BadRequest("No Data Provided");
+        }
+
+        $validator = new ModelValidatorMiddleware(Keys::USER_MODEL, $data, "Invalid Data Provided");
+        $conn -> applyMiddleware($validator);
+
         return Ok();
     }
 }
