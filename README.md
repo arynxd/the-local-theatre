@@ -15,8 +15,10 @@
 
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
+- Use GUID for keying and auto increment for ordering
 
 
 ## Useful Resources
 -  php -S localhost:8000 api.php (local php server with hot reload)
+-  https://www.php.net/manual/en/function.com-create-guid.php
 
