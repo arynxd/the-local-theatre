@@ -11,7 +11,7 @@
 - [ ] Abstract backend IO operations (reading files, json decoding / encoding)
 - [x] Add objects for API return values, use functions in a factory pattern.
       - Have a function for common codes, with a generic one which accepts a number
-- [ ] Implement objects for query/JSON params, allow for defaults / optionals
+- [x] Implement objects for query/JSON params, allow for defaults / optionals
 
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
