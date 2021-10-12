@@ -1,13 +1,13 @@
 
 import CacheManager from "./CacheManager";
-import {EntityIdentifier} from "../model/EntityIdentifier";
 import User from "../model/User";
+import {Guid} from "guid-typescript";
 
 export default class HttpManager {
-    public readonly userCache = new CacheManager<EntityIdentifier, User>()
+    public readonly userCache = new CacheManager<Guid, User>()
 
     async loadUsers() {
-        
+
 
         
     }

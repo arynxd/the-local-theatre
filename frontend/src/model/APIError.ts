@@ -1,20 +1,11 @@
-import {isJSONObject, JSON} from '../backend/JSON';
+import {JSONObject} from '../backend/JSONObject';
 
 export default interface APIError {
     error: boolean,
     message: string
 }
 
-export function isAPIError(json: JSON): json is APIError {
-    if (!isJSONObject(json)) {
-        return false
-    }
-
-    const message = json['message']
-    const error = json['error']
-
-    return message !== null &&
-           error !== null &&
-           typeof message === 'string' &&
-           typeof error === 'boolean'
+export function isAPIError(json: JSONObject | APIError): json is APIError {
+    return typeof json.error === 'boolean' &&
+           typeof json.message === 'string'
 }

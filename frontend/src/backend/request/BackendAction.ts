@@ -27,12 +27,12 @@ export default class BackendAction<T> extends Promise<T> {
         else {
             const json = await result.json()
 
-            if (typeof json !== 'object' || !json) {
+            if (typeof json !== 'object' || !json) { // assert that its some type of json object
                 throw new BackendError('JSON response was malformed. Expected object, got ' + json)
             }
 
             if (isAPIError(json)) {
-                reject(json as APIError)
+                reject(json)
             }
         }
     }

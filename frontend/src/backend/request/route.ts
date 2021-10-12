@@ -1,5 +1,5 @@
 import BackendError from "../BackendError";
-import { JSON } from "../JSON";
+import { JSONObject } from "../JSONObject";
 
 export class Route {
     private constructor(
@@ -24,7 +24,7 @@ export class Route {
 export class CompiledRoute {
     private readonly queryParams = new Map<string, string>()
     private readonly headers = new Map<string, string>()
-    private body: JSON = {}
+    private body: JSONObject = {}
 
     constructor(public readonly routeData: Route) { }
 
@@ -38,7 +38,7 @@ export class CompiledRoute {
         return this
     }
 
-    withBody(json: JSON): CompiledRoute {
+    withBody(json: JSONObject): CompiledRoute {
         this.body = json
         return this
     }
