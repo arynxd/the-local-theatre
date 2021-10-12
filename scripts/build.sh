@@ -1,3 +1,5 @@
+../
+
 rm -rf out/
 mkdir out/
 cd frontend/

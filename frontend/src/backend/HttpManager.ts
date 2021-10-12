@@ -1,11 +1,13 @@
-import {fetch} from "../util/url";
+
 import CacheManager from "./CacheManager";
+import {EntityIdentifier} from "../model/EntityIdentifier";
+import User from "../model/User";
 
 export default class HttpManager {
-    constructor(public userCache: CacheManager<string, any> = new CacheManager()) { }
+    public readonly userCache = new CacheManager<EntityIdentifier, User>()
 
     async loadUsers() {
-        const data = fetch("api/user/list").then(data => data.json())
+        
 
         
     }

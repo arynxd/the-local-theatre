@@ -6,3 +6,7 @@ export default interface User {
     joinDate: number,
     username: string
 }
+
+export function isUser() {
+
+}
