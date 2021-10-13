@@ -1,6 +1,6 @@
 import {JSONObject} from '../backend/JSONObject';
 
-export default interface APIError {
+export interface APIError {
     error: boolean,
     message: string
 }

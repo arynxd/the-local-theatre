@@ -1,33 +1,41 @@
-import {CompiledRoute} from "./route";
-import {fetch} from "../../util/url";
-import Backend from "../Backend";
-import APIError, {isAPIError} from "../../model/APIError";
-import BackendError from "../BackendError";
 
-export default class BackendAction<T> extends Promise<T> {
-    constructor(
-        private readonly transformer: BackendRequestTransformer<T>,
-        private readonly backend: Backend,
-        private readonly route: CompiledRoute
-    ) {
-        super(async (res, rej) => { await this.send(res, rej) });
-    }
+import {_fetch} from "../../util/url";
+import {BackendController} from "../BackendController";
+import {isAPIError} from "../../model/APIError";
+import BackendError from "../error/BackendError";
+import {CompiledRoute} from "./route/CompiledRoute";
+import {JSONObject} from "../JSONObject";
 
-    private async send(resolve: (value: T | PromiseLike<T>) => void, reject: (reason: APIError) => void) {
-        this.route.withHeader('Authorisation', this.backend.token)
+export function BackendAction<T>(
+    backend: BackendController,
+    route: CompiledRoute,
+    JSONTransformer?: BackendRequestJSONTransformer<T>,
+    requestTransformer?: BackendRequestTransformer<T>
+) {
+    return new Promise<T>(async (resolve, reject) => {
+        if (route.routeData.requiresAuth) {
+            route.withHeader('Authorisation', backend.auth.token)
+        }
 
-        const result = await fetch(this.route.url, {
-            method: this.route.routeData.method,
-            headers: this.route.flattenHeaders(),
+        const result = await _fetch(route.url, {
+            method: route.routeData.method,
+            headers: route.flattenHeaders(),
         })
 
         if (result.ok) {
-            resolve(this.transformer(result))
+            if (requestTransformer) {
+                resolve(requestTransformer(result))
+            }
+            else if (JSONTransformer) {
+                const json = await result.json() as JSONObject
+                resolve(JSONTransformer(json))
+            }
         }
         else {
             const json = await result.json()
 
             if (typeof json !== 'object' || !json) { // assert that its some type of json object
+                // throwing is ok because this is an assertion and ideally should never happen
                 throw new BackendError('JSON response was malformed. Expected object, got ' + json)
             }
 
@@ -35,7 +43,9 @@ export default class BackendAction<T> extends Promise<T> {
                 reject(json)
             }
         }
-    }
+    })
 }
 
+
 type BackendRequestTransformer<T> = (res: Response) => T
+type BackendRequestJSONTransformer<T> = (res: JSONObject) => T

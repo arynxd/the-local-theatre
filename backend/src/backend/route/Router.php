@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../route/impl/BaseRoute.php';
 require_once __DIR__ . '/../route/impl/UserRoute.php';
 require_once __DIR__ . '/../route/impl/UserListRoute.php';
+require_once __DIR__ . '/../route/impl/PostListRoute.php';
 
 class Router {
     private $routes;
@@ -11,7 +12,8 @@ class Router {
         $this -> routes = [
             new BaseRoute(),
             new UserRoute(),
-            new UserListRoute()
+            new UserListRoute(),
+            new PostListRoute()
         ];
     }
 

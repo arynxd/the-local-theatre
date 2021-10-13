@@ -1,6 +1,7 @@
 import * as pack from '../../package.json'
+import BackendError from "../backend/error/BackendError";
 
-export function fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
+export function _fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
     let prefix
 
     if (process.env.NODE_ENV === 'development') {
@@ -9,5 +10,7 @@ export function fetch(input: RequestInfo, init?: RequestInit): Promise<Response>
     else {
         prefix = pack.homepage
     }
+
+    console.log(prefix + input)
     return global.fetch(prefix + input, init)
 }

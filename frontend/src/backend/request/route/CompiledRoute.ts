@@ -1,25 +1,6 @@
-import BackendError from "../BackendError";
-import { JSONObject } from "../JSONObject";
-
-export class Route {
-    private constructor(
-        public readonly path: Path,
-        public readonly method: Method,
-        public readonly requiredQueryParams: QueryParams,
-        public readonly requiredBodyKeys: string[]
-    ) { }
-
-    compile(): CompiledRoute {
-        return new CompiledRoute(this)
-    }
-
-    public static readonly User = class {
-        public static readonly FETCH = new Route('api/user', 'GET', ['id'], [])
-        public static readonly FETCH_ALL = new Route('api/user/list', 'GET', ['limit'], [])
-        public static readonly UPDATE = new Route('api/user', 'POST', [], [])
-
-    }
-}
+import {JSONObject} from "../../JSONObject";
+import BackendError from "../../error/BackendError";
+import {Route} from "./Route";
 
 export class CompiledRoute {
     private readonly queryParams = new Map<string, string>()
@@ -65,6 +46,7 @@ export class CompiledRoute {
 
     get url(): string {
         // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
+        //FIXME not appendding / to the URL
         return this.routeData.path + new URLSearchParams(this.flattenQueryParams()).toString()
     }
 
@@ -80,9 +62,3 @@ export class CompiledRoute {
         }
     }
 }
-
-export type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-
-export type Path = string
-
-export type QueryParams = string[]

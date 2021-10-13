@@ -6,14 +6,18 @@ import Home from "./page/Home";
 import Contact from "./page/Contact";
 import Login from "./page/Login";
 import Signup from "./page/Signup";
+import {BackendController} from "./backend/BackendController";
+import {NotFound} from "./page/NotFound";
 
 function App() {
+    const backend = new BackendController()
+
     return (
         <BrowserRouter>
             <Navbar/>
             <Switch>
                 <Route exact path="/">
-                    <Home />
+                    <Home backend={backend}/>
                 </Route>
 
                 <Route path="/blog">
@@ -30,6 +34,10 @@ function App() {
 
                 <Route path="/signup">
                     <Signup />
+                </Route>
+
+                <Route path="*">
+                    <NotFound />
                 </Route>
             </Switch>
         </BrowserRouter>

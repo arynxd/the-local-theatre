@@ -6,17 +6,25 @@
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
+require_once __DIR__ . '/../../model/UserModel.php';
+require_once __DIR__ . '/../../model/PostModel.php';
 
-class BlogListRoute extends Route {
+class PostListRoute extends Route {
     public function __construct() {
-        parent ::__construct("blog/list", [RequestMethod::GET]);
+        parent ::__construct("post/list", [RequestMethod::GET]);
     }
 
     public function handle($conn, $res) {
+        $user = new UserModel(1, 'john doe', 0, 1, 1, 'jdoe');
+        $posts = [];
+
+        for ($i = 0; $i < 10; $i++) {
+            $model = new PostModel($i, $user, "Lorem ipsum sit amet", 1);
+            array_push($posts, $model -> toJSON());
+        }
+
         $res -> sendJSON([
-            "id" => "0",
-            "user_id" => "1",
-            "reason" => "hello world"
+            'posts' => $posts
         ], StatusCode::OK);
     }
 
