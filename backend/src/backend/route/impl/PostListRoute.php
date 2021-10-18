@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . '/../../model/PostModel.php';
+require_once __DIR__ . '/../../util/guid.php';
 
 class PostListRoute extends Route {
     public function __construct() {
@@ -15,11 +16,11 @@ class PostListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user = new UserModel(1, 'john doe', 0, 1, 1, 'jdoe');
+        $user = new UserModel(createGuid(), 'john doe', 0, 1, 1, 'jdoe');
         $posts = [];
 
         for ($i = 0; $i < 10; $i++) {
-            $model = new PostModel($i, $user, "Lorem ipsum sit amet", 1);
+            $model = new PostModel(createGuid(), $user, "Lorem ipsum sit amet", 1);
             array_push($posts, $model -> toJSON());
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 require_once 'backend/util/ErrorHandler.php';
 ErrorHandler ::enableErrors();
 

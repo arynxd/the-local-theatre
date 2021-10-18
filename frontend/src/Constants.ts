@@ -4,7 +4,7 @@ export const MOBILE_WIDTH = 600;
 
 export const MOBILE_MAX_WIDTH = `
     @media screen and (max-width: ${MOBILE_WIDTH}px)
-`
+`;
 
 export const DEFAULT_FONT = `
   text-align: center;
@@ -12,7 +12,7 @@ export const DEFAULT_FONT = `
   display: block;
   font-family: 'Rubik', sans-serif;
   color: var(--secondary-text-colour);
-`
+`;
 
 export const PageTitle = styled.h1`
   ${DEFAULT_FONT};

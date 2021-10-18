@@ -3,6 +3,10 @@ import React, {MouseEvent, useState} from "react";
 import styled from "styled-components";
 import {MOBILE_MAX_WIDTH} from "../../Constants";
 
+import * as colour from '../../css/colour'
+import * as text from '../../css/text'
+import * as padding from '../../css/padding'
+
 const BUTTON_HEIGHT = 2
 const MENU_WIDTH = 70
 
@@ -20,15 +24,14 @@ const MobileNavButton = styled.button`
 `;
 
 const Title = styled.h1`
+  ${text.DEFAULT}
+  ${text.CENTERED}
+  ${colour.TITLE}
+  
   margin: 0;
   padding: 15px;
   font-size: 45px;
-  text-align: center;
-  font-weight: bold;
-  display: block;
-  font-family: 'Rubik', sans-serif;
-  color: var(--primary-text-colour);
-
+  
   ${MOBILE_MAX_WIDTH} {
       font-size: 35px;
   }
@@ -74,15 +77,15 @@ const GridNav = styled.nav<{ open: boolean }>`
 `;
 
 const GridItem = styled.li`
-  margin: 0;
-  padding: 15px;
+  ${colour.SECTION_TITLE}
+  ${text.DEFAULT}
+  ${padding.DEFAULT}
+  
+  
+  display: inline;
   text-indent: 0;
   list-style-type: none;
   font-size: 24px;
-  font-weight: bold;
-  display: inline;
-  font-family: 'Rubik', sans-serif;
-  color: var(--accent-text-colour);
 `;
 
 

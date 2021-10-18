@@ -7,7 +7,9 @@ export class CompiledRoute {
     private readonly headers = new Map<string, string>()
     private body: JSONObject = {}
 
-    constructor(public readonly routeData: Route) { }
+    constructor(public readonly routeData: Route) {
+
+    }
 
     withQueryParam(key: string, value: string): CompiledRoute {
         this.queryParams.set(key, value)
@@ -46,8 +48,14 @@ export class CompiledRoute {
 
     get url(): string {
         // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
-        //FIXME not appendding / to the URL
-        return this.routeData.path + new URLSearchParams(this.flattenQueryParams()).toString()
+        let res = this.routeData.path
+
+        if (this.queryParams.size) {
+            res += "?"
+        }
+
+        res += new URLSearchParams(this.flattenQueryParams()).toString()
+        return res
     }
 
     validate() {
@@ -60,5 +68,9 @@ export class CompiledRoute {
                 'Received ' + this.flattenQueryParams()
             )
         }
+    }
+
+    stringifyBody(): string {
+        return JSON.stringify(this.body)
     }
 }

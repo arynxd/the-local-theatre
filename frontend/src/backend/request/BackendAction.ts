@@ -1,5 +1,5 @@
 
-import {_fetch} from "../../util/url";
+import {fetch} from "../../util/url";
 import {BackendController} from "../BackendController";
 import {isAPIError} from "../../model/APIError";
 import BackendError from "../error/BackendError";
@@ -16,11 +16,29 @@ export function BackendAction<T>(
         if (route.routeData.requiresAuth) {
             route.withHeader('Authorisation', backend.auth.token)
         }
+        let result: Response
 
-        const result = await _fetch(route.url, {
-            method: route.routeData.method,
-            headers: route.flattenHeaders(),
-        })
+        try {
+            let opts: RequestInit = {
+                method: route.routeData.method,
+                headers: route.flattenHeaders(),
+                mode: 'cors'
+            }
+
+            if (route.routeData.method !== 'GET') {
+                opts.body = route.stringifyBody()
+            }
+
+            result = await fetch(route.url, opts)
+        }
+        catch (ex) {
+            let msg = ""
+            msg += "Backend request to URL " + route.url + " failed\n\n"
+            msg += ex
+
+            reject(new BackendError(msg))
+            return
+        }
 
         if (result.ok) {
             if (requestTransformer) {
@@ -35,7 +53,7 @@ export function BackendAction<T>(
             const json = await result.json()
 
             if (typeof json !== 'object' || !json) { // assert that its some type of json object
-                // throwing is ok because this is an assertion and ideally should never happen
+                                                     // throwing is ok because this is an assertion and ideally should never happen
                 throw new BackendError('JSON response was malformed. Expected object, got ' + json)
             }
 

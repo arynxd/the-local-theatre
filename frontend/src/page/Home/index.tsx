@@ -1,17 +1,19 @@
 import {Post} from "../../component/Post";
 import {useEffect, useState} from "react";
-import {LoadingUser, User} from "../../model/User";
+import {User} from "../../model/User";
 import {BackendProps} from "../../component/props/BackendProps";
+import {LoadingIcon} from "../../component/LoadingIcon";
 
 function Home(props: BackendProps) {
-    const [postAuthor, setPostAuthor] = useState<User>(LoadingUser)
-    const [postContent, setPostContent] = useState<String>("Loading")
+    const [postAuthor, setPostAuthor] = useState<User>()
+    const [postContent, setPostContent] = useState<string>()
 
     useEffect(() => {
         props.backend.http.listPosts(1)
             .then(posts => {
                 if (posts) {
                     const post = posts[0]
+
                     setPostContent(post.content)
                     setPostAuthor(post.author)
                 }
@@ -19,11 +21,17 @@ function Home(props: BackendProps) {
                     setPostContent("ERROR")
                 }
             })
-    })
+    }, [props.backend])
+
+    if (!postAuthor || !postContent) {
+        return (
+            <LoadingIcon />
+        )
+    }
 
 
     return (
-        <Post content={ postContent as string } author={ postAuthor } />
+        <Post content={ postContent } author={ postAuthor } />
     )
 }
 

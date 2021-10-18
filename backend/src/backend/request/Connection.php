@@ -33,7 +33,7 @@ class Connection {
         $this -> method = $this -> parseMethod();
         $this -> errorHandler = $this -> loadErrorHandler();
 
-        $this -> router -> handleCors();
+        //$this -> router -> handleCors();
         //$this -> errorHandler -> addInterceptor();
     }
 

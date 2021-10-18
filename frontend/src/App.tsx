@@ -7,7 +7,6 @@ import Contact from "./page/Contact";
 import Login from "./page/Login";
 import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
-import {NotFound} from "./page/NotFound";
 
 function App() {
     const backend = new BackendController()
@@ -20,29 +19,31 @@ function App() {
                     <Home backend={backend}/>
                 </Route>
 
+                 <Route exact path="/~20006203">
+                    <Home backend={backend}/>
+                 </Route>
+
                 <Route path="/blog">
-                    <Blog />
+                    <Blog/>
                 </Route>
 
                 <Route path="/contact">
-                    <Contact />
+                    <Contact/>
                 </Route>
 
                 <Route path="/login">
-                    <Login />
+                    <Login/>
                 </Route>
 
                 <Route path="/signup">
-                    <Signup />
+                    <Signup/>
                 </Route>
 
-                <Route path="*">
-                    <NotFound />
-                </Route>
             </Switch>
         </BrowserRouter>
     )
 }
+
 
 export default App
 

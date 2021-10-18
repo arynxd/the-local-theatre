@@ -6,7 +6,7 @@ import {isPost, Post} from "../../model/Post";
 
 export class EntityManager extends Manager {
     private err(type: string, json: JSONObject): never {
-        throw new BackendError("JSON was not a valid " + type + " object. Got " + json + " instead")
+        throw new BackendError("JSON was not a valid " + type + " object. Got " + JSON.stringify(json) + " instead")
     }
 
     public createUser(json: JSONObject): User {
@@ -14,7 +14,7 @@ export class EntityManager extends Manager {
             this.err("User", json)
         }
 
-        this.backend.cache.cacheUser(json)
+        this.backend.cache.user.cache(json.id, json)
         return json
     }
 

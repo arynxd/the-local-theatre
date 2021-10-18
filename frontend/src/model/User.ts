@@ -1,22 +1,14 @@
 import {JSONObject} from "../backend/JSONObject";
 import {Guid} from "guid-typescript";
+import {EntityIdentifier} from "./EntityIdentifier";
 
 export interface User {
-    id: Guid,
+    id: EntityIdentifier,
     name: string,
     permissions: number,
     dob: number,
     joinDate: number,
     username: string
-}
-
-export const LoadingUser: User = {
-    dob: 0,
-    id: Guid.createEmpty(),
-    joinDate: 0,
-    name: "",
-    permissions: 0,
-    username: ""
 }
 
 export function isUser(json: JSONObject | User): json is User {

@@ -1,16 +1,17 @@
 import * as pack from '../../package.json'
-import BackendError from "../backend/error/BackendError";
 
-export function _fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
+export function getPrefix() {
     let prefix
 
     if (process.env.NODE_ENV === 'development') {
-        prefix = "localhost:8000/"
+        prefix = "http://localhost:8000/"
     }
     else {
         prefix = pack.homepage
     }
+    return prefix
+}
 
-    console.log(prefix + input)
-    return global.fetch(prefix + input, init)
+export function fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
+    return global.fetch(getPrefix() + input, init)
 }
