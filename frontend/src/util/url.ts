@@ -1,17 +1,13 @@
-import * as pack from '../../package.json'
+import {logger} from "./log";
 
 export function getPrefix() {
-    let prefix
-
     if (process.env.NODE_ENV === 'development') {
-        prefix = "http://localhost:8000/"
+        return 'http://localhost:8000/'
     }
-    else {
-        prefix = pack.homepage
-    }
-    return prefix
+    return window.location.origin + "/"
 }
 
 export function fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
+    logger.debug('Sending wrapped fetch() for ' + getPrefix() + input + ' with init ' + JSON.stringify(init))
     return global.fetch(getPrefix() + input, init)
 }

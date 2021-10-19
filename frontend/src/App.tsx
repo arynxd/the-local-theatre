@@ -7,9 +7,13 @@ import Contact from "./page/Contact";
 import Login from "./page/Login";
 import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
+import {logger} from "./util/log";
+import {getPrefix} from "./util/url";
 
 function App() {
     const backend = new BackendController()
+    logger.debug('Starting application')
+    logger.debug('Base URL is ' + getPrefix())
 
     return (
         <BrowserRouter>

@@ -1,5 +1,6 @@
 
 import {CompiledRoute} from "./CompiledRoute";
+import {logger} from "../../../util/log";
 
 export class Route {
     public constructor(
@@ -11,6 +12,7 @@ export class Route {
     ) { }
 
     compile(): CompiledRoute {
+        logger.debug('Compiling route ' + this.path)
         return new CompiledRoute(this)
     }
 }
