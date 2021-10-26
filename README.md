@@ -14,6 +14,7 @@
 - [x] Implement objects for query/JSON params, allow for defaults / optionals
 - [ ] Change to UUID for keying, use auto increment for ordering
 - [ ] Implement tailwind css
+- [ ] Create custom, styled, components that follow the theme
 
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
@@ -23,5 +24,4 @@
 ## Useful Resources
 -  php -S localhost:8000 api.php (local php server with hot reload)
 -  https://www.php.net/manual/en/function.com-create-guid.php
--  https://material-tailwind.com/ (react components for material UI)
 
