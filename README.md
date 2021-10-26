@@ -15,13 +15,16 @@
 - [ ] Change to UUID for keying, use auto increment for ordering
 - [ ] Implement tailwind css
 - [ ] Create custom, styled, components that follow the theme
+- [ ] Use a CSS framework for material design
 
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
-
-
+- Use GUID for keying and auto increment for ordering
+- CAPTCHA integration
+- Ratelimiting
 
 ## Useful Resources
 -  php -S localhost:8000 api.php (local php server with hot reload)
 -  https://www.php.net/manual/en/function.com-create-guid.php
+-  https://stackoverflow.com/questions/63340241/material-ui-customizing-box-component-with-withstyles
 

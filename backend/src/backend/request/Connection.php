@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../util/constant/Constants.php";
 require_once __DIR__ . "/../util/constant/ParamSource.php";
-require_once __DIR__ . "/../util/ErrorHandler.php";
+require_once __DIR__ . "/../util/Logger.php";
 require_once __DIR__ . "/../util/Map.php";
 require_once __DIR__ . "/../util/JSONLoader.php";
 require_once __DIR__ . "/../util/string.php";
@@ -31,10 +31,9 @@ class Connection {
         $this -> router = $this -> loadRouter();
         $this -> route = $this -> parseRoute();
         $this -> method = $this -> parseMethod();
-        $this -> errorHandler = $this -> loadErrorHandler();
+        $this -> logger = $this -> loadLogger();
 
-        //$this -> router -> handleCors();
-        //$this -> errorHandler -> addInterceptor();
+        $this -> router -> handleCors();
     }
 
     private function generateResponse() {
@@ -48,12 +47,16 @@ class Connection {
     }
 
     private function loadDatabase() {
+    
         $cfg = $this -> config;
 
         if (!isset($cfg)) {
             throw new UnexpectedValueException("Config was not initialised before loading database.");
         }
 
+        if (!config['db_enabled']) {
+            return null;
+        }
 
         return new Database($cfg['db_url'], $cfg['db_username'], $cfg['db_password']);
     }
@@ -61,7 +64,7 @@ class Connection {
     private function loadRouter() {
         $db = $this -> database;
 
-        if (!isset($db)) {
+        if (!isset($db) && config['db_enabled']) {
             throw new UnexpectedValueException("Database was not initialised before loading router.");
         }
 
@@ -91,7 +94,7 @@ class Connection {
         $result = $this -> router -> getRouteForPath($this -> uri);
 
         if (!$result) {
-            $this -> res -> sendError("Route not found", StatusCode::NOT_FOUND);
+            $this -> res -> sendError("Route $this -> rawUri not found", StatusCode::NOT_FOUND);
             exit;
         }
 
@@ -102,8 +105,8 @@ class Connection {
         return $_SERVER["REQUEST_METHOD"];
     }
 
-    private function loadErrorHandler() {
-        return new ErrorHandler($this -> res);
+    private function loadLogger() {
+        return new Logger($this -> res);
     }
 
     public function jsonParams() {
