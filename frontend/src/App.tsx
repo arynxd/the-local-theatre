@@ -9,41 +9,48 @@ import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
 import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
+import {initThemes} from "./util/theme";
+import {ThemeContext} from "./component/ThemeContext";
+
+
 
 function App() {
     const backend = new BackendController()
     logger.debug('Starting application')
     logger.debug('Base URL is ' + getPrefix())
 
+    initThemes()
     return (
         <BrowserRouter>
-            <Navbar/>
-            <Switch>
-                <Route exact path="/">
-                    <Home backend={backend}/>
-                </Route>
+            <ThemeContext>
+                <Navbar/>
+                <Switch>
+                    <Route exact path="/">
+                        <Home backend={backend}/>
+                    </Route>
 
-                 <Route exact path="/~20006203">
-                    <Home backend={backend}/>
-                 </Route>
+                     <Route exact path="/~20006203">
+                        <Home backend={backend}/>
+                     </Route>
 
-                <Route path="/blog">
-                    <Blog/>
-                </Route>
+                    <Route path="/blog">
+                        <Blog/>
+                    </Route>
 
-                <Route path="/contact">
-                    <Contact/>
-                </Route>
+                    <Route path="/contact">
+                        <Contact/>
+                    </Route>
 
-                <Route path="/login">
-                    <Login/>
-                </Route>
+                    <Route path="/login">
+                        <Login/>
+                    </Route>
 
-                <Route path="/signup">
-                    <Signup/>
-                </Route>
+                    <Route path="/signup">
+                        <Signup/>
+                    </Route>
 
-            </Switch>
+                </Switch>
+            </ThemeContext>
         </BrowserRouter>
     )
 }

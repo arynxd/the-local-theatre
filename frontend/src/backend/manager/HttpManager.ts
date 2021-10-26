@@ -27,7 +27,7 @@ export class HttpManager extends Manager {
             const arr = res['posts']
 
             if (isJSONArray(arr)) {
-                return arr.filter(val => isJSONObject(val))
+                return arr.filter(isJSONObject)
                           .map(val => this.backend.entity.createPost(val as JSONObject)) // we just filtered for this, TS just cant infer it
             }
             return []
