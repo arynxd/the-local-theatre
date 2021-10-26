@@ -12,10 +12,12 @@
 - [x] Add objects for API return values, use functions in a factory pattern.
       - Have a function for common codes, with a generic one which accepts a number
 - [x] Implement objects for query/JSON params, allow for defaults / optionals
+- [ ] Change to UUID for keying, use auto increment for ordering
+- [ ] Implement tailwind css
 
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
-- Use GUID for keying and auto increment for ordering
+
 
 
 ## Useful Resources
