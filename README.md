@@ -23,4 +23,5 @@
 ## Useful Resources
 -  php -S localhost:8000 api.php (local php server with hot reload)
 -  https://www.php.net/manual/en/function.com-create-guid.php
+-  https://material-tailwind.com/ (react components for material UI)
 
