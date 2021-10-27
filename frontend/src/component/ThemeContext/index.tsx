@@ -1,4 +1,4 @@
-import React, {useState, MouseEvent} from "react";
+import React, {MouseEvent, useState} from "react";
 import {getTheme, initThemes} from "../../util/theme";
 import {logger} from "../../util/log";
 
@@ -9,8 +9,7 @@ export default function ThemeContext(props: { children: JSX.Element[] }) {
         if (theme === 'dark') {
             localStorage.theme = 'light'
             setTheme('light')
-        }
-        else if (theme === 'light') {
+        } else if (theme === 'light') {
             localStorage.theme = 'dark'
             setTheme('dark')
         }
@@ -20,7 +19,8 @@ export default function ThemeContext(props: { children: JSX.Element[] }) {
 
     return (
         <>
-            <button className='text-xl rounded-2xl border-4 bottom-0 fixed' onClick={sideBarToggle}>Theme Toggle</button>
+            <button className='text-xl rounded-2xl border-4 bottom-0 fixed' onClick={sideBarToggle}>Theme Toggle
+            </button>
             {props.children}
         </>
     )

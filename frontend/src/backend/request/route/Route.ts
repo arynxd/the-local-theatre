@@ -1,4 +1,3 @@
-
 import {CompiledRoute} from "./CompiledRoute";
 import {logger} from "../../../util/log";
 
@@ -9,7 +8,8 @@ export class Route {
         public readonly requiredQueryParams: QueryParams,
         public readonly requiredDataKeys: string[],
         public readonly requiresAuth: boolean
-    ) { }
+    ) {
+    }
 
     compile(): CompiledRoute {
         logger.debug('Compiling route ' + this.path)

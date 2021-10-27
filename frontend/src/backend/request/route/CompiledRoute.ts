@@ -11,6 +11,18 @@ export class CompiledRoute {
 
     }
 
+    get url(): string {
+        // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
+        let res = this.routeData.path
+
+        if (this.queryParams.size) {
+            res += "?"
+        }
+
+        res += new URLSearchParams(this.flattenQueryParams()).toString()
+        return res
+    }
+
     withQueryParam(key: string, value: string): CompiledRoute {
         this.queryParams.set(key, value)
         return this
@@ -44,18 +56,6 @@ export class CompiledRoute {
         }
 
         return out
-    }
-
-    get url(): string {
-        // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
-        let res = this.routeData.path
-
-        if (this.queryParams.size) {
-            res += "?"
-        }
-
-        res += new URLSearchParams(this.flattenQueryParams()).toString()
-        return res
     }
 
     validate() {

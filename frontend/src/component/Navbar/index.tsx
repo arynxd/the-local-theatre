@@ -1,4 +1,3 @@
-
 import React, {MouseEvent, useState} from "react";
 import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
@@ -33,9 +32,9 @@ export default function Navbar() {
                 '>
                 {/*<h1 className="lg:text-6xl md:text-4xl sm:text-3xl text-center dark:text-gray-300 col-span-2">The Local Theatre</h1>*/}
 
-                <LogoOrMobileNav />
+                <LogoOrMobileNav/>
 
-                <div />
+                <div/>
 
                 <Link className={LinkStyle} to="/">Home</Link>
 

@@ -7,5 +7,5 @@ export interface APIError {
 
 export function isAPIError(json: JSONObject | APIError): json is APIError {
     return typeof json.error === 'boolean' &&
-           typeof json.message === 'string'
+        typeof json.message === 'string'
 }

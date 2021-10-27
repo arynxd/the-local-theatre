@@ -11,8 +11,8 @@ export interface Post {
 
 export function isPost(json: JSONObject | Post): json is Post {
     return isEntityIdentifier(json.id) &&
-         isJSONObject(json.author as JSONValue) && // it will always be a value of some sort
-         isUser(json.author as JSONObject) &&      // if its an object ^, we can cast it
-         typeof json.content === 'string' &&
-         typeof json.createdAt === 'number'
+        isJSONObject(json.author as JSONValue) && // it will always be a value of some sort
+        isUser(json.author as JSONObject) &&      // if its an object ^, we can cast it
+        typeof json.content === 'string' &&
+        typeof json.createdAt === 'number'
 }

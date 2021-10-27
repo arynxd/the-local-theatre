@@ -1,9 +1,7 @@
-../
-
 rm -rf out/
 mkdir out/
 cd frontend/
-yarn build
+npm run build
 cp -R build/* ../out
 cd ../backend
 cp -R src/* ../out

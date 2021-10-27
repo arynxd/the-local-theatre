@@ -1,4 +1,3 @@
-
 import {fetch} from "../../util/url";
 import {BackendController} from "../BackendController";
 import {isAPIError} from "../../model/APIError";
@@ -33,8 +32,7 @@ export function BackendAction<T>(
             }
 
             result = await fetch(route.url, opts)
-        }
-        catch (ex) {
+        } catch (ex) {
             let msg = ""
             msg += "Backend request to URL " + route.url + " failed\n\n"
             msg += ex
@@ -46,16 +44,14 @@ export function BackendAction<T>(
         if (result.ok) {
             if (requestTransformer) {
                 resolve(requestTransformer(result))
-            }
-            else if (JSONTransformer) {
+            } else if (JSONTransformer) {
                 const json = await result.text()
-                
+
                 let jsonObj: JSONObject
-                
+
                 try {
                     jsonObj = JSON.parse(json) as JSONObject
-                }
-                catch (ex) {
+                } catch (ex) {
                     let msg = ""
 
                     msg += "Failed to parse JSON for backend response. Expected valid JSON got: \n"
@@ -67,12 +63,11 @@ export function BackendAction<T>(
                 logger.debug('Got a valid JSON response: \n ' + JSON.stringify(jsonObj))
                 resolve(JSONTransformer(jsonObj))
             }
-        }
-        else {
+        } else {
             const json = await result.json()
 
             if (typeof json !== 'object' || !json) { // assert that its some type of json object
-                                                     // throwing is ok because this is an assertion and ideally should never happen
+                // throwing is ok because this is an assertion and ideally should never happen
                 const ex = new BackendError('JSON response was malformed. Expected object, got ' + json)
                 logger.error(ex)
                 throw ex

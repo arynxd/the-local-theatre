@@ -14,7 +14,6 @@ import ThemeContext from "./component/ThemeContext";
 import {NotFound} from "./page/NotFound";
 
 
-
 function App() {
     const backend = new BackendController()
     logger.debug('Starting application')
@@ -30,9 +29,9 @@ function App() {
                         <Home backend={backend}/>
                     </Route>
 
-                     <Route exact path="/~20006203">
+                    <Route exact path="/~20006203">
                         <Home backend={backend}/>
-                     </Route>
+                    </Route>
 
                     <Route path="/blog">
                         <Blog/>
@@ -51,7 +50,7 @@ function App() {
                     </Route>
 
                     <Route>
-                        <NotFound />
+                        <NotFound/>
                     </Route>
                 </Switch>
             </ThemeContext>

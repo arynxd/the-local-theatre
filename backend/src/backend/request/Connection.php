@@ -75,25 +75,27 @@ class Connection {
     }
 
     private function parseURI() {
-        $result = parse_url($this -> rawUri, PHP_URL_PATH); // get the URI from the request
-        $result = explode('/', $result); // split it into an array
+        $map = parse_url($this -> rawUri, PHP_URL_PATH); // get the URI from the request
+        $map = explode('/', $map); // split it into an array
+        $map = array_slice($map, 1); // remove weird empty argument at the start
 
-        if (isset($result[1]) && strStartsWith($result[1], Constants::API_PREFIX)) {
-            $result = array_slice($result, 2);
+        if (isset($map[0]) && strStartsWith($map[0], Constants::URI_PREFIX)) {
+            $map = array_slice($map, 1);
         }
 
-        if (isset($result[0]) && strStartsWith($result[0], Constants::URI_PREFIX)) {
-            $result = array_slice($result, 1);
+        if (isset($map[0]) && strStartsWith($map[0], Constants::API_PREFIX)) {
+            $map = array_slice($map, 1);
         }
 
-        return $result;
+        return $map;
     }
 
     private function parseRoute() {
+        
         $result = $this -> router -> getRouteForPath($this -> uri);
 
         if (!$result) {
-            $this -> res -> sendError("Route $this -> rawUri not found", StatusCode::NOT_FOUND);
+            $this -> res -> sendError("Route " . $this -> rawUri . " not found", StatusCode::NOT_FOUND);
             exit;
         }
 

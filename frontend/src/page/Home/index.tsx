@@ -22,8 +22,7 @@ function Home(props: BackendProps) {
                     setPostAuthor(post.author)
 
                     logger.debug('Received valid post ' + JSON.stringify(post))
-                }
-                else {
+                } else {
                     logger.debug('No posts received')
                     setPostContent("ERROR")
                 }
@@ -33,13 +32,13 @@ function Home(props: BackendProps) {
     if (!postAuthor || !postContent) {
         logger.debug('Home page post not loaded, rendering loading icon')
         return (
-            <LoadingIcon />
+            <LoadingIcon/>
         )
     }
 
 
     return (
-        <Post content={ postContent } author={ postAuthor } />
+        <Post content={postContent} author={postAuthor}/>
     )
 }
 

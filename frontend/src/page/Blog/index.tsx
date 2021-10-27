@@ -1,8 +1,6 @@
-
-
 function Blog() {
     return (
-        <div />
+        <div/>
     )
 }
 

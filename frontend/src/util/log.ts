@@ -6,5 +6,6 @@ function getConfig(): winston.LoggerOptions {
         format: winston.format.simple()
     }
 }
+
 export const logger = winston.createLogger(getConfig())
-                             .add(new winston.transports.Console())
+    .add(new winston.transports.Console())

@@ -12,10 +12,10 @@ export interface User {
 }
 
 export function isUser(json: JSONObject | User): json is User {
-    return Guid.isGuid(json.id)                 &&
-           typeof json.name        === "string" &&
-           typeof json.permissions === "number" &&
-           typeof json.dob         === "number" &&
-           typeof json.joinDate    === "number" &&
-           typeof json.username    === "string"
+    return Guid.isGuid(json.id) &&
+        typeof json.name === "string" &&
+        typeof json.permissions === "number" &&
+        typeof json.dob === "number" &&
+        typeof json.joinDate === "number" &&
+        typeof json.username === "string"
 }
