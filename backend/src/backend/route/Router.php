@@ -5,6 +5,10 @@ require_once __DIR__ . '/../route/impl/UserRoute.php';
 require_once __DIR__ . '/../route/impl/UserListRoute.php';
 require_once __DIR__ . '/../route/impl/PostListRoute.php';
 
+/**
+ * A router for all of the API Routes
+ * @see Route
+ */
 class Router {
     private $routes;
 
@@ -17,6 +21,12 @@ class Router {
         ];
     }
 
+    /**
+     * Gets the route for a given path.
+     * 
+     * @param   string[]  $parts  the path
+     * @return  Route|false       returns false if the route is not found
+     */
     public function getRouteForPath($parts) {
         $match = join("/", $parts);
 
@@ -29,7 +39,7 @@ class Router {
     }
 
     /**
-     * Handles CORS OPTIONS requests and responds appropriately
+     * Handle CORS OPTIONS request and respond appropriately
      */
     function handleCors() {
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

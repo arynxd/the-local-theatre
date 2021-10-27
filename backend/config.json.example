@@ -3,5 +3,6 @@
     "db_username": "",
     "db_password": "",
     "db_enabled": true,
-    "log_level": "DEBUG"
+    "log_level": "DEBUG",
+    "env": "PRODUCTION"
 }

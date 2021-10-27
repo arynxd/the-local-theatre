@@ -7,19 +7,20 @@
 - [ ] Implement database integration in backend
 - [x] Finalise frontend theme
 - [ ] Create frontend database abstractions
-- [ ] Implement website assets from zip (use svg)
+- [x] Implement website assets from zip 
 - [ ] Abstract backend IO operations (reading files, json decoding / encoding)
 - [x] Add objects for API return values, use functions in a factory pattern.
       - Have a function for common codes, with a generic one which accepts a number
 - [x] Implement objects for query/JSON params, allow for defaults / optionals
-- [ ] Change to UUID for keying, use auto increment for ordering
-- [ ] Implement tailwind css
+- [ ] Change to UUID for keying (done for backend), use auto increment for ordering
+- [x] Implement tailwind css
 - [ ] Create custom, styled, components that follow the theme
-- [ ] Use a CSS framework for material design
-- [ ] Use useContext & AuthContext component for authentication state management
+- [x] Use a CSS framework for material design (tailwind)
+- [ ] Use useContext & an AuthContext component for authentication state management
+- [ ] Change CORS policy in backend
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
-- Use GUID for keying and auto increment for ordering
+- Use UUID for keying and auto increment for ordering
 - CAPTCHA integration
 - Ratelimiting
 

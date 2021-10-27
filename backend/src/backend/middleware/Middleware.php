@@ -6,8 +6,8 @@ abstract class Middleware {
      *
      * If the middleware throws an error, the request will fail.
      *
-     * @param $conn Connection
-     * @return      RouteValidationResult the validation result
+     * @param  Connection $conn       the current connection
+     * @return RouteValidationResult  the validation result
      */
     public abstract function apply($conn);
 }

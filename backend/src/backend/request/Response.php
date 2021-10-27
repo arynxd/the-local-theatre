@@ -4,7 +4,20 @@ require_once __DIR__ . '/../util/constant/ContentType.php';
 require_once __DIR__ . '/../util/constant/StatusCode.php';
 require_once __DIR__ . '/../util/constant/CORS.php';
 
+/**
+ * Utility object for sending reponses to the client
+ * This can be freely constructed wherever needed however the Connection
+ * always holds an instance (Connection::$res)
+ * 
+ * @see Connection
+ */
 class Response {
+    /**
+     * Sends JSON to the client
+     * 
+     * @param Array|string  $data     an associative array, or string, representing the JSON to send in the response
+     * @param string[]      $headers  the headers to include in the response
+     */
     public function sendJSON($data, ...$headers) {
         if (is_array($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
@@ -17,9 +30,14 @@ class Response {
         }
     }
 
+    /**
+     * Sends arbitrary data to the client
+     * This methods performs NO validation on the input, use it with caution.
+     * 
+     * @param  mixed     $data     the data to send in the response
+     * @param  string[]  $headers  the headers to send in the response
+     */
     public function send($data, ...$headers) {
-        header_remove('Set-Cookie');
-
         foreach ($headers as $header) {
             header($header);
         }
@@ -28,6 +46,12 @@ class Response {
         exit;
     }
 
+    /**
+     * Sends an error message to the client
+     * 
+     * @param  string    $message  the message to send in the response, must be JSON serialiable
+     * @param  string[]  $headers  the headers to send in in the response
+     */
     public function sendError($message, ...$headers) {
         $this -> send(json_encode([
             "error" => true,
