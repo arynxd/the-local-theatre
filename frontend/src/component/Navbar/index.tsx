@@ -1,12 +1,22 @@
 
 import React, {MouseEvent, useState} from "react";
 import {Link} from "react-router-dom";
+import logo from '../../assets/apple-touch-icon-76x76.png'
 
 const LinkStyle = `
-    
+    rounded-xl text-xl text-gray-800 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-500 
+    text-center p-2 m-4 shadow-md dark:hover:bg-blue-800 dark:shadow-lg
+ 
+    transition duration-150 ease-in-out
 `
 
-function Navbar() {
+function LogoOrMobileNav() {
+    return (
+        <Link to="/"><img src={logo} alt='The local theatre logo' className='justify-start'/></Link>
+    )
+}
+
+export default function Navbar() {
     const [isOpen, setOpen] = useState<boolean>(false)
 
     const sideBarToggle = (_: MouseEvent<HTMLButtonElement | HTMLDivElement>): void => {
@@ -15,25 +25,29 @@ function Navbar() {
 
     return (
         <>
-            <h1 className="lg:text-7xl md:text-5xl sm:text-3xl text-center dark:text-gray-300">The Local Theatre</h1>
-            <button className='lg:hidden md:hidden sm:visible' onClick={sideBarToggle}>☰</button>
+
             <div onClick={sideBarToggle}/>
 
-            <nav>
-                <ul className='grid grid-cols-5 gap-4 text-center lg:text-2xl md:text-xl sm:grid-cols-1 sm:grid-rows-5 sm:top-0 sm:fixed sm:pt-52 sm:gap-20'>
-                    <Link to="/">Home</Link>
+            <nav className='grid grid-cols-7 bg-blue-400 items-center justify-center
+                    dark:bg-blue-900
+                '>
+                {/*<h1 className="lg:text-6xl md:text-4xl sm:text-3xl text-center dark:text-gray-300 col-span-2">The Local Theatre</h1>*/}
 
-                    <Link to="/blog">Blog</Link>
+                <LogoOrMobileNav />
 
-                    <Link to="/contact">Contact Us</Link>
+                <div />
 
-                    <Link to="/login">Login</Link>
+                <Link className={LinkStyle} to="/">Home</Link>
 
-                    <Link to="/signup">Signup</Link>
-                </ul>
+                <Link className={LinkStyle} to="/blog">Blog</Link>
+
+                <Link className={LinkStyle} to="/contact">Contact Us</Link>
+
+                <Link className={LinkStyle} to="/login">Login</Link>
+
+                <Link className={LinkStyle} to="/signup">Signup</Link>
             </nav>
         </>
     )
 }
 
-export default Navbar;

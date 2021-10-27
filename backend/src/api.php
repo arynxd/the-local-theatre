@@ -1,7 +1,7 @@
 <?php
 
-require_once 'backend/util/ErrorHandler.php';
-ErrorHandler ::enableErrors();
+require_once 'backend/util/Logger.php';
+Logger ::enableErrors();
 
 require_once 'backend/util/constant/StatusCode.php';
 require_once 'backend/request/Connection.php';

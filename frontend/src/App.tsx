@@ -10,7 +10,7 @@ import {BackendController} from "./backend/BackendController";
 import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
 import {initThemes} from "./util/theme";
-import {ThemeContext} from "./component/ThemeContext";
+import ThemeContext from "./component/ThemeContext";
 
 
 
@@ -48,7 +48,6 @@ function App() {
                     <Route path="/signup">
                         <Signup/>
                     </Route>
-
                 </Switch>
             </ThemeContext>
         </BrowserRouter>

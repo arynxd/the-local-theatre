@@ -19,7 +19,7 @@ class Connection {
     public $router;
     public $route;
     public $method;
-    public $errorHandler;
+    public $logger;
 
     public function __construct() {
         $this -> res = $this -> generateResponse();
@@ -47,14 +47,13 @@ class Connection {
     }
 
     private function loadDatabase() {
-    
         $cfg = $this -> config;
 
         if (!isset($cfg)) {
             throw new UnexpectedValueException("Config was not initialised before loading database.");
         }
 
-        if (!config['db_enabled']) {
+        if (!$cfg['db_enabled']) {
             return null;
         }
 
@@ -64,7 +63,7 @@ class Connection {
     private function loadRouter() {
         $db = $this -> database;
 
-        if (!isset($db) && config['db_enabled']) {
+        if (!isset($db) && $this -> config['db_enabled']) {
             throw new UnexpectedValueException("Database was not initialised before loading router.");
         }
 
@@ -106,7 +105,7 @@ class Connection {
     }
 
     private function loadLogger() {
-        return new Logger($this -> res);
+        return new Logger($this);
     }
 
     public function jsonParams() {

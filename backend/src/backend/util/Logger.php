@@ -30,7 +30,7 @@ class Logger {
     }
 
     public function debug($msg) {
-        if ()
+
     }
     public function log($ex) {
         if ($this -> cfg['debug']) {
