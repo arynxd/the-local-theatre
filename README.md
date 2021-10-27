@@ -16,7 +16,7 @@
 - [ ] Implement tailwind css
 - [ ] Create custom, styled, components that follow the theme
 - [ ] Use a CSS framework for material design
-
+- [ ] Use useContext & AuthContext component for authentication state management
 ## Ideas
 - Use an incremental ID system for blog posts, for easier pagination.
 - Use GUID for keying and auto increment for ordering
