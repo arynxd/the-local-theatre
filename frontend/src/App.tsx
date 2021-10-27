@@ -11,6 +11,7 @@ import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
 import {initThemes} from "./util/theme";
 import ThemeContext from "./component/ThemeContext";
+import {NotFound} from "./page/NotFound";
 
 
 
@@ -47,6 +48,10 @@ function App() {
 
                     <Route path="/signup">
                         <Signup/>
+                    </Route>
+
+                    <Route>
+                        <NotFound />
                     </Route>
                 </Switch>
             </ThemeContext>
