@@ -16,7 +16,7 @@ class PostListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user = new UserModel(createIdentifier(), 'john doe', 0, 1, 1, 'jdoe');
+        $user = new UserModel(createIdentifier(), 'john doe', 0, 1, 1, 'jdoe', __DIR__ . '/../impl/avatar.png');
         $posts = [];
 
         for ($i = 0; $i < 10; $i++) {

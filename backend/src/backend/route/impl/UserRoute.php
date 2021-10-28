@@ -39,7 +39,8 @@ class UserRoute extends Route {
                 $data['permissions'],
                 $data['dob'],
                 $data['joinDate'],
-                $data['username']
+                $data['username'],
+                $data['avatar']
             );
         }
 

@@ -1,6 +1,5 @@
 import {JSONObject} from "../backend/JSONObject";
-import {Guid} from "guid-typescript";
-import {EntityIdentifier} from "./EntityIdentifier";
+import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
 
 export interface User {
     id: EntityIdentifier,
@@ -12,7 +11,7 @@ export interface User {
 }
 
 export function isUser(json: JSONObject | User): json is User {
-    return Guid.isGuid(json.id) &&
+    return isEntityIdentifier(json.id) &&
         typeof json.name === "string" &&
         typeof json.permissions === "number" &&
         typeof json.dob === "number" &&

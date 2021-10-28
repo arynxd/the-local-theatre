@@ -14,6 +14,17 @@ export class HttpManager extends Manager {
         return BackendAction(this.backend, route, res => this.backend.entity.createUser(res))
     }
 
+    /**
+     * Returns the blob of the image
+     * @param user
+     */
+    async loadAvatar(user: User): Promise<Blob> {
+        const route = Routes.User.AVATAR.compile()
+        route.withQueryParam('id', user.id)
+
+        return BackendAction(this.backend, route, undefined, res => res.blob())
+    }
+
     async listPosts(limit: number, start?: EntityIdentifier): Promise<Post[]> {
         const route = Routes.Post.LIST.compile()
 

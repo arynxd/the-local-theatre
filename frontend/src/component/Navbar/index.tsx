@@ -1,31 +1,24 @@
 import React, {MouseEvent, useState} from "react";
 import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
-import {Device, getDevice} from "../../util/css";
-
-const LinkStyle = `
-    z-rounded-xl text-xl text-gray-800 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-500 
-    text-center p-2 m-4 w-auto shadow-md dark:hover:bg-blue-800 dark:shadow-lg
- 
-    transition duration-150 ease-in-out z-20
-`
+import {ParentProps} from "../props/ParentProps";
+import dots from '../../assets/dots-menu.png'
 
 interface Props {
-    isOpen: boolean,
-    device: Device
+    isOpen: boolean
 }
 
 interface ClickableProps extends Props {
     onClick: (event: MouseEvent<HTMLElement>) => void
 }
 
-interface NavProps extends Props {
-    children: JSX.Element
-}
-
 function Logo(props: ClickableProps) {
+    const styles = `
+        ${props.isOpen ? 'hidden' : 'block'}
+        md:justify-start hidden md:block md:col-start-1
+    `
     return (
-        <Link className='md:justify-start hidden md:block md:col-start-1 z-10' to="/"><img onClick={props.onClick} src={logo} alt='The local theatre logo'/></Link>
+        <Link className={styles} to="/"><img onClick={props.onClick} src={logo} alt='The local theatre logo'/></Link>
     )
 }
 
@@ -36,62 +29,82 @@ function MobileNavButton(props: ClickableProps) {
         )
     }
     return (
-        <button onClick={props.onClick} className='justify-start z-10 block md:hidden'>NAV</button>
+        <button onClick={props.onClick} className='justify-start block md:hidden'>NAV</button>
     )
 }
 
 function LinkList(props: ClickableProps) {
+    const linkStyles= `
+        z-rounded-xl text-xl text-gray-900 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
+        text-center p-2 m-4 w-auto shadow-md dark:hover:bg-blue-900 dark:shadow-lg
+        bg-blue-500 dark:bg-blue-800 
+        transition duration-150 ease-in-out
+    `
+
+    const div = `${props.isOpen ? 'hidden' : 'block'}`
+
     const closeStyles = `
         ${props.isOpen ? 'block' : 'hidden'}
-    ` + LinkStyle
+    ` + linkStyles
+
     return (
         <>
-            <Logo device={props.device} isOpen={props.isOpen} onClick={props.onClick}/>
+            <Logo isOpen={props.isOpen} onClick={props.onClick}/>
 
-            <div/>
+            <div className={div}/>
 
             <button className={closeStyles} onClick={props.onClick}>Close</button>
 
-            <Link className={LinkStyle} to="/">Home</Link>
+            <Link className={linkStyles} to="/">Home</Link>
 
-            <Link className={LinkStyle} to="/blog">Blog</Link>
+            <Link className={linkStyles} to="/blog">Blog</Link>
 
-            <Link className={LinkStyle} to="/contact">Contact Us</Link>
+            <Link className={linkStyles} to="/contact">Contact Us</Link>
 
-            <Link className={LinkStyle} to="/login">Login</Link>
+            <Link className={linkStyles} to="/login">Login</Link>
 
-            <Link className={LinkStyle} to="/signup">Signup</Link>
+            <Link className={linkStyles} to="/signup">Signup</Link>
         </>
     )
 }
 
-function HidingNav(props: NavProps) {
+function MobileHeader(props: Props & ParentProps & ClickableProps) {
+     // old style ${props.isOpen ? 'translate-y-0' : '-translate-y-1vh'}
+     // old style transform transition duration-700 ease-in-out
+
     const styles = `
-        ${props.isOpen ? 'grid' : 'hidden'}
-        grid-cols-1 grid-rows-5 md:grid md:grid-cols-7 md:grid-rows-1
-        bg-blue-400 
-        items-center justify-center dark:bg-blue-900 z-20
+        w-10 h-10 p-2
     `
 
     return (
-        // apparently nav doesnt work with a z-index so we have this hack
-        <div className='grid z-20'>
-            <nav className={styles}>
-              {props.children}
-            </nav>
-       </div>
-
+        <div className='bg-blue-400 dark:bg-blue-900 w-full h-10 md:hidden'>
+            <button className={styles} onClick={props.onClick}><img src={dots} alt='Menu to show navigation bar'/></button>
+        </div>
     )
 }
 
-function MobileBackdrop(props: ClickableProps) {
-    const styles = `
-        z-0 bg-blue-100 w-full h-full fixed top-0
-        ${props.isOpen ? 'opacity-20 visible' : 'opacity-0 hidden'}
-        md:hidden
+function HidingNav(props: Props & ParentProps) {
+    //TODO get this to switch to the right nav for the device
+    //TODO get rid of the whitespace between nav and post on mobile
+
+    // old style ${props.isOpen ? 'translate-y-0' : '-translate-y-1vh'}
+    // old style transform transition duration-700 ease-in-out
+    const navStyles = `
+        ${props.isOpen ? 'block' : 'hidden'}
+        
+        grid grid-cols-1 grid-rows-5 
+        
+        bg-blue-400 dark:bg-blue-900
+        
+        items-center justify-center 
+        
+        md:grid md:grid-cols-7 md:grid-rows-1
     `
+
     return (
-        <div className={styles} onClick={props.onClick}/>
+        <nav className={navStyles}>
+          {props.children}
+        </nav>
     )
 }
 
@@ -102,18 +115,15 @@ export default function Navbar() {
         setOpen(!isOpen)
     }
 
-    const device = getDevice()
-
     return (
         <>
-            <MobileNavButton device={device} isOpen={isOpen} onClick={sideBarToggle} />
-            <MobileBackdrop onClick={sideBarToggle} isOpen={isOpen} device={device}/>
+            <MobileHeader isOpen={isOpen} onClick={sideBarToggle}>
+                <MobileNavButton isOpen={isOpen} onClick={sideBarToggle} />
+            </MobileHeader>
 
-            <HidingNav device={device} isOpen={isOpen}>
-                <LinkList device={device} onClick={sideBarToggle} isOpen={isOpen} />
+            <HidingNav isOpen={isOpen}>
+                <LinkList onClick={sideBarToggle} isOpen={isOpen} />
             </HidingNav>
-
-
         </>
     )
 }

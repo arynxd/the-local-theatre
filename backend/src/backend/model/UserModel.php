@@ -9,14 +9,16 @@ class UserModel extends Model {
     public $dob;
     public $joinDate;
     public $username;
+    public $avatar;
 
-    public function __construct($id, $name, $permissions, $dob, $joinDate, $username) {
+    public function __construct($id, $name, $permissions, $dob, $joinDate, $username, $avatar) {
         $this -> id = $id;
         $this -> name = $name;
         $this -> permissions = $permissions;
         $this -> dob = $dob;
         $this -> joinDate = $joinDate;
         $this -> username = $username;
+        $this -> avatar = $avatar;
     }
 
     public static function fromJSON($data) {
@@ -26,7 +28,8 @@ class UserModel extends Model {
             $data['permissions'],
             $data['dob'],
             $data['joinDate'],
-            $data['username']
+            $data['username'],
+            $data['avatar']
         );
     }
 
@@ -37,7 +40,8 @@ class UserModel extends Model {
             'permissions' => $this -> permissions,
             'dob' => $this -> dob,
             'joinDate' => $this -> joinDate,
-            'username' => $this -> username
+            'username' => $this -> username,
+            'avatar' => $this -> avatar
         ];
     }
 }

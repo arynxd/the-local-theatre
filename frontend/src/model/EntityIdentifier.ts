@@ -1,16 +1,22 @@
-import {Guid} from "guid-typescript";
+import {NIL, parse} from 'uuid'
 import {JSONValue} from "../backend/JSONObject";
 
-export type EntityIdentifier = Guid
+export type EntityIdentifier = string
 
 export function emptyIdentifier(): EntityIdentifier {
-    return Guid.createEmpty()
+    return NIL
 }
 
 export function isEntityIdentifier(id: JSONValue | EntityIdentifier): id is EntityIdentifier {
-    return Guid.isGuid(id)
-}
+    if (typeof id !== 'string') {
+        return false
+    }
 
-export function parseIdentifier(id: string): EntityIdentifier {
-    return Guid.parse(id)
+    try {
+        parse(id)
+        return true
+    }
+    catch (ex) {
+        return false
+    }
 }

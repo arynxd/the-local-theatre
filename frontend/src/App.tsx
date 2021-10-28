@@ -9,9 +9,9 @@ import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
 import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
-import {initThemes} from "./util/theme";
-import ThemeContext from "./component/ThemeContext";
+import {loadTheme} from "./util/theme";
 import {NotFound} from "./page/NotFound";
+import Footer from "./component/Footer";
 
 
 function App() {
@@ -19,11 +19,10 @@ function App() {
     logger.debug('Starting application')
     logger.debug('Base URL is ' + getPrefix())
 
-    initThemes()
+    loadTheme()
     return (
         <BrowserRouter>
-            <ThemeContext>
-                <Navbar/>
+            <Navbar/>
                 <Switch>
                     <Route exact path="/">
                         <Home backend={backend}/>
@@ -53,7 +52,7 @@ function App() {
                         <NotFound/>
                     </Route>
                 </Switch>
-            </ThemeContext>
+                <Footer />
         </BrowserRouter>
     )
 }

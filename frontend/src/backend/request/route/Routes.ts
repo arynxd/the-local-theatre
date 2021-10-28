@@ -5,6 +5,7 @@ export default class Routes {
         public static readonly FETCH = new Route('api/user', 'GET', ['id'], [], false)
         public static readonly FETCH_ALL = new Route('api/user/list', 'GET', ['limit'], [], false)
         public static readonly UPDATE = new Route('api/user', 'POST', [], [], true)
+        public static readonly AVATAR = new Route('api/avatar', 'GET', ['id'], [], false)
     }
 
     public static readonly Auth = class {
