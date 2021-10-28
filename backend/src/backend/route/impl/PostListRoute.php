@@ -19,8 +19,8 @@ class PostListRoute extends Route {
         $user = new UserModel(createIdentifier(), 'john doe', 0, 1, 1, 'jdoe', __DIR__ . '/../impl/avatar.png');
         $posts = [];
 
-        for ($i = 0; $i < 10; $i++) {
-            $model = new PostModel(createIdentifier(), $user, "Lorem ipsum sit amet", 1);
+        for ($i = 1; $i < 11; $i++) {
+            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet", $i), 1);
             array_push($posts, $model -> toJSON());
         }
 

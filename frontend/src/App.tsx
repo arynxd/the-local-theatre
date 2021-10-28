@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import Navbar from "./component/Navbar";
 import Blog from './page/Blog'
@@ -9,9 +9,10 @@ import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
 import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
-import {loadTheme} from "./util/theme";
+import {getTheme, loadTheme} from "./util/theme";
 import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
+import {ThemeContext} from "./component/ThemeToggle";
 
 
 function App() {
@@ -20,9 +21,14 @@ function App() {
     logger.debug('Base URL is ' + getPrefix())
 
     loadTheme()
+
+    // holds the global state for the theme
+    const [theme, setTheme] = useState(getTheme())
+
     return (
         <BrowserRouter>
-            <Navbar/>
+            <ThemeContext.Provider value={{theme, setTheme}}>
+                <Navbar/>
                 <Switch>
                     <Route exact path="/">
                         <Home backend={backend}/>
@@ -53,6 +59,7 @@ function App() {
                     </Route>
                 </Switch>
                 <Footer />
+            </ThemeContext.Provider>
         </BrowserRouter>
     )
 }

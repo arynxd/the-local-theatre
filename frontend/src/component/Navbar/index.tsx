@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
 import {ParentProps} from "../props/ParentProps";
 import dots from '../../assets/dots-menu.png'
+import ThemeToggle from "../ThemeToggle";
 
 interface Props {
     isOpen: boolean
@@ -12,24 +13,26 @@ interface ClickableProps extends Props {
     onClick: (event: MouseEvent<HTMLElement>) => void
 }
 
-function Logo(props: ClickableProps) {
+function Logo(props: Props) {
     const styles = `
         ${props.isOpen ? 'hidden' : 'block'}
-        md:justify-start hidden md:block md:col-start-1
+        
+        md:justify-start hidden md:block md:col-start-1 w-20 h-20
     `
     return (
-        <Link className={styles} to="/"><img onClick={props.onClick} src={logo} alt='The local theatre logo'/></Link>
+        <Link className={styles} to="/"><img src={logo} alt='The local theatre logo'/></Link>
     )
 }
 
 function MobileNavButton(props: ClickableProps) {
-    if (props.isOpen) {
-        return (
-             <button onClick={props.onClick} className='hidden'>NAV</button>
-        )
-    }
+    const mobileHeaderStyles = `
+        w-10 h-10 p-2
+        md:hidden
+        ${props.isOpen ? 'hidden' : 'block'}
+    `
+
     return (
-        <button onClick={props.onClick} className='justify-start block md:hidden'>NAV</button>
+        <button className={mobileHeaderStyles} onClick={props.onClick}><img src={dots} alt='Menu to show navigation bar'/></button>
     )
 }
 
@@ -41,19 +44,24 @@ function LinkList(props: ClickableProps) {
         transition duration-150 ease-in-out
     `
 
-    const div = `${props.isOpen ? 'hidden' : 'block'}`
-
     const closeStyles = `
         ${props.isOpen ? 'block' : 'hidden'}
+        md:hidden
     ` + linkStyles
+
+    const theme = `
+        ${props.isOpen ? 'hidden' : 'block'}
+        md:block
+        w-20 h-20
+    `
 
     return (
         <>
-            <Logo isOpen={props.isOpen} onClick={props.onClick}/>
-
-            <div className={div}/>
-
+            <Logo isOpen={props.isOpen}/>
             <button className={closeStyles} onClick={props.onClick}>Close</button>
+
+            <ThemeToggle className={theme}/>
+
 
             <Link className={linkStyles} to="/">Home</Link>
 
@@ -69,30 +77,22 @@ function LinkList(props: ClickableProps) {
 }
 
 function MobileHeader(props: Props & ParentProps & ClickableProps) {
-     // old style ${props.isOpen ? 'translate-y-0' : '-translate-y-1vh'}
-     // old style transform transition duration-700 ease-in-out
-
-    const styles = `
-        w-10 h-10 p-2
+    const div = `
+        bg-blue-400 dark:bg-blue-900 w-full h-10 md:hidden grid grid-rows-1 grid-cols-10 items-center justify-center
+        ${props.isOpen ? 'hidden' : 'block'}
     `
-
     return (
-        <div className='bg-blue-400 dark:bg-blue-900 w-full h-10 md:hidden'>
-            <button className={styles} onClick={props.onClick}><img src={dots} alt='Menu to show navigation bar'/></button>
+        <div className={div}>
+            {props.children}
         </div>
     )
 }
 
 function HidingNav(props: Props & ParentProps) {
-    //TODO get this to switch to the right nav for the device
-    //TODO get rid of the whitespace between nav and post on mobile
-
-    // old style ${props.isOpen ? 'translate-y-0' : '-translate-y-1vh'}
-    // old style transform transition duration-700 ease-in-out
     const navStyles = `
         ${props.isOpen ? 'block' : 'hidden'}
         
-        grid grid-cols-1 grid-rows-5 
+        grid grid-cols-1 grid-rows-6
         
         bg-blue-400 dark:bg-blue-900
         
@@ -108,6 +108,18 @@ function HidingNav(props: Props & ParentProps) {
     )
 }
 
+function MobileThemeToggle(props: Props) {
+    const mobileHeaderStyles = `
+        w-10 h-10 p-2
+        md:hidden
+        ${props.isOpen ? 'hidden' : 'block'}
+    `
+
+    return (
+        <ThemeToggle className={mobileHeaderStyles}/>
+    )
+}
+
 export default function Navbar() {
     const [isOpen, setOpen] = useState<boolean>(false)
 
@@ -119,6 +131,7 @@ export default function Navbar() {
         <>
             <MobileHeader isOpen={isOpen} onClick={sideBarToggle}>
                 <MobileNavButton isOpen={isOpen} onClick={sideBarToggle} />
+                <MobileThemeToggle isOpen={isOpen} />
             </MobileHeader>
 
             <HidingNav isOpen={isOpen}>

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../route/impl/UserRoute.php';
 require_once __DIR__ . '/../route/impl/UserListRoute.php';
 require_once __DIR__ . '/../route/impl/PostListRoute.php';
 require_once __DIR__ . '/../route/impl/AvatarRoute.php';
+require_once __DIR__ . '/../route/impl/CommentListRoute.php';
 
 /**
  * A router for all of the API Routes
@@ -19,7 +20,8 @@ class Router {
             new UserRoute(),
             new UserListRoute(),
             new PostListRoute(),
-            new AvatarRoute()
+            new AvatarRoute(),
+            new CommentListRoute()
         ];
     }
 

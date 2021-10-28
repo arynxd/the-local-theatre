@@ -3,6 +3,7 @@ import {JSONObject} from "../JSONObject";
 import {isUser, User} from "../../model/User";
 import BackendError from "../error/BackendError";
 import {isPost, Post} from "../../model/Post";
+import {Comment, isComment} from "../../model/Comment";
 
 export class EntityManager extends Manager {
     public createUser(json: JSONObject): User {
@@ -23,5 +24,12 @@ export class EntityManager extends Manager {
 
     private err(type: string, json: JSONObject): never {
         throw new BackendError("JSON was not a valid " + type + " object. Got " + JSON.stringify(json) + " instead")
+    }
+
+    public createComment(json: JSONObject): Comment {
+        if (!isComment(json)) {
+            this.err('Comment', json)
+        }
+        return json
     }
 }

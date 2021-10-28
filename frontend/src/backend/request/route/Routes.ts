@@ -16,4 +16,8 @@ export default class Routes {
         public static readonly FETCH = new Route('api/post', 'GET', ['id'], [], false)
         public static readonly LIST = new Route('api/post/list', 'GET', [], [], false)
     }
+
+    public static readonly Comment = class {
+        public static readonly LIST = new Route('api/comment/list', 'GET', [], [], false)
+    }
 }
