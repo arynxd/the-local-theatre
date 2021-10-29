@@ -24,6 +24,7 @@
 ## Ideas
 - CAPTCHA integration
 - Ratelimiting
+- 2FA
 
 ## Useful Resources
 -  php -S localhost:8000 api.php (local php server with hot reload)
