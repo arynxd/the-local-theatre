@@ -19,6 +19,7 @@
 - [ ] Change CORS policy in backend
 - [ ] Make comments a separate page (so that users can click back to go back to the post)
 - [ ] Make posts a separate page
+- [ ] Unify codebase (default export, naming)
 
 ## Ideas
 - CAPTCHA integration
