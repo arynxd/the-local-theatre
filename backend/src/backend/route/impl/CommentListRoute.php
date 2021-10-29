@@ -15,7 +15,7 @@ class CommentListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user =  new UserModel(createIdentifier(), 'john doe', 1, 1, 1, 'jdoe', __DIR__ . '/../impl/avatar.png');
+        $user =  new UserModel(createIdentifier(), 'john doe', 1, 1, 1, 'jdoe', "http://$_SERVER[HTTP_HOST]/avatar");
 
         $result = [];
 

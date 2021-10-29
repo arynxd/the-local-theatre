@@ -42,7 +42,7 @@ export default function Home(props: BackendProps) {
     `
     return (
         <>
-            <p className='bg-clip-padding font-bold text-center p-2 m-4 text-4xl bg-gray-100 shadow-xl rounded'>Latest Announcements</p>
+            <p className='bg-clip-padding font-bold text-center p-2 m-4 text-4xl bg-gray-100 dark:bg-gray-500 dark:text-gray-100 shadow-xl rounded'>Latest Announcements</p>
             <div className='grid grid-cols-1 grid-flow-row gap-2'>
                 {
                     posts.map(post =>

@@ -1,10 +1,11 @@
 import {JSONObject} from "../backend/JSONObject";
 import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
+import {PermissionValue} from "./Permission";
 
 export interface User {
     id: EntityIdentifier,
     name: string,
-    permissions: number,
+    permissions: PermissionValue,
     dob: number,
     joinDate: number,
     username: string

@@ -1,10 +1,10 @@
 import {logger} from "./log";
 
-export function getPrefix() {
+export function getPrefix(): string {
     if (process.env.NODE_ENV === 'development') {
-        return 'http://localhost:8000/'
+        return 'localhost:8000'
     } else if (process.env.NODE_ENV === 'production') {
-        return 'https://comp-server.uhi.ac.uk/~20006203/'
+        return window.location.toString()
     }
 
     throw new TypeError('Could not locate prefix.')

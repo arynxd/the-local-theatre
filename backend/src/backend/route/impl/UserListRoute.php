@@ -23,7 +23,8 @@ class UserListRoute extends Route {
                 0,
                 0,
                 0,
-                'jdoe'
+                'jdoe',
+                "http://$_SERVER[HTTP_HOST]/avatar"
             );
             array_push($out, $model -> toJSON());
         }
