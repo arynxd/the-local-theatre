@@ -15,8 +15,15 @@ export function BackendAction<T>(
     logger.debug('Starting backend action for URL ' + route.url)
     return new Promise<T>(async (resolve, reject) => {
         if (route.routeData.requiresAuth) {
+            if (!backend.auth.token) {
+                 let msg = 'Route ' + route + ' requires auth but the AuthManager has no token set.'
+
+                logger.error(new BackendError(msg))
+                reject(new BackendError(msg))
+                throw new BackendError(msg)
+            }
             route.withHeader('Authorisation', backend.auth.token)
-            logger.debug('Authorisation required, adding the header')
+            logger.debug('Authorisation required, added the header')
         }
         let result: Response
 
@@ -38,13 +45,15 @@ export function BackendAction<T>(
             msg += ex
 
             logger.error(new BackendError(msg))
+            reject(new BackendError(msg))
             throw new BackendError(msg)
         }
 
         if (result.ok) {
             if (requestTransformer) {
                 resolve(requestTransformer(result))
-            } else if (JSONTransformer) {
+            }
+            else if (JSONTransformer) {
                 const json = await result.text()
 
                 let jsonObj: JSONObject
@@ -70,6 +79,7 @@ export function BackendAction<T>(
                 // throwing is ok because this is an assertion and ideally should never happen
                 const ex = new BackendError('JSON response was malformed. Expected object, got ' + json)
                 logger.error(ex)
+                reject(ex)
                 throw ex
             }
 

@@ -10,6 +10,7 @@ export default class Routes {
 
     public static readonly Auth = class {
         public static readonly SIGNUP = new Route('api/signup', 'POST', [], ['name', 'username', 'email', 'password'], false)
+        public static readonly LOGIN = new Route('api/login', 'POST', [], ['email', 'password'], false)
     }
 
     public static readonly Post = class {

@@ -6,6 +6,7 @@ import {isJSONArray, isJSONObject, JSONObject} from "../JSONObject";
 import {BackendAction} from "../request/BackendAction";
 import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
+import BackendError from "../error/BackendError";
 
 export class HttpManager extends Manager {
     async loadUser(id: EntityIdentifier): Promise<User> {
@@ -42,18 +43,18 @@ export class HttpManager extends Manager {
                 return arr.filter(isJSONObject)
                     .map(val => this.backend.entity.createPost(val as JSONObject)) // we just filtered for this, TS just cant infer it
             }
-            return []
+            throw new BackendError('Data was invalid, expected array got ' + arr)
         })
     }
 
-    async fetchComments(number: number, latest?: EntityIdentifier): Promise<Comment[]> {
+    async fetchComments(limit: number, latest?: EntityIdentifier): Promise<Comment[]> {
         const route = Routes.Comment.LIST.compile()
 
         if (latest) {
             route.withQueryParam('last', latest.toString())
         }
 
-        //route.withQueryParam('limit', limit.toString(10))
+        route.withQueryParam('limit', limit.toString(10))
 
         return BackendAction(this.backend, route, res => {
             const arr = res['comments']
@@ -62,7 +63,7 @@ export class HttpManager extends Manager {
                 return arr.filter(isJSONObject)
                     .map(val => this.backend.entity.createComment(val as JSONObject)) // we just filtered for this, TS just cant infer it
             }
-            return []
+            throw new BackendError('Data was invalid, expected array got ' + arr)
         })
     }
 }
