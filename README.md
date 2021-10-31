@@ -30,4 +30,5 @@
 -  php -S localhost:8000 api.php (local php server with hot reload)
 -  https://www.php.net/manual/en/function.com-create-guid.php
 -  https://dbdiagram.io/d/617c73c7fa17df5ea6759df1
+-  https://ui.dev/react-router-url-parameters/ (for post rendering)
 
