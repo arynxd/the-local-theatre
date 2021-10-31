@@ -20,6 +20,7 @@
 - [ ] Make comments a separate page (so that users can click back to go back to the post)
 - [ ] Make posts a separate page
 - [ ] Unify codebase (default export, naming)
+- [ ] add 20006203 prefix to all parts of the site
 
 ## Ideas
 - CAPTCHA integration
