@@ -22,14 +22,14 @@ export class EntityManager extends Manager {
         return json
     }
 
-    private err(type: string, json: JSONObject): never {
-        throw new BackendError("JSON was not a valid " + type + " object. Got " + JSON.stringify(json) + " instead")
-    }
-
     public createComment(json: JSONObject): Comment {
         if (!isComment(json)) {
             this.err('Comment', json)
         }
         return json
+    }
+
+    private err(type: string, json: JSONObject): never {
+        throw new BackendError("JSON was not a valid " + type + " object. Got " + JSON.stringify(json) + " instead")
     }
 }

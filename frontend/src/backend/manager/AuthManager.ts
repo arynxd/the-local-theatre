@@ -7,21 +7,22 @@ import {BackendController} from "../BackendController";
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 
 export class AuthManager extends Manager {
+    constructor(backend: BackendController) {
+        super(backend);
+        this._state = 'none'
+        this._token = undefined
+    }
+
     private _state: AuthState
-    private _token?: string
 
     get state() {
         return this._state
     }
 
+    private _token?: string
+
     get token() {
         return this._token
-    }
-
-    constructor(backend: BackendController) {
-        super(backend);
-        this._state = 'none'
-        this._token = undefined
     }
 
     async login(email: string, password: string): Promise<void> {

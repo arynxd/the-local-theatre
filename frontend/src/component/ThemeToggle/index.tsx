@@ -8,12 +8,16 @@ interface ThemeContextProps {
     theme: Theme
     setTheme: (theme: Theme) => void
 }
-export const ThemeContext = createContext<ThemeContextProps>({theme: 'dark', setTheme: (_) => {}})
+
+export const ThemeContext = createContext<ThemeContextProps>({
+    theme: 'dark', setTheme: (_) => {
+    }
+})
 
 export default function ThemeToggle(props: StylableProps) {
     const {theme: th, setTheme: setTh} = useContext(ThemeContext)
 
-    const handler = (ev: MouseEvent<HTMLImageElement>): void => {
+    const handler = (_: MouseEvent<HTMLImageElement>): void => {
         if (th === 'light') {
             setTheme('dark')
             setTh('dark')

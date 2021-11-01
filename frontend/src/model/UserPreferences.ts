@@ -8,6 +8,6 @@ export interface UserPreferences {
 
 export function isUserPreferences(obj: any | UserPreferences) {
     return typeof obj === 'object' &&
-           (obj.theme === 'dark' || obj.theme === 'light') &&
-            isEntityIdentifier(obj.id)
+        (obj.theme === 'dark' || obj.theme === 'light') &&
+        isEntityIdentifier(obj.id)
 }

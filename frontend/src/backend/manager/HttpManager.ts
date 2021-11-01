@@ -34,7 +34,7 @@ export class HttpManager extends Manager {
             route.withQueryParam('start', last.toString())
         }
 
-        //route.withQueryParam('limit', limit.toString(10))
+        route.withQueryParam('limit', limit.toString(10))
 
         return BackendAction(this.backend, route, res => {
             const arr = res['posts']

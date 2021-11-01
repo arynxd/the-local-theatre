@@ -1,6 +1,6 @@
 # API Docs
 
-This directory contains the documentation used in the API. 
+This directory contains the documentation used in the API.
 
 Documents will follow this structure;
 
@@ -37,7 +37,8 @@ Footnotes:
 Any footnotes about the object / its routes
 ```
 
-All errors returned by this API have the boolean `error` set to `true` and an associated `message` string, an example error response is:
+All errors returned by this API have the boolean `error` set to `true` and an associated `message` string, an example
+error response is:
 
 ```json
 {
@@ -46,5 +47,5 @@ All errors returned by this API have the boolean `error` set to `true` and an as
 }
 ```
 
-In cases of internal errors, the returned data is undefined, but the status code will always be 500+. 
-When such status codes are recieved, all returned data should be treated as garbage.
+In cases of internal errors, the returned data is undefined, but the status code will always be 500+. When such status
+codes are recieved, all returned data should be treated as garbage.

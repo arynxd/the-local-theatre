@@ -1,6 +1,7 @@
 # User
 
 ## Object Model:
+
     - id       (number)
     - name     (string)
 
@@ -9,11 +10,13 @@
 PUT /api/user/ - PUT a new object
 
 Returns
+
 - the updated user object on success,
 - 404 if the user is not found, with a JSON message
 - 400 if the request is invalid, with a JSON message
 
 GET /api/parent/child - GET an object by its key
+
 - the requested user object on success,
 - 404 if the user is not found, with a JSON message
 - 400 if the request is invalid, with a JSON message
@@ -21,10 +24,10 @@ GET /api/parent/child - GET an object by its key
 Example Requests:
 PUT /api/parent/child:
 
-
 ### Example 1
 
-JSON Body: 
+JSON Body:
+
 ```json
 {
     "id": 1,
@@ -37,7 +40,8 @@ JSON Body:
 
 Query Params: None
 
-Response: JSON 
+Response: JSON
+
 ```json
 {
     "id": 1,
@@ -47,7 +51,7 @@ Response: JSON
 
 ### Example 2
 
-JSON Body: 
+JSON Body:
 
 ```json
 {
@@ -57,7 +61,8 @@ JSON Body:
 
 Query Params: None
 
-Response: JSON 
+Response: JSON
+
 ```json
 {
     "error": true,
@@ -67,4 +72,5 @@ Response: JSON
 
 Footnotes:
 
-When updating a user, the ID must be passed at the root of the JSON body, and in the data. If these do not match, the API will return an error.
+When updating a user, the ID must be passed at the root of the JSON body, and in the data. If these do not match, the
+API will return an error.

@@ -15,6 +15,9 @@ interface PostProps {
 
 function CommentWrapper(props: BackendProps & { open: boolean }) {
     const [comments, setComments] = useState<CommentModel[]>([])
+    //TODO: Add infinite comment scrolling
+    //TODO: Add comment count to title
+    //TODO: Make this use the useAPI hook
     const [latest, setLatest] = useState<EntityIdentifier | undefined>(undefined)
 
     useEffect(() => {
@@ -40,7 +43,7 @@ function CommentWrapper(props: BackendProps & { open: boolean }) {
             </div>
         )
     }
-    return ( <> </> )
+    return (<> </>)
 }
 
 export default function Post(props: PostProps & BackendProps & StylableProps) {
@@ -70,22 +73,34 @@ export default function Post(props: PostProps & BackendProps & StylableProps) {
         <>
             <div className={props.className}>
                 <div className={postStyles}>
-                    <div className='items-center justify-start flex'>
-                        <img className='w-12 h-12 static inline-block' src={img} alt='User avatar'/>
-                        <h2 className='inline-block ml-4 text-2xl font-semibold'>{model.author.name}</h2>
+                    <h1 className='text-3xl bg-gray-200 shadow-lg rounded p-2 text-center'>{model.title}</h1>
+                    <div className='items-center justify-start flex mt-2'>
+                        <img className='w-6 h-6 static inline-block' src={img} alt='User avatar'/>
+                        <h2 className='inline-block ml-2 text-sm font-semibold'>{model.author.name}</h2>
                     </div>
 
-                    <div className='p-3'>
-                        <p className='font-mono text-justify relative'>{model.content}</p>
-                        <div className='bg-gray-200 dark:bg-gray-500 rounded p-1 mt-5 w-60 shadow-md grid grid-cols-3 grid-rows-1'>
-                            <button onClick={(_) => setS1(s1 + 1)} className={center}><img className={imgStyles} src={like} alt={'Like count'}/><p className={smallTextStyles}>{s1}</p></button>
-                            <button onClick={(_) => {setS2(s2 + 1); setShowComments(!showComments)}} className={center}><img className={imgStyles} src={comment} alt={'Comment count'}/><p className={smallTextStyles}>{s2}</p></button>
-                            <button onClick={(_) => setS3(s3 + 1)} className={center}><img className={imgStyles} src={share} alt={'Share count'}/><p className={smallTextStyles}>{s3}</p></button>
+                    <div className=''>
+                        <p className='font-mono relative pt-2'>{model.content}</p>
+                        <div
+                            className='bg-gray-200 dark:bg-gray-500 rounded mt-5 w-60 shadow-md grid grid-cols-3 grid-rows-1'>
+                            <button onClick={(_) => setS1(s1 + 1)} className={center}><img className={imgStyles}
+                                                                                           src={like}
+                                                                                           alt={'Like count'}/><p
+                                className={smallTextStyles}>{s1}</p></button>
+                            <button onClick={(_) => {
+                                setS2(s2 + 1);
+                                setShowComments(!showComments)
+                            }} className={center}><img className={imgStyles} src={comment} alt={'Comment count'}/><p
+                                className={smallTextStyles}>{s2}</p></button>
+                            <button onClick={(_) => setS3(s3 + 1)} className={center}><img className={imgStyles}
+                                                                                           src={share}
+                                                                                           alt={'Share count'}/><p
+                                className={smallTextStyles}>{s3}</p></button>
                         </div>
                     </div>
                 </div>
 
-                <CommentWrapper open={showComments}  backend={props.backend}/>
+                <CommentWrapper open={showComments} backend={props.backend}/>
             </div>
         </>
     )

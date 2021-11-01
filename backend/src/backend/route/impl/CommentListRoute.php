@@ -20,7 +20,7 @@ class CommentListRoute extends Route {
         $result = [];
 
         for ($_ = 0; $_ < 10; $_++) {
-            $post = new PostModel(createIdentifier(), $user, 'Lorem ipsum sit damet', 1);
+            $post = new PostModel(createIdentifier(), $user, 'Lorem ipsum sit damet', 'Latest Latest Latest', 1);
             array_push($result, $post -> toJSON());
         }
 

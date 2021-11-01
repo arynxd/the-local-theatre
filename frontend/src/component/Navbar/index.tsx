@@ -32,12 +32,13 @@ function MobileNavButton(props: ClickableProps) {
     `
 
     return (
-        <button className={mobileHeaderStyles} onClick={props.onClick}><img src={dots} alt='Menu to show navigation bar'/></button>
+        <button className={mobileHeaderStyles} onClick={props.onClick}><img src={dots}
+                                                                            alt='Menu to show navigation bar'/></button>
     )
 }
 
 function LinkList(props: ClickableProps) {
-    const linkStyles= `
+    const linkStyles = `
         z-rounded-xl text-xl text-gray-900 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
         text-center p-2 m-4 w-auto shadow-md dark:hover:bg-blue-900 dark:shadow-lg
         bg-blue-500 dark:bg-blue-800 
@@ -63,15 +64,15 @@ function LinkList(props: ClickableProps) {
             <ThemeToggle className={theme}/>
 
 
-            <Link className={linkStyles} to="/">Home</Link>
+            <Link className={linkStyles} to="/~20006203/">Home</Link>
 
-            <Link className={linkStyles} to="/blog">Blog</Link>
+            <Link className={linkStyles} to="/~20006203/blog">Blog</Link>
 
-            <Link className={linkStyles} to="/contact">Contact Us</Link>
+            <Link className={linkStyles} to="/~20006203/contact">Contact Us</Link>
 
-            <Link className={linkStyles} to="/login">Login</Link>
+            <Link className={linkStyles} to="/~20006203/login">Login</Link>
 
-            <Link className={linkStyles} to="/signup">Signup</Link>
+            <Link className={linkStyles} to="/~20006203/signup">Signup</Link>
         </>
     )
 }
@@ -103,7 +104,7 @@ function HidingNav(props: Props & ParentProps) {
 
     return (
         <nav className={navStyles}>
-          {props.children}
+            {props.children}
         </nav>
     )
 }
@@ -130,12 +131,12 @@ export default function Navbar() {
     return (
         <>
             <MobileHeader isOpen={isOpen} onClick={sideBarToggle}>
-                <MobileNavButton isOpen={isOpen} onClick={sideBarToggle} />
-                <MobileThemeToggle isOpen={isOpen} />
+                <MobileNavButton isOpen={isOpen} onClick={sideBarToggle}/>
+                <MobileThemeToggle isOpen={isOpen}/>
             </MobileHeader>
 
             <HidingNav isOpen={isOpen}>
-                <LinkList onClick={sideBarToggle} isOpen={isOpen} />
+                <LinkList onClick={sideBarToggle} isOpen={isOpen}/>
             </HidingNav>
         </>
     )

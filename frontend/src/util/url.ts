@@ -2,8 +2,9 @@ import {logger} from "./log";
 
 export function getPrefix(): string {
     if (process.env.NODE_ENV === 'development') {
-        return 'localhost:8000'
-    } else if (process.env.NODE_ENV === 'production') {
+        return 'http://localhost:8000/'
+    }
+    else if (process.env.NODE_ENV === 'production') {
         return window.location.toString()
     }
 

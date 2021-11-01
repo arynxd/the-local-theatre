@@ -1,16 +1,17 @@
-# Multi Platform Website 
+# Multi Platform Website
 
 ## TODO
+
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
-- [x] Implement all backend routes 
+- [x] Implement all backend routes
 - [ ] Implement database integration in backend
 - [x] Finalise frontend theme
 - [ ] Create frontend database abstractions
-- [x] Implement website assets from zip 
+- [x] Implement website assets from zip
 - [ ] Abstract backend IO operations (reading files, json decoding / encoding)
-- [x] Add objects for API return values, use functions in a factory pattern.
-      - Have a function for common codes, with a generic one which accepts a number
+- [x] Add objects for API return values, use functions in a factory pattern. - Have a function for common codes, with a
+  generic one which accepts a number
 - [x] Implement objects for query/JSON params, allow for defaults / optionals
 - [x] Change to UUID for keying
 - [x] Implement tailwind css
@@ -22,12 +23,14 @@
 - [ ] Unify codebase (default export, naming)
 
 ## Ideas
+
 - CAPTCHA integration
 - Ratelimiting
 - 2FA
 
 ## Useful Resources
--  php -S localhost:8000 api.php (local php server with hot reload)
--  https://www.php.net/manual/en/function.com-create-guid.php
--  https://dbdiagram.io/d/617c73c7fa17df5ea6759df1
+
+- php -S localhost:8000 api.php (local php server with hot reload)
+- https://www.php.net/manual/en/function.com-create-guid.php
+- https://dbdiagram.io/d/617c73c7fa17df5ea6759df1
 

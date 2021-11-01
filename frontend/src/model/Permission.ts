@@ -24,8 +24,9 @@ function throwNotExistsLevel(level: PermissionLevel): never {
 function throwNotExistsValue(value: PermissionValue): never {
     throw new TypeError('Permission value ' + value + ' did not exist in the map.')
 }
+
 export function hasPermission(perms: PermissionValue, level: PermissionLevel): boolean {
-    return LEVEL_TO_VALUE.get(level) ===  perms
+    return LEVEL_TO_VALUE.get(level) === perms
 }
 
 export function toValue(level: PermissionLevel): PermissionValue {

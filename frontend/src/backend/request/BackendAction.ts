@@ -16,7 +16,7 @@ export function BackendAction<T>(
     return new Promise<T>(async (resolve, reject) => {
         if (route.routeData.requiresAuth) {
             if (!backend.auth.token) {
-                 let msg = 'Route ' + route + ' requires auth but the AuthManager has no token set.'
+                let msg = 'Route ' + route + ' requires auth but the AuthManager has no token set.'
 
                 logger.error(new BackendError(msg))
                 reject(new BackendError(msg))
@@ -37,9 +37,10 @@ export function BackendAction<T>(
             if (route.routeData.method !== 'GET') {
                 opts.body = route.stringifyBody()
             }
-
+            logger.debug("Route & Opts ", route, opts)
             result = await fetch(route.url, opts)
-        } catch (ex) {
+        }
+        catch (ex) {
             let msg = ""
             msg += "Backend request to URL " + route.url + " failed\n\n"
             msg += ex
@@ -60,7 +61,8 @@ export function BackendAction<T>(
 
                 try {
                     jsonObj = JSON.parse(json) as JSONObject
-                } catch (ex) {
+                }
+                catch (ex) {
                     let msg = ""
 
                     msg += "Failed to parse JSON for backend response. Expected valid JSON got: \n"
@@ -72,7 +74,8 @@ export function BackendAction<T>(
                 logger.debug('Got a valid JSON response: \n ' + JSON.stringify(jsonObj))
                 resolve(JSONTransformer(jsonObj))
             }
-        } else {
+        }
+        else {
             const json = await result.json()
 
             if (typeof json !== 'object' || !json) { // assert that its some type of json object

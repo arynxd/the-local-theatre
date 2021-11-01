@@ -13,6 +13,7 @@ import {getTheme, loadTheme} from "./util/theme";
 import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
 import {ThemeContext} from "./component/ThemeToggle";
+import {Post} from './page/Post'
 
 
 function App() {
@@ -38,27 +39,31 @@ function App() {
                         <Home backend={backend}/>
                     </Route>
 
-                    <Route path="/blog">
+                    <Route path="/~20006203/blog">
                         <Blog/>
                     </Route>
 
-                    <Route path="/contact">
+                    <Route path="/~20006203/contact">
                         <Contact/>
                     </Route>
 
-                    <Route path="/login">
+                    <Route path="/~20006203/login">
                         <Login/>
                     </Route>
 
-                    <Route path="/signup">
+                    <Route path="/~20006203/signup">
                         <Signup/>
+                    </Route>
+
+                    <Route path="/~20006203/post/:id">
+                        <Post/>
                     </Route>
 
                     <Route>
                         <NotFound/>
                     </Route>
                 </Switch>
-                <Footer />
+                <Footer/>
             </ThemeContext.Provider>
         </BrowserRouter>
     )
