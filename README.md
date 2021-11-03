@@ -22,6 +22,7 @@
 - [ ] Make posts a separate page
 - [ ] Unify codebase (default export, naming)
 - [ ] add 20006203 prefix to all parts of the site
+- [ ] Order entities by creation date
 
 ## Ideas
 
