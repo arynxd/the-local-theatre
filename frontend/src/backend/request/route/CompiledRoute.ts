@@ -2,6 +2,14 @@ import {JSONObject} from "../../JSONObject";
 import BackendError from "../../error/BackendError";
 import {Route} from "./Route";
 
+/**
+ * A stateful class used per-request to hold metadata about the request
+ * 
+ * Holds information about:
+ *  - URL params
+ *  - Headers
+ *  - Request body
+ */
 export class CompiledRoute {
     private readonly queryParams = new Map<string, string>()
     private readonly headers = new Map<string, string>()
@@ -15,7 +23,7 @@ export class CompiledRoute {
         // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
         let res = this.routeData.path
 
-        if (this.queryParams.size) {
+        if (this.queryParams.size) { // append '?' if there are args present
             res += "?"
         }
 

@@ -1,6 +1,10 @@
 import {CompiledRoute} from "./CompiledRoute";
 import {logger} from "../../../util/log";
 
+/**
+ * A stateless class representing a Route on the backend API
+ * Compiled with the compile() function before use in a BackendAction
+ */
 export class Route {
     public constructor(
         public readonly path: Path,

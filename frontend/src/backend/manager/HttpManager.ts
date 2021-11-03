@@ -8,6 +8,10 @@ import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
 import BackendError from "../error/BackendError";
 
+/**
+ * Manages all HTTP duties for the backend
+ * **ALL** requests should go through this manager
+ */
 export class HttpManager extends Manager {
     async loadUser(id: EntityIdentifier): Promise<User> {
         const route = Routes.User.FETCH.compile()

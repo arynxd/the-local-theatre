@@ -15,7 +15,11 @@ import Footer from "./component/Footer";
 import {ThemeContext} from "./component/ThemeToggle";
 import {Post} from './page/Post'
 
-
+/**
+ * This is the main app function, it will spawn all the components required for the app to function
+ * 
+ * @returns The app
+ */
 function App() {
     const backend = new BackendController()
     logger.debug('Starting application')

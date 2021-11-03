@@ -7,5 +7,8 @@ function getConfig(): winston.LoggerOptions {
     }
 }
 
+/**
+ * The primary logger object. **ALL** logs should be put through this object.
+ */
 export const logger = winston.createLogger(getConfig())
     .add(new winston.transports.Console())
