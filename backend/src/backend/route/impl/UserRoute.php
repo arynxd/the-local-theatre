@@ -44,7 +44,7 @@ class UserRoute extends Route {
             );
         }
 
-        $res -> sendJSON($model -> toJSON(), StatusCode::OK);
+        $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

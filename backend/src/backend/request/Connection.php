@@ -57,7 +57,7 @@ class Connection {
             return null;
         }
 
-        return new Database($cfg['db_url'], $cfg['db_username'], $cfg['db_password']);
+        return new Database($cfg['db_url'], $cfg['db_username'], $cfg['db_password'], $this);
     }
 
     private function loadRouter() {

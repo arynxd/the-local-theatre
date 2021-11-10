@@ -22,12 +22,14 @@ class SignupUser extends Model {
         );
     }
 
-    public function toJSON() {
-        return [
-            'name' => $this -> name,
-            'password' => $this -> password,
-            'email' => $this -> email,
-            'username' => $this -> username
-        ];
+    public function toMap() {
+        return new Map(
+            [
+                'name' => $this -> name,
+                'password' => $this -> password,
+                'email' => $this -> email,
+                'username' => $this -> username
+            ]
+        );
     }
 }

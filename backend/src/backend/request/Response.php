@@ -5,7 +5,7 @@ require_once __DIR__ . '/../util/constant/StatusCode.php';
 require_once __DIR__ . '/../util/constant/CORS.php';
 
 /**
- * Utility object for sending reponses to the client
+ * Utility object for sending responses to the client
  * This can be freely constructed wherever needed however the Connection
  * always holds an instance (Connection::$res)
  * 
@@ -15,11 +15,11 @@ class Response {
     /**
      * Sends JSON to the client
      * 
-     * @param Array|string  $data     an associative array, or string, representing the JSON to send in the response
+     * @param Map|string    $data     a Map, or string, representing the JSON to send in the response
      * @param string[]      $headers  the headers to include in the response
      */
     public function sendJSON($data, ...$headers) {
-        if (is_array($data)) {
+        if (is_a($data, 'Map')) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
         else if (is_string($data)) {

@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . '/../../model/PostModel.php';
 require_once __DIR__ . '/../../util/identifier.php';
+require_once __DIR__ . '/../../util/Map.php';
 
 class PostListRoute extends Route {
     public function __construct() {
@@ -20,13 +21,13 @@ class PostListRoute extends Route {
         $posts = [];
 
         for ($i = 1; $i < 11; $i++) {
-            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet", $i), 'Latest Latest Latest', 1635762292);
-            array_push($posts, $model -> toJSON());
+            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", $i), 'Latest Latest Latest', 1635762292);
+            array_push($posts, $model -> toMap());
         }
 
-        $res -> sendJSON([
+        $res -> sendJSON(map([
             'posts' => $posts
-        ], StatusCode::OK);
+        ]), StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

@@ -8,16 +8,22 @@ require_once 'array.php';
  */
 class Map implements ArrayAccess {
     private $arr;
+    private $frozen;
 
     public function __construct($arr = []) {
         $this -> arr = $arr;
+        $this -> frozen = false;
     }
 
-    function values() {
+    public function values() {
         return array_values($this -> raw());
     }
 
     public function raw() {
+        return array_copy($this -> arr);
+    }
+
+    private function rawInternal() {
         return $this -> arr;
     }
 
@@ -52,7 +58,7 @@ class Map implements ArrayAccess {
             return $r;
         };
 
-        return new Map(array_map_assoc($func, $this -> raw()));
+        return new Map(array_map_assoc($func, $this -> rawInternal()));
     }
 
     function mapValues($mapper) {
@@ -65,7 +71,7 @@ class Map implements ArrayAccess {
 
     function map($mapper) {
         $res = new Map();
-        foreach ($this -> raw() as $key => $value) {
+        foreach ($this -> rawInternal() as $key => $value) {
             $res[$key] = call_user_func($mapper, $key, $value);
         }
         return $res;
@@ -73,7 +79,7 @@ class Map implements ArrayAccess {
 
     function filter($filter) {
         $res = new Map();
-        foreach ($this -> raw() as $key => $value) {
+        foreach ($this -> rawInternal() as $key => $value) {
             if (call_user_func($filter, $key, $value)) {
                 $res[$key] = $value;
             }
@@ -89,7 +95,7 @@ class Map implements ArrayAccess {
     }
 
     function length() {
-        return count($this -> raw());
+        return count($this -> rawInternal());
     }
 
     public function orFalse($key) {
@@ -100,40 +106,77 @@ class Map implements ArrayAccess {
         if (!$this -> exists($key)) {
             return $default;
         }
-        return $this -> raw()[$key];
+        return $this -> rawInternal()[$key];
     }
 
     public function exists($key) {
-        return array_key_exists($key, $this -> raw());
+        return array_key_exists($key, $this -> rawInternal());
     }
 
     public function offsetSet($offset, $value) {
+        $this -> throwIfFrozen();
+
         if (is_null($offset)) {
-            $this -> raw()[] = $value;
+            $this -> rawInternal()[] = $value;
         }
         else {
-            $this -> raw()[$offset] = $value;
+            $this -> rawInternal()[$offset] = $value;
         }
     }
 
     public function offsetExists($offset) {
-        return isset($this -> raw()[$offset]);
+        return isset($this -> rawInternal()[$offset]);
     }
 
     public function offsetUnset($offset) {
+        $this -> throwIfFrozen();
         unset($this -> arr[$offset]);
     }
 
     public function offsetGet($offset) {
-        return isset($this -> raw()[$offset]) ? $this -> raw()[$offset] : null;
+        return isset($this -> rawInternal()[$offset]) ? $this -> rawInternal()[$offset] : null;
     }
 
+    public function freeze() {
+        $this -> frozen = true;
+        return $this;
+    }
+
+    public function isFrozen() {
+        return $this -> frozen;
+    }
+
+    private function throwIfFrozen() {
+        if ($this -> frozen) {
+            throw new ValueError('Map is frozen and cannot be modified');
+        }
+    }
+
+    public function toJSON() {
+        return json_encode($this -> raw());
+    }
+
+    public function push($value) {
+        $this -> throwIfFrozen();
+        $array = $this->raw();
+        array_push($array, $value);
+    }
     public function __toString() {
         $res = "object(Map){";
 
-        foreach ($this -> raw() as $key => $value) {
+        foreach ($this -> rawInternal() as $key => $value) {
             $res .= "$key => $value,";
         }
         return $res . "}";
     }
+}
+
+function is_map($value) {
+    // use of ::class so that the IDE can run reformating on it
+    // will return the name of the class
+    return is_a($value, Map::class);
+}
+
+function map($arr) {
+    return new Map($arr);
 }
