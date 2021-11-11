@@ -4,7 +4,7 @@ import Routes from "../request/route/Routes";
 import {BackendAction} from "../request/BackendAction";
 import {BackendController} from "../BackendController";
 import {assert} from "../../util/assert";
-import {getToken} from "../../component/context/AuthContext";
+import {AuthToken, getToken} from "../../component/context/AuthContext";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 
@@ -29,7 +29,7 @@ export class AuthManager extends Manager {
 
     private _token?: string
 
-    get token() {
+    get token(): AuthToken | undefined {
         return this._token
     }
 
