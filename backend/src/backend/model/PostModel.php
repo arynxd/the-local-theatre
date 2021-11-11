@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Model.php';
+require_once __DIR__ . '/../util/Map.php';
 
 class PostModel extends Model {
     public $id;
@@ -18,13 +19,15 @@ class PostModel extends Model {
     }
 
 
-    public function toJSON() {
-        return [
-            'id' => $this -> id,
-            'author' => $this -> author -> toJSON(),
-            'content' => $this -> content,
-            'title' => $this -> title,
-            'createdAt' => $this -> createdAt
-        ];
+    public function toMap() {
+        return new Map(
+            [
+                'id' => $this -> id,
+                'author' => $this -> author -> toJSON(),
+                'content' => $this -> content,
+                'title' => $this -> title,
+                'createdAt' => $this -> createdAt
+            ]
+        );
     }
 }

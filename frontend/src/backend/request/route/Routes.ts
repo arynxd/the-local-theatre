@@ -1,5 +1,8 @@
 import {Route} from "./Route";
 
+/**
+ * All of the Route(s) available on the backend API
+ */
 export default class Routes {
     public static readonly User = class {
         public static readonly FETCH = new Route('api/user', 'GET', ['id'], [], false)

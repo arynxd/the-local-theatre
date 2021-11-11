@@ -1,4 +1,4 @@
-# Multi Platform Website
+# The Local Theatre
 
 ## TODO
 
@@ -22,6 +22,7 @@
 - [ ] Make posts a separate page
 - [ ] Unify codebase (default export, naming)
 - [ ] add 20006203 prefix to all parts of the site
+- [ ] Order entities by creation date
 
 ## Ideas
 
@@ -34,5 +35,5 @@
 - php -S localhost:8000 api.php (local php server with hot reload)
 - https://www.php.net/manual/en/function.com-create-guid.php
 - https://dbdiagram.io/d/617c73c7fa17df5ea6759df1
--  https://ui.dev/react-router-url-parameters/ (for post rendering)
+- https://ui.dev/react-router-url-parameters/ (for post rendering)
 

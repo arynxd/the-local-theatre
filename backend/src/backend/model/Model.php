@@ -11,9 +11,9 @@
  */
 abstract class Model {
     /**
-     * Converts this model to JSON for use in an API response
+     * Converts this model to a Map for use in an API response
      * 
-     * @return Array an associative array representing the JSON for this model
+     * @return Map a Map representing the JSON for this model
      */
-    public abstract function toJSON();
+    public abstract function toMap();
 }

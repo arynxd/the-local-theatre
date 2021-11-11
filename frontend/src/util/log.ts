@@ -6,8 +6,10 @@ function getConfig(): winston.LoggerOptions {
         format: winston.format.simple()
     }
 }
-
 const LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'debug' : 'error'
 
+/**
+ * The primary logger object. **ALL** logs should be put through this object.
+ */
 export const logger = winston.createLogger(getConfig())
     .add(new winston.transports.Console())

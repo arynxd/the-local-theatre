@@ -5,6 +5,9 @@ import BackendError from "../error/BackendError";
 import {isPost, Post} from "../../model/Post";
 import {Comment, isComment} from "../../model/Comment";
 
+/**
+ * Manages the creation of entities, primarily used in HttpManager for transformation of JSON responses 
+ */
 export class EntityManager extends Manager {
     public createUser(json: JSONObject): User {
         if (!isUser(json)) {

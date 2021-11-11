@@ -33,15 +33,17 @@ class UserModel extends Model {
         );
     }
 
-    public function toJSON() {
-        return [
-            'id' => $this -> id,
-            'name' => $this -> name,
-            'permissions' => $this -> permissions,
-            'dob' => $this -> dob,
-            'joinDate' => $this -> joinDate,
-            'username' => $this -> username,
-            'avatar' => $this -> avatar
-        ];
+    public function toMap() {
+        return new Map(
+            [
+                'id' => $this -> id,
+                'name' => $this -> name,
+                'permissions' => $this -> permissions,
+                'dob' => $this -> dob,
+                'joinDate' => $this -> joinDate,
+                'username' => $this -> username,
+                'avatar' => $this -> avatar
+            ]
+        );
     }
 }

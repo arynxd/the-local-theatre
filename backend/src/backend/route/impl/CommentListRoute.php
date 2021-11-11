@@ -21,10 +21,10 @@ class CommentListRoute extends Route {
 
         for ($_ = 0; $_ < 10; $_++) {
             $post = new PostModel(createIdentifier(), $user, 'Lorem ipsum sit damet', 'Latest Latest Latest', 1);
-            array_push($result, $post -> toJSON());
+            array_push($result, $post -> toMap());
         }
 
-        $res -> sendJSON(['comments' => $result], StatusCode::OK);
+        $res -> sendJSON(['comments' => $result, 'count' => 10], StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

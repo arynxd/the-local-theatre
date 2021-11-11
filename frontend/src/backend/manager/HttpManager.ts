@@ -7,7 +7,12 @@ import {BackendAction} from "../request/BackendAction";
 import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
 import BackendError from "../error/BackendError";
+import { logger } from "../../util/log";
 
+/**
+ * Manages all HTTP duties for the backend
+ * **ALL** requests should go through this manager
+ */
 export class HttpManager extends Manager {
     async loadUser(id: EntityIdentifier): Promise<User> {
         const route = Routes.User.FETCH.compile()
@@ -37,7 +42,7 @@ export class HttpManager extends Manager {
         route.withQueryParam('limit', limit.toString(10))
 
         return BackendAction(this.backend, route, res => {
-            const arr = res['posts']
+            const arr = res.posts
 
             if (isJSONArray(arr)) {
                 return arr.filter(isJSONObject)
@@ -57,7 +62,7 @@ export class HttpManager extends Manager {
         route.withQueryParam('limit', limit.toString(10))
 
         return BackendAction(this.backend, route, res => {
-            const arr = res['comments']
+            const arr = res.comments
 
             if (isJSONArray(arr)) {
                 return arr.filter(isJSONObject)

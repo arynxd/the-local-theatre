@@ -1,11 +1,18 @@
+import { EntityIdentifier } from "../../model/EntityIdentifier";
 import {BackendController} from "../BackendController";
 
-export abstract class AbstractCache<K, V> extends Map<K, V> {
+/**
+ * An extension of the inbuilt Map, which adds extra functionality
+ */
+export abstract class AbstractCache<V> extends Map<EntityIdentifier, V> {
     constructor(protected backend: BackendController) {
         super()
+        // Set the prototype explicitly.
+        // https://github.com/Microsoft/TypeScript-wiki/blob/main/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+        Object.setPrototypeOf(this, AbstractCache.prototype);
     }
 
-    public abstract fetch(key: K): Promise<V>
+   public abstract fetch(key: EntityIdentifier): Promise<V>
 
-    public abstract cache(key: K, value: V): void
+   public abstract cache(key: EntityIdentifier, value: V): void
 }

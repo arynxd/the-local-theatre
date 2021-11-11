@@ -8,6 +8,12 @@ import {getToken} from "../../component/context/AuthContext";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 
+/**
+ * Manages the authentication state for the app
+ * Used to login and logout of accounts
+ * 
+ * Also stores the token used in each backend request
+ */
 export class AuthManager extends Manager {
     constructor(backend: BackendController) {
         super(backend);

@@ -26,7 +26,7 @@ class UserListRoute extends Route {
                 'jdoe',
                 "http://$_SERVER[HTTP_HOST]/avatar"
             );
-            array_push($out, $model -> toJSON());
+            array_push($out, $model -> toMap());
         }
         $res -> sendJSON($out, StatusCode::OK);
 

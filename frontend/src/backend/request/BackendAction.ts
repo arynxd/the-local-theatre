@@ -10,12 +10,26 @@ import {assert, assertTruthy} from "../../util/assert";
 type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
 type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
 
+/**
+ * Create a new backend action.
+ * This is just a function around a Promise.
+ * This function will always reject with a BackendError, so it is safe to cast to this type.
+ * 
+ * When requestTransformer is present, it will take priority over JSONTransformer
+ * As such, Response#json will **NOT** be called when a requestTransformer is present
+ * 
+ * @param backend The backend controller
+ * @param route The route to request
+ * @param JSONTransformer The transformer function to transform a JSON response
+ * @param requestTransformer The transformer function to transform a regular response
+ * @returns A Promise representing the request
+ */
 export function BackendAction<T>(
     backend: BackendController,
     route: CompiledRoute,
     JSONTransformer?: BackendRequestJSONTransformer<T>,
     requestTransformer?: BackendRequestTransformer<T>
-) {
+): Promise<T> {
     logger.debug('Starting backend action for URL ' + route.url)
     return new Promise<T>(async (resolve, reject) => {
         if (route.routeData.requiresAuth) {
