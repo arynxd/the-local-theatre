@@ -2,9 +2,9 @@ import {BackendProps} from "../../component/props/BackendProps";
 import {LoadingIcon} from "../../component/LoadingIcon";
 import {logger} from "../../util/log";
 import {Post} from "../../model/Post";
-import PostElement from "../../component/model/Post";
 import {useAPI} from "../../backend/hook/useAPI";
 import {BackendController} from "../../backend/BackendController";
+import {PostPreview} from "../../component/model/PostPreview";
 
 const HOME_PAGE_POST_COUNT = 3
 
@@ -33,7 +33,6 @@ export default function Home(props: BackendProps) {
     }
 
     const styles = `
-        justify-center items-center flex
         md:justify-start md:items-start m-4
     `
     return (
@@ -43,7 +42,7 @@ export default function Home(props: BackendProps) {
             <div className='grid grid-cols-1 grid-flow-row gap-2'>
                 {
                     posts.map(post =>
-                        <PostElement key={post.id} className={styles} postModel={post} backend={props.backend}/>
+                        <PostPreview key={post.id} className={styles} backend={props.backend} model={post}/>
                     )
                 }
             </div>

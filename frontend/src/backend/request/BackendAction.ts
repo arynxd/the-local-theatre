@@ -5,6 +5,10 @@ import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
 import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
+import {assert, assertTruthy} from "../../util/assert";
+
+type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
+type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
 
 export function BackendAction<T>(
     backend: BackendController,
@@ -52,7 +56,7 @@ export function BackendAction<T>(
 
         if (result.ok) {
             if (requestTransformer) {
-                resolve(requestTransformer(result))
+                resolve(await requestTransformer(result))
             }
             else if (JSONTransformer) {
                 const json = await result.text()
@@ -72,19 +76,17 @@ export function BackendAction<T>(
                 }
 
                 logger.debug('Got a valid JSON response: \n ' + JSON.stringify(jsonObj))
-                resolve(JSONTransformer(jsonObj))
+                resolve(await JSONTransformer(jsonObj))
             }
         }
         else {
             const json = await result.json()
 
-            if (typeof json !== 'object' || !json) { // assert that its some type of json object
-                // throwing is ok because this is an assertion and ideally should never happen
-                const ex = new BackendError('JSON response was malformed. Expected object, got ' + json)
-                logger.error(ex)
-                reject(ex)
-                throw ex
-            }
+            const ex = new BackendError('JSON response was malformed. Expected object, got ' + json)
+
+            // assert that the json we received was of type object, and was not null/undefined
+            assert(() => typeof json === 'object', () => ex)
+            assertTruthy(() => json, () => ex)
 
             if (isAPIError(json)) {
                 logger.error("API returned an error: \n " + JSON.stringify(json))
@@ -94,6 +96,3 @@ export function BackendAction<T>(
     })
 }
 
-
-type BackendRequestTransformer<T> = (res: Response) => T
-type BackendRequestJSONTransformer<T> = (res: JSONObject) => T

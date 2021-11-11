@@ -73,10 +73,10 @@ export default function Post(props: PostProps & BackendProps & StylableProps) {
         <>
             <div className={props.className}>
                 <div className={postStyles}>
-                    <h1 className='text-3xl bg-gray-200 shadow-lg rounded p-2 text-center'>{model.title}</h1>
-                    <div className='items-center justify-start flex mt-2'>
-                        <img className='w-6 h-6 static inline-block' src={img} alt='User avatar'/>
-                        <h2 className='inline-block ml-2 text-sm font-semibold'>{model.author.name}</h2>
+                    <h1 className='text-3xl bg-gray-200 shadow-lg rounded p-2'>{model.title}</h1>
+                    <div className='items-center justify-start flex mt-2 hidden'>
+                        <img className='w-12 h-12 static inline-block' src={img} alt='User avatar'/>
+                        <h2 className='inline-block ml-2 text-xl font-semibold'>{model.author.name}</h2>
                     </div>
 
                     <div className=''>

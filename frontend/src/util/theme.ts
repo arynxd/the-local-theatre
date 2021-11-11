@@ -1,4 +1,10 @@
+import {JSONObject} from "../backend/JSONObject";
+
 export type Theme = 'dark' | 'light'
+
+//TODO unify this API with the react context, or create our own state management through hooks
+
+export type LocalStorage = JSONObject
 
 export function loadTheme() {
     getTheme() === "dark"

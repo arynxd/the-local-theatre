@@ -3,6 +3,8 @@ import BackendError from "../error/BackendError";
 import Routes from "../request/route/Routes";
 import {BackendAction} from "../request/BackendAction";
 import {BackendController} from "../BackendController";
+import {assert} from "../../util/assert";
+import {getToken} from "../../component/context/AuthContext";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 
@@ -10,7 +12,7 @@ export class AuthManager extends Manager {
     constructor(backend: BackendController) {
         super(backend);
         this._state = 'none'
-        this._token = undefined
+        this._token = getToken()
     }
 
     private _state: AuthState
@@ -26,20 +28,22 @@ export class AuthManager extends Manager {
     }
 
     async login(email: string, password: string): Promise<void> {
-        if (this._state === 'authenticated') {
-            throw new BackendError('Tried to login whilst already being authenticated.')
-        }
+        assert(() => this._state !== 'authenticated',
+              () => new BackendError('Tried to login whilst already being authenticated.')
+        )
 
         const route = Routes.Auth.LOGIN.compile()
         route.withQueryParam('email', email)
         route.withQueryParam('password', password)
 
-        return BackendAction(this.backend, route, res => {
+        const newToken = await BackendAction(this.backend, route, res => {
             if (typeof res.token !== 'string') {
                 throw new BackendError('Token was not a string')
             }
-            this._token = res.token
+            return res.token
         })
+
+        this._token = newToken
     }
 
     async logout(): Promise<void> {
