@@ -13,11 +13,11 @@ class ModerationRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $res -> sendJSON([
+        $res -> sendJSON(map([
             "id" => "0",
             "user_id" => "1",
             "reason" => "hello world"
-        ], StatusCode::OK);
+        ]), StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

@@ -6,7 +6,7 @@ require_once 'array.php';
  * A wrapper type surrounding PHP's standard associative array.
  * Provides extra functionality and safety features.
  */
-class Map implements ArrayAccess {
+class Map implements ArrayAccess, JsonSerializable {
     private $arr;
     private $frozen;
 
@@ -25,15 +25,6 @@ class Map implements ArrayAccess {
 
     private function rawInternal() {
         return $this -> arr;
-    }
-
-    function toAssocRecursive() {
-        return $this -> mapValuesRecursive(function ($item) {
-            if ($item instanceof Map) {
-                return $item -> raw();
-            }
-            return $item;
-        }) -> raw();
     }
 
     function mapValuesRecursive($mapper) {
@@ -158,8 +149,9 @@ class Map implements ArrayAccess {
 
     public function push($value) {
         $this -> throwIfFrozen();
-        $array = $this->raw();
+        $array = $this->rawInternal();
         array_push($array, $value);
+        $this -> arr = $array;
     }
     public function __toString() {
         $res = "object(Map){";
@@ -169,10 +161,14 @@ class Map implements ArrayAccess {
         }
         return $res . "}";
     }
+
+    public function jsonSerialize() {
+        return $this -> raw();
+    }
 }
 
 function is_map($value) {
-    // use of ::class so that the IDE can run reformating on it
+    // use of ::class so that the IDE can run reformatting on it
     // will return the name of the class
     return is_a($value, Map::class);
 }

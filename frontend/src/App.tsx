@@ -9,7 +9,6 @@ import Signup from "./page/Signup";
 import {BackendController} from "./backend/BackendController";
 import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
-import {getTheme, loadTheme} from "./util/theme";
 import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
 import {ThemeContext} from "./component/ThemeToggle";
@@ -25,15 +24,13 @@ function App() {
     logger.debug('Starting application')
     logger.debug('Base URL is ' + getPrefix())
 
-    loadTheme()
-
     // holds the global state for the theme
-    const [theme, setTheme] = useState(getTheme())
+    const [theme, setTheme] = useState(backend.theme.theme)
 
     return (
         <BrowserRouter>
             <ThemeContext.Provider value={{theme, setTheme}}>
-                <Navbar/>
+                <Navbar backend={backend}/>
                 <Switch>
                     <Route exact path="/">
                         <Home backend={backend}/>

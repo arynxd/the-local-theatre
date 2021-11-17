@@ -2,9 +2,10 @@
 require_once __DIR__ . '/../../util/constant/StatusCode.php';
 require_once __DIR__ . '/../../util/constant/ContentType.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
+require_once __DIR__ . '/../../util/Map.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
-
 require_once __DIR__ . '/../../route/Route.php';
+require_once __DIR__ . '/../../util/constant/Constants.php';
 
 class UserListRoute extends Route {
     public function __construct() {
@@ -14,7 +15,7 @@ class UserListRoute extends Route {
     public function handle($conn, $res) {
         $limit = $conn -> queryParams()['limit'];
 
-        $out = [];
+        $out = new Map();
 
         for ($i = 0; $i < $limit; $i++) {
             $model = new UserModel(
@@ -24,9 +25,9 @@ class UserListRoute extends Route {
                 0,
                 0,
                 'jdoe',
-                "http://$_SERVER[HTTP_HOST]/avatar"
+                Constants::AVATAR_URL_PREFIX()
             );
-            array_push($out, $model -> toMap());
+            $out -> push($model -> toMap());
         }
         $res -> sendJSON($out, StatusCode::OK);
 

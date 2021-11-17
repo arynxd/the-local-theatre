@@ -1,5 +1,6 @@
 import {BackendController} from "../BackendController";
-import {AuthToken} from "../../component/context/AuthContext";
+import {AuthToken} from "../manager/AuthManager";
+import {useEffect, useState} from "react";
 
 class AuthHook {
     constructor(
@@ -11,7 +12,7 @@ class AuthHook {
         return !!this.token
     }
 
-    public login(email: string, password: string): Promise<void> {
+    public login(email: string, password: string): Promise<boolean> {
         return this.backend.auth.login(email, password)
     }
 
@@ -21,5 +22,11 @@ class AuthHook {
 }
 
 export function useAuth(backend: BackendController): AuthHook {
-    return new AuthHook(backend, backend.auth.token)
+    const [hook, setHook] = useState(new AuthHook(backend, backend.auth.token))
+
+    useEffect(() => {
+        setHook(new AuthHook(backend, backend.auth.token))
+    }, [backend, backend.auth.state])
+
+    return hook
 }

@@ -4,6 +4,8 @@ import logo from '../../assets/apple-touch-icon-76x76.png'
 import {ParentProps} from "../props/ParentProps";
 import dots from '../../assets/dots-menu.png'
 import ThemeToggle from "../ThemeToggle";
+import {BackendProps} from "../props/BackendProps";
+import {StylableProps} from "../props/StylableProps";
 
 interface Props {
     isOpen: boolean
@@ -13,20 +15,21 @@ interface ClickableProps extends Props {
     onClick: (event: MouseEvent<HTMLElement>) => void
 }
 
-function Logo(props: Props) {
+function Logo(props: Props & StylableProps) {
     const styles = `
         ${props.isOpen ? 'hidden' : 'block'}
+        w-12 h-12
         
-        md:justify-start hidden md:block md:col-start-1 w-20 h-20
+        ${props.className}
     `
     return (
-        <Link className={styles} to="/"><img src={logo} alt='The local theatre logo'/></Link>
+        <Link className={styles} to="/~20006203/"><img src={logo} alt='The local theatre logo'/></Link>
     )
 }
 
 function MobileNavButton(props: ClickableProps) {
     const mobileHeaderStyles = `
-        w-10 h-10 p-2
+        w-12 h-12 p-2
         md:hidden
         ${props.isOpen ? 'hidden' : 'block'}
     `
@@ -37,10 +40,10 @@ function MobileNavButton(props: ClickableProps) {
     )
 }
 
-function LinkList(props: ClickableProps) {
+function LinkList(props: ClickableProps & BackendProps) {
     const linkStyles = `
-        z-rounded-xl text-xl text-gray-900 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
-        text-center p-2 m-4 w-auto shadow-md dark:hover:bg-blue-900 dark:shadow-lg
+        z-rounded-xl text-sm font-semibold text-gray-900 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
+        text-center p-2 m-3 w-auto shadow-md dark:hover:bg-blue-900 dark:shadow-lg
         bg-blue-500 dark:bg-blue-800 
         transition duration-150 ease-in-out
     `
@@ -53,16 +56,20 @@ function LinkList(props: ClickableProps) {
     const theme = `
         ${props.isOpen ? 'hidden' : 'block'}
         md:block
-        w-20 h-20
+        w-10 h-10
     `
+
+    const divStyles = `${props.isOpen ? 'hidden' : 'block'}`
 
     return (
         <>
-            <Logo isOpen={props.isOpen}/>
+            <Logo isOpen={props.isOpen} className='hidden md:block'/>
             <button className={closeStyles} onClick={props.onClick}>Close</button>
 
-            <ThemeToggle className={theme}/>
+            <ThemeToggle className={theme} backend={props.backend}/>
 
+            <div className={divStyles}/>
+            <div className={divStyles}/>
 
             <Link className={linkStyles} to="/~20006203/">Home</Link>
 
@@ -79,7 +86,7 @@ function LinkList(props: ClickableProps) {
 
 function MobileHeader(props: Props & ParentProps & ClickableProps) {
     const div = `
-        bg-blue-400 dark:bg-blue-900 w-full h-10 md:hidden grid grid-rows-1 grid-cols-10 items-center justify-center
+        bg-blue-400 dark:bg-blue-900 w-full h-15 md:hidden grid grid-rows-1 grid-cols-7 items-center justify-center
         ${props.isOpen ? 'hidden' : 'block'}
     `
     return (
@@ -99,7 +106,7 @@ function HidingNav(props: Props & ParentProps) {
         
         items-center justify-center 
         
-        md:grid md:grid-cols-7 md:grid-rows-1
+        md:grid md:grid-cols-9 md:grid-rows-1
     `
 
     return (
@@ -109,7 +116,7 @@ function HidingNav(props: Props & ParentProps) {
     )
 }
 
-function MobileThemeToggle(props: Props) {
+function MobileThemeToggle(props: Props & BackendProps) {
     const mobileHeaderStyles = `
         w-10 h-10 p-2
         md:hidden
@@ -117,11 +124,11 @@ function MobileThemeToggle(props: Props) {
     `
 
     return (
-        <ThemeToggle className={mobileHeaderStyles}/>
+        <ThemeToggle backend={props.backend} className={mobileHeaderStyles}/>
     )
 }
 
-export default function Navbar() {
+export default function Navbar(props: BackendProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
 
     const sideBarToggle = (_: MouseEvent<HTMLElement>): void => {
@@ -132,11 +139,12 @@ export default function Navbar() {
         <>
             <MobileHeader isOpen={isOpen} onClick={sideBarToggle}>
                 <MobileNavButton isOpen={isOpen} onClick={sideBarToggle}/>
-                <MobileThemeToggle isOpen={isOpen}/>
+                <MobileThemeToggle backend={props.backend} isOpen={isOpen}/>
+                <Logo isOpen={isOpen} className='col-start-4'/>
             </MobileHeader>
 
             <HidingNav isOpen={isOpen}>
-                <LinkList onClick={sideBarToggle} isOpen={isOpen}/>
+                <LinkList backend={props.backend} onClick={sideBarToggle} isOpen={isOpen}/>
             </HidingNav>
         </>
     )

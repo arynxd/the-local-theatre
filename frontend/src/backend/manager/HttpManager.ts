@@ -7,7 +7,6 @@ import {BackendAction} from "../request/BackendAction";
 import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
 import BackendError from "../error/BackendError";
-import { logger } from "../../util/log";
 
 /**
  * Manages all HTTP duties for the backend

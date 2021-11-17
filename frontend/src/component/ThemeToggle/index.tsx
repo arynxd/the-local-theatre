@@ -1,19 +1,10 @@
-import {createContext, MouseEvent, useContext} from "react";
-import {getTheme, setTheme, Theme} from "../../util/theme";
+import {MouseEvent, useContext} from "react";
 import {StylableProps} from "../props/StylableProps";
 import sun from '../../assets/sun.png'
 import moon from '../../assets/moon (1).png'
+import {ThemeContext} from "../../backend/manager/ThemeManager";
 
-interface ThemeContextProps {
-    theme: Theme
-    setTheme: (theme: Theme) => void
-}
-
-export const ThemeContext = createContext<ThemeContextProps>({
-    theme: 'dark', setTheme: (_) => {
-    }
-})
-
+//FIXME add the backend here and follow up the prop chain
 export default function ThemeToggle(props: StylableProps) {
     const {theme: th, setTheme: setTh} = useContext(ThemeContext)
 

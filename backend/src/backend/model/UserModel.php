@@ -3,14 +3,47 @@
 require_once 'Model.php';
 
 class UserModel extends Model {
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var
+     */
     public $permissions;
+    /**
+     * @var
+     */
     public $dob;
+    /**
+     * @var
+     */
     public $joinDate;
+    /**
+     * @var string
+     */
     public $username;
+    /**
+     * @var
+     */
     public $avatar;
 
+
+    /**
+     * Constructs a user model from the given data.
+     *
+     * @param $id           string  The ID of the user (stored as UUID)
+     * @param $name         string  The name of the user
+     * @param $permissions  int     The permission level of the user
+     * @param $dob
+     * @param $joinDate
+     * @param $username
+     * @param $avatar
+     */
     public function __construct($id, $name, $permissions, $dob, $joinDate, $username, $avatar) {
         $this -> id = $id;
         $this -> name = $name;
@@ -21,6 +54,12 @@ class UserModel extends Model {
         $this -> avatar = $avatar;
     }
 
+    /**
+     * Creates a UserModel from JSON.
+     *
+     * @param $data Map   The JSON (as a Map instance) to create from
+     * @return UserModel  The created user model
+     */
     public static function fromJSON($data) {
         return new UserModel(
             $data['id'],

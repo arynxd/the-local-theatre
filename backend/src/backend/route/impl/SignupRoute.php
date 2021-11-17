@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../context/SignupContext.php';
 require_once __DIR__ . '/../../model/SignupUser.php';
+require_once __DIR__ . '/../../util/Map.php';
 
 class SignupRoute extends Route {
     public function __construct() {
@@ -14,13 +15,13 @@ class SignupRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $model = SignupUser ::fromJSON($conn -> jsonParams()['data']);
+        $model = SignupUser::fromJSON($conn -> jsonParams()['data']);
         $ctx = new SignupContext($conn, $model);
 
         if ($ctx -> hasAccount()) {
-            $res -> sendJSON([
+            $res -> sendJSON(map([
                 "token" => $ctx -> login()
-            ], StatusCode::OK);
+            ]), StatusCode::OK);
         }
     }
 

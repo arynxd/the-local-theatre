@@ -20,14 +20,12 @@ class PostModel extends Model {
 
 
     public function toMap() {
-        return new Map(
-            [
-                'id' => $this -> id,
-                'author' => $this -> author -> toJSON(),
-                'content' => $this -> content,
-                'title' => $this -> title,
-                'createdAt' => $this -> createdAt
-            ]
-        );
+        return map([
+            'id' => $this -> id,
+            'author' => $this -> author -> toMap(),
+            'content' => $this -> content,
+            'title' => $this -> title,
+            'createdAt' => $this -> createdAt
+        ]);
     }
 }

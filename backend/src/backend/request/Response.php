@@ -25,14 +25,17 @@ class Response {
         else if (is_string($data)) {
             $this -> send(json_encode(json_decode($data)), CORS::ALL, ContentType::JSON, ...$headers); // encode/decode for validation
         }
+        else if (is_array($data)) {
+            throw new UnexpectedValueException("Got array passed to sendJSON, did you forget to call map()?");
+        }
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
         }
     }
 
     /**
-     * Sends arbitrary data to the client
-     * This methods performs NO validation on the input, use it with caution.
+     * Sends arbitrary data to the client.
+     * This method performs NO validation on the input, use it with caution.
      * 
      * @param  mixed     $data     the data to send in the response
      * @param  string[]  $headers  the headers to send in the response
@@ -49,8 +52,8 @@ class Response {
     /**
      * Sends an error message to the client
      * 
-     * @param  string    $message  the message to send in the response, must be JSON serialiable
-     * @param  string[]  $headers  the headers to send in in the response
+     * @param  string    $message  the message to send in the response, must be JSON serializable
+     * @param  string[]  $headers  the headers to send in the response
      */
     public function sendError($message, ...$headers) {
         $this -> send(json_encode([

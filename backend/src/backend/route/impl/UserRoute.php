@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . "/../../util/RequestValidator.php";
 require_once __DIR__ . "/../../middleware/impl/AuthenticationMiddleware.php";
 require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
+require_once __DIR__ . '/../../util/constant/Constants.php';
 
 class UserRoute extends Route {
     public function __construct() {
@@ -26,7 +27,8 @@ class UserRoute extends Route {
                 0,
                 0,
                 0,
-                'jdoe'
+                'jdoe',
+                Constants::AVATAR_URL_PREFIX()
             );
         }
 

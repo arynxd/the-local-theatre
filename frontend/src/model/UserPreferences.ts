@@ -1,5 +1,5 @@
-import {LocalStorage, Theme} from "../util/theme";
 import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
+import {LocalStorage, Theme} from "../backend/manager/ThemeManager";
 
 export interface UserPreferences {
     id: EntityIdentifier
