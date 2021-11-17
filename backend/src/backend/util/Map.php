@@ -27,6 +27,15 @@ class Map implements ArrayAccess, JsonSerializable {
         return $this -> arr;
     }
 
+    function toAssocRecursive() {
+        return $this -> mapValuesRecursive(function ($item) {
+            if ($item instanceof Map) {
+                return $item -> raw();
+            }
+            return $item;
+        }) -> raw();
+    }
+
     function mapValuesRecursive($mapper) {
         $func = function ($_, $value) use ($mapper) {
             return call_user_func($mapper, $value);
@@ -168,9 +177,7 @@ class Map implements ArrayAccess, JsonSerializable {
 }
 
 function is_map($value) {
-    // use of ::class so that the IDE can run reformatting on it
-    // will return the name of the class
-    return is_a($value, Map::class);
+    return $value instanceof Map;
 }
 
 function map($arr) {
