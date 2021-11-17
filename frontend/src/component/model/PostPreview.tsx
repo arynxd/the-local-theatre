@@ -1,6 +1,5 @@
 import {useAPI} from '../../backend/hook/useAPI'
 import {Post} from '../../model/Post'
-import {LoadingIcon} from '../LoadingIcon'
 import {BackendProps} from '../props/BackendProps'
 import {StylableProps} from '../props/StylableProps'
 
@@ -14,7 +13,7 @@ export function PostPreview(props: PostPreviewProps & StylableProps & BackendPro
     let avatarJSX;
 
     if (!avatar) {
-        avatarJSX = <LoadingIcon />
+        avatarJSX = <></>
     }
     else {
         avatarJSX = <img className='w-6 h-6' src={URL.createObjectURL(avatar)} alt='User avatar'/>

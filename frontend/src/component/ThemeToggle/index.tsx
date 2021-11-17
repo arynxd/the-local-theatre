@@ -3,34 +3,30 @@ import {StylableProps} from "../props/StylableProps";
 import sun from '../../assets/sun.png'
 import moon from '../../assets/moon (1).png'
 import {ThemeContext} from "../../backend/manager/ThemeManager";
+import {BackendProps} from "../props/BackendProps";
 
-//FIXME add the backend here and follow up the prop chain
-export default function ThemeToggle(props: StylableProps) {
-    const {theme: th, setTheme: setTh} = useContext(ThemeContext)
+export default function ThemeToggle(props: StylableProps & BackendProps) {
+    const {theme, setTheme } = useContext(ThemeContext)
+    const themeManager = props.backend.theme
 
     const handler = (_: MouseEvent<HTMLImageElement>): void => {
-        if (th === 'light') {
+        if (theme === 'light') {
+            themeManager.setTheme('dark')
             setTheme('dark')
-            setTh('dark')
         }
-        else if (getTheme() === 'dark') {
+        else if (theme === 'dark') {
+            themeManager.setTheme('light')
             setTheme('light')
-            setTh('light')
-        }
-        else {
-            // Default in case of corruption or tampering
-            setTheme('dark')
-            setTh('dark')
         }
     }
 
 
-    if (th === 'dark') {
+    if (theme === 'dark') {
         return (
             <img src={sun} onClick={handler} className={props.className} alt='Light theme toggle'/>
         )
     }
-    else if (th === 'light') {
+    else if (theme === 'light') {
         return (
             <img src={moon} onClick={handler} className={props.className} alt='Dark theme toggle'/>
         )

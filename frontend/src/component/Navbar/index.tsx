@@ -18,7 +18,7 @@ interface ClickableProps extends Props {
 function Logo(props: Props & StylableProps) {
     const styles = `
         ${props.isOpen ? 'hidden' : 'block'}
-        w-12 h-12
+        w-12 h-12 
         
         ${props.className}
     `
@@ -42,9 +42,9 @@ function MobileNavButton(props: ClickableProps) {
 
 function LinkList(props: ClickableProps & BackendProps) {
     const linkStyles = `
-        z-rounded-xl text-sm font-semibold text-gray-900 dark:text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
-        text-center p-2 m-3 w-auto shadow-md dark:hover:bg-blue-900 dark:shadow-lg
-        bg-blue-500 dark:bg-blue-800 
+        z-rounded-xl text-sm font-semibold text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
+        text-center p-2 m-3 w-48 shadow-md dark:hover:bg-blue-900 dark:shadow-lg
+        bg-blue-400 bg-blue-800 
         transition duration-150 ease-in-out
     `
 
@@ -56,7 +56,7 @@ function LinkList(props: ClickableProps & BackendProps) {
     const theme = `
         ${props.isOpen ? 'hidden' : 'block'}
         md:block
-        w-10 h-10
+        h-10 w-10
     `
 
     const divStyles = `${props.isOpen ? 'hidden' : 'block'}`
@@ -70,6 +70,7 @@ function LinkList(props: ClickableProps & BackendProps) {
 
             <div className={divStyles}/>
             <div className={divStyles}/>
+
 
             <Link className={linkStyles} to="/~20006203/">Home</Link>
 
@@ -86,7 +87,7 @@ function LinkList(props: ClickableProps & BackendProps) {
 
 function MobileHeader(props: Props & ParentProps & ClickableProps) {
     const div = `
-        bg-blue-400 dark:bg-blue-900 w-full h-15 md:hidden grid grid-rows-1 grid-cols-7 items-center justify-center
+        bg-blue-400 dark:bg-blue-900 w-full h-16 md:hidden grid grid-rows-1 grid-cols-7 items-center justify-center
         ${props.isOpen ? 'hidden' : 'block'}
     `
     return (
@@ -102,9 +103,9 @@ function HidingNav(props: Props & ParentProps) {
         
         grid grid-cols-1 grid-rows-6
         
-        bg-blue-400 dark:bg-blue-900
+        bg-blue-900
         
-        items-center justify-center 
+        place-items-center
         
         md:grid md:grid-cols-9 md:grid-rows-1
     `
@@ -118,7 +119,7 @@ function HidingNav(props: Props & ParentProps) {
 
 function MobileThemeToggle(props: Props & BackendProps) {
     const mobileHeaderStyles = `
-        w-10 h-10 p-2
+        w-14 h-14 p-2
         md:hidden
         ${props.isOpen ? 'hidden' : 'block'}
     `

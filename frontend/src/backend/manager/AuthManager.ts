@@ -4,7 +4,6 @@ import Routes from "../request/route/Routes";
 import {BackendAction} from "../request/BackendAction";
 import {BackendController} from "../BackendController";
 import {assert} from "../../util/assert";
-import {createContext} from "react";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 export type AuthToken = string

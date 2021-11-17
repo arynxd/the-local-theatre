@@ -20,7 +20,6 @@ class Response {
      * @param string[]      $headers  the headers to include in the response
      */
     public function sendJSON($data, ...$headers) {
-        echo $data;
         if (is_map($data)) {
             $this -> send(json_encode($data -> toAssocRecursive()), CORS::ALL, ContentType::JSON, ...$headers);
         }

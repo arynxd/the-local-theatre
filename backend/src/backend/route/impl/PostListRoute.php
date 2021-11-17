@@ -22,7 +22,7 @@ class PostListRoute extends Route {
         $posts = new Map();
 
         for ($i = 1; $i < 11; $i++) {
-            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", $i), 'Post title goes here', 1635762292);
+            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", $i), 'Post title goes here', 1635762292 + ($i * 987));
             $posts -> push($model -> toMap());
         }
 

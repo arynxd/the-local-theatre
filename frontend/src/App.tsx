@@ -11,7 +11,7 @@ import {logger} from "./util/log";
 import {getPrefix} from "./util/url";
 import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
-import {ThemeContext} from "./component/ThemeToggle";
+import {ThemeContext} from "./backend/manager/ThemeManager";
 import {Post} from './page/Post'
 
 /**
@@ -19,7 +19,7 @@ import {Post} from './page/Post'
  * 
  * @returns The app
  */
-function App() {
+export default function App() {
     const backend = new BackendController()
     logger.debug('Starting application')
     logger.debug('Base URL is ' + getPrefix())
@@ -70,6 +70,4 @@ function App() {
     )
 }
 
-
-export default App
 

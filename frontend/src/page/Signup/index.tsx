@@ -1,7 +1,5 @@
-function Index() {
+export default function Index() {
     return (
         <div/>
     )
 }
-
-export default Index
