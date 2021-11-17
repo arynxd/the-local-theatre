@@ -6,7 +6,7 @@ import {ThemeContext} from "../../backend/manager/ThemeManager";
 import {BackendProps} from "../props/BackendProps";
 
 export default function ThemeToggle(props: StylableProps & BackendProps) {
-    const {theme, setTheme } = useContext(ThemeContext)
+    const {theme, setTheme} = useContext(ThemeContext)
     const themeManager = props.backend.theme
 
     const handler = (_: MouseEvent<HTMLImageElement>): void => {

@@ -9,7 +9,7 @@ interface PostPreviewProps {
 
 export function PostPreview(props: PostPreviewProps & StylableProps & BackendProps) {
     const avatar = useAPI(props.backend.http.loadAvatar(props.model.author))
-   
+
     let avatarJSX;
 
     if (!avatar) {
@@ -22,7 +22,7 @@ export function PostPreview(props: PostPreviewProps & StylableProps & BackendPro
     return (
         <div className={props.className}>
             <div className='p-2 m-2 w-full bg-gray-200 shadow-lg rounded'>
-                <h1 className='text-4xl bold'>{props.model.title}</h1> 
+                <h1 className='text-4xl bold'>{props.model.title}</h1>
             </div>
             <div className=''>
                 {avatarJSX}

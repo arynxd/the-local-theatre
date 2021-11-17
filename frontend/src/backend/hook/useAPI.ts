@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import { logger } from "../../util/log";
+import {logger} from "../../util/log";
 import BackendError from "../error/BackendError";
 
 /**

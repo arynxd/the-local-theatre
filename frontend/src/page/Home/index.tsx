@@ -27,7 +27,7 @@ interface ActivityProps {
     backend: BackendController
 }
 
-function Activity(props: ActivityProps ) {
+function Activity(props: ActivityProps) {
     const activityElementStyles = `
         m-4 text-md text-gray-900 dark:text-gray-200
     `
@@ -41,24 +41,28 @@ function Activity(props: ActivityProps ) {
     const postURL = `/~20006203/post/${post.id}`
 
     const formatDate = (d: Date): string => {
-        return `on ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} at ${d.toLocaleTimeString(undefined, {hour: 'numeric', minute: 'numeric'})}`
+        return `on ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} at ${d.toLocaleTimeString(undefined, {
+            hour: 'numeric',
+            minute: 'numeric'
+        })}`
     }
     return (
-         <Link to={postURL}>
-             <div className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-                 {!avatar ?
-                     // avatar hasn't loaded yet
-                     <div className='w-12 h-12 m-2 bg-blue-200 dark:bg-gray-400 rounded'/> :
-                     // avatar has loaded, display it
-                     <img className='w-12 h-12 m-2 ml-5' src={avatar} alt="User avatar"/>
-                 }
+        <Link to={postURL}>
+            <div
+                className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+                {!avatar ?
+                    // avatar hasn't loaded yet
+                    <div className='w-12 h-12 m-2 bg-blue-200 dark:bg-gray-400 rounded'/> :
+                    // avatar has loaded, display it
+                    <img className='w-12 h-12 m-2 ml-5' src={avatar} alt="User avatar"/>
+                }
                 <p className={activityElementStyles}>
-                  <b>{post.author.name}</b> created 1 new post <b>{post.title}</b>
-                  <br />
-                  <p className='text-sm text-gray-500 dark:text-gray-300'>{formatDate(toDate(post.createdAt))}</p>
+                    <b>{post.author.name}</b> created 1 new post <b>{post.title}</b>
+                    <br/>
+                    <p className='text-sm text-gray-500 dark:text-gray-300'>{formatDate(toDate(post.createdAt))}</p>
                 </p>
             </div>
-         </Link>
+        </Link>
 
     )
 }
@@ -80,7 +84,7 @@ export default function Home(props: BackendProps) {
         }
         return (
             <>{posts.sort((a, b) => a.createdAt - b.createdAt).map(post =>
-              <Activity post={post} backend={props.backend} />
+                <Activity post={post} backend={props.backend}/>
             )}</>
         )
     }
@@ -108,7 +112,7 @@ export default function Home(props: BackendProps) {
             <div className='w-auto md:w-2/5 h-full md:h-screen bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
                 {/* Recent activity pane  */}
                 <h1 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h1>
-                <Separator />
+                <Separator/>
 
                 <ul>
                     {!posts ? notLoaded() : loaded()}
@@ -116,12 +120,12 @@ export default function Home(props: BackendProps) {
             </div>
 
             <div className='w-auto md:w-2/3 h-full md:h-screen bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
-                <h1  className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
+                <h1 className='text-5xl text-center font-bold mb-10'>PLACEHOLDER</h1>
             </div>
         </div>
     )

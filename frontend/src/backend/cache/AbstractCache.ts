@@ -1,4 +1,4 @@
-import { EntityIdentifier } from "../../model/EntityIdentifier";
+import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {BackendController} from "../BackendController";
 
 /**
@@ -12,7 +12,7 @@ export abstract class AbstractCache<V> extends Map<EntityIdentifier, V> {
         Object.setPrototypeOf(this, AbstractCache.prototype);
     }
 
-   public abstract fetch(key: EntityIdentifier): Promise<V>
+    public abstract fetch(key: EntityIdentifier): Promise<V>
 
-   public abstract cache(key: EntityIdentifier, value: V): void
+    public abstract cache(key: EntityIdentifier, value: V): void
 }

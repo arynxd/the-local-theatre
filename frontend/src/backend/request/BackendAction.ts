@@ -14,10 +14,10 @@ type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
  * Create a new backend action.
  * This is just a function around a Promise.
  * This function will always reject with a BackendError, so it is safe to cast to this type.
- * 
+ *
  * When requestTransformer is present, it will take priority over JSONTransformer
  * As such, Response#json will **NOT** be called when a requestTransformer is present
- * 
+ *
  * @param backend The backend controller
  * @param route The route to request
  * @param JSONTransformer The transformer function to transform a JSON response

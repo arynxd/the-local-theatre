@@ -7,7 +7,7 @@ import {ThemeManager} from "./manager/ThemeManager";
 /**
  * Primary class for all backend operations
  * Contains instances of the managers required to utilise the backend
- * 
+ *
  * This class should only be created once, due to the expensive nature of its creation
  */
 export class BackendController {

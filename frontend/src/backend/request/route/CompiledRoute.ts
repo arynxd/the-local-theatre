@@ -4,7 +4,7 @@ import {Route} from "./Route";
 
 /**
  * A stateful class used per-request to hold metadata about the request
- * 
+ *
  * Holds information about:
  *  - URL params
  *  - Headers

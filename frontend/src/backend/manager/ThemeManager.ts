@@ -13,7 +13,8 @@ interface ThemeContextProps {
 
 const DEFAULT_PROPS: ThemeContextProps = {
     theme: 'dark',
-    setTheme: (_) => { }
+    setTheme: (_) => {
+    }
 }
 
 export const ThemeContext = createContext<ThemeContextProps>(DEFAULT_PROPS)
@@ -26,16 +27,6 @@ export class ThemeManager extends Manager {
     }
 
     /**
-     * Loads the currently set theme into the DOM.
-     * This will trigger a re-render and thus, tailwind will load the appropriate theme styles.
-     */
-    loadTheme() {
-        this.theme === "dark"
-            ? document.documentElement.classList.add('dark')
-            : document.documentElement.classList.remove('dark')
-    }
-
-    /**
      * Loads the current theme from local storage.
      *
      * @returns Theme the currently selected theme
@@ -44,6 +35,16 @@ export class ThemeManager extends Manager {
         return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? 'dark'
             : 'light'
+    }
+
+    /**
+     * Loads the currently set theme into the DOM.
+     * This will trigger a re-render and thus, tailwind will load the appropriate theme styles.
+     */
+    loadTheme() {
+        this.theme === "dark"
+            ? document.documentElement.classList.add('dark')
+            : document.documentElement.classList.remove('dark')
     }
 
     /**

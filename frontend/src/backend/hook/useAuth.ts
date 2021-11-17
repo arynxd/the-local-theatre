@@ -6,7 +6,8 @@ class AuthHook {
     constructor(
         private readonly backend: BackendController,
         public readonly token: AuthToken | undefined,
-    ) { }
+    ) {
+    }
 
     public isLoggedIn(): this is { token: string } {
         return !!this.token

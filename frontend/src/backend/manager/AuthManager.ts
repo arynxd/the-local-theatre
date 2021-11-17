@@ -13,10 +13,16 @@ const AUTH_KEY = "authorisation"
 /**
  * Manages the authentication state for the app
  * Used to login and logout of accounts
- * 
+ *
  * Also stores the token used in each backend request
  */
 export class AuthManager extends Manager {
+    constructor(backend: BackendController) {
+        super(backend);
+        this._state = 'none'
+        this._token = localStorage.getItem(AUTH_KEY) ?? undefined
+    }
+
     private _state: AuthState
 
     get state() {
@@ -29,16 +35,9 @@ export class AuthManager extends Manager {
         return this._token
     }
 
-
-    constructor(backend: BackendController) {
-        super(backend);
-        this._state = 'none'
-        this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-    }
-
     async login(email: string, password: string): Promise<boolean> {
         assert(() => this._state !== 'authenticated',
-              () => new BackendError('Tried to login whilst already being authenticated.')
+            () => new BackendError('Tried to login whilst already being authenticated.')
         )
 
         const hash = (inp: string): string => {

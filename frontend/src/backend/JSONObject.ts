@@ -23,7 +23,7 @@ export function isJSONArray(value: JSONValue | JSONValue[]): value is JSONValue[
 
 /**
  * ype guard to check whether `value` is a JSON object
- * 
+ *
  * @param value The value
  * @returns Whether `value` is a JSONObject
  */
