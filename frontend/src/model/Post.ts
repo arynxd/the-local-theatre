@@ -1,9 +1,10 @@
 import {isUser, User} from "./User";
 import {isJSONObject, JSONObject, JSONValue} from "../backend/JSONObject";
-import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
+import {isEntityIdentifier} from "./EntityIdentifier";
+import {IdentifiedEntity} from "./IdentifiedEntity";
+import {GenericModel} from "./GenericModel";
 
-export interface Post {
-    id: EntityIdentifier,
+export interface Post extends IdentifiedEntity, GenericModel {
     author: User,
     title: string,
     content: string,

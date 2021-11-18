@@ -1,6 +1,7 @@
 import {JSONObject} from '../backend/JSONObject';
+import {GenericModel} from "./GenericModel";
 
-export interface APIError {
+export interface APIError extends GenericModel {
     error: boolean,
     message: string
 }

@@ -8,7 +8,12 @@ export type JSONObject = {
 /**
  * A type representing any value JSON value.
  */
-export type JSONValue = string | number | boolean | null | JSONValue[] | JSONObject | JSONObject[]
+export type JSONValue = string | number | boolean | undefined | JSONValue[] | JSONObject | JSONObject[]
+
+/**
+ * A type representing an array of json values
+ */
+export type JSONArray = JSONValue[]
 
 /**
  * Type guard to check whether `value` is an array
@@ -16,7 +21,7 @@ export type JSONValue = string | number | boolean | null | JSONValue[] | JSONObj
  * @returns Whether `value` is a JSONValue[]
  */
 export function isJSONArray(value: JSONValue | JSONValue[]): value is JSONValue[] {
-    // due to the way JSON is structured, we can only really verify that this data is an aray
+    // due to the way JSON is structured, we can only really verify that this data is an array
     // any further restriction would cause us to veer too far away from the real structure of JSON
     return Array.isArray(value)
 }

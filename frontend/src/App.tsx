@@ -17,7 +17,7 @@ import {Post} from './page/Post'
 /**
  * This is the main app function, it will spawn all the components required for the app to function
  *
- * @returns The app
+ * @returns JSX.Element The app
  */
 export default function App() {
     const backend = new BackendController()

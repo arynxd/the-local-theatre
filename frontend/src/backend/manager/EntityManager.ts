@@ -4,6 +4,7 @@ import {isUser, User} from "../../model/User";
 import BackendError from "../error/BackendError";
 import {isPost, Post} from "../../model/Post";
 import {Comment, isComment} from "../../model/Comment";
+import {isShow, Show} from "../../model/Show";
 
 /**
  * Manages the creation of entities, primarily used in HttpManager for transformation of JSON responses
@@ -34,5 +35,12 @@ export class EntityManager extends Manager {
 
     private err(type: string, json: JSONObject): never {
         throw new BackendError("JSON was not a valid " + type + " object. Got " + JSON.stringify(json) + " instead")
+    }
+
+    public createShow(json: JSONObject): Show {
+        if (!isShow(json))
+            this.err('Show', json)
+
+        return json
     }
 }

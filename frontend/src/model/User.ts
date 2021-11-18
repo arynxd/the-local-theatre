@@ -1,9 +1,10 @@
 import {JSONObject} from "../backend/JSONObject";
-import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
+import {isEntityIdentifier} from "./EntityIdentifier";
 import {PermissionValue} from "./Permission";
+import {IdentifiedEntity} from "./IdentifiedEntity";
+import {GenericModel} from "./GenericModel";
 
-export interface User {
-    id: EntityIdentifier,
+export interface User extends IdentifiedEntity, GenericModel{
     name: string,
     permissions: PermissionValue,
     dob: number,

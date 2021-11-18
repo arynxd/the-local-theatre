@@ -1,14 +1,22 @@
 <?php
 
-require_once __DIR__ . '/../route/impl/BaseRoute.php';
-require_once __DIR__ . '/../route/impl/UserRoute.php';
-require_once __DIR__ . '/../route/impl/UserListRoute.php';
-require_once __DIR__ . '/../route/impl/PostListRoute.php';
 require_once __DIR__ . '/../route/impl/AvatarRoute.php';
+require_once __DIR__ . '/../route/impl/BaseRoute.php';
 require_once __DIR__ . '/../route/impl/CommentListRoute.php';
+require_once __DIR__ . '/../route/impl/CommentRoute.php';
+require_once __DIR__ . '/../route/impl/LoginRoute.php';
+require_once __DIR__ . '/../route/impl/ModerationRoute.php';
+require_once __DIR__ . '/../route/impl/PostListRoute.php';
+require_once __DIR__ . '/../route/impl/PostRoute.php';
+require_once __DIR__ . '/../route/impl/ShowImageRoute.php';
+require_once __DIR__ . '/../route/impl/ShowListRoute.php';
+require_once __DIR__ . '/../route/impl/SignupRoute.php';
+require_once __DIR__ . '/../route/impl/UserListRoute.php';
+require_once __DIR__ . '/../route/impl/UserPreferencesRoute.php';
+require_once __DIR__ . '/../route/impl/UserRoute.php';
 
 /**
- * A router for all of the API Routes
+ * A router for all the API Routes
  * @see Route
  */
 class Router {
@@ -16,12 +24,20 @@ class Router {
 
     public function __construct() {
         $this -> routes = [
-            new BaseRoute(),
-            new UserRoute(),
-            new UserListRoute(),
-            new PostListRoute(),
             new AvatarRoute(),
-            new CommentListRoute()
+            new BaseRoute(),
+            new CommentListRoute(),
+            new CommentRoute(),
+            new LoginRoute(),
+            new ModerationRoute(),
+            new PostListRoute(),
+            new PostRoute(),
+            new ShowImageRoute(),
+            new ShowListRoute(),
+            new SignupRoute(),
+            new UserListRoute(),
+            new UserPreferencesRoute(),
+            new UserRoute(),
         ];
     }
 

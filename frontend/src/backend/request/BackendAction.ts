@@ -7,8 +7,8 @@ import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
 import {assert, assertTruthy} from "../../util/assert";
 
-type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
-type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
+export type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
+export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
 
 /**
  * Create a new backend action.

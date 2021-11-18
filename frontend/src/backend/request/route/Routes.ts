@@ -24,4 +24,9 @@ export default class Routes {
     public static readonly Comment = class {
         public static readonly LIST = new Route('api/comment/list', 'GET', [], [], false)
     }
+
+    public static readonly Show = class {
+        public static readonly LIST = new Route('api/show/list', 'GET', ['limit'], [], false)
+        public static readonly IMAGE = new Route('api/show/image', 'GET', ['id'], [], false)
+    }
 }

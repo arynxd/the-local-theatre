@@ -43,7 +43,7 @@ function MobileNavButton(props: ClickableProps) {
 function LinkList(props: ClickableProps & BackendProps) {
     const linkStyles = `
         z-rounded-xl text-sm font-semibold text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
-        text-center p-2 m-3 w-48 shadow-md dark:hover:bg-blue-900 dark:shadow-lg
+        text-center p-2 m-3 w-10/12 shadow-md dark:hover:bg-blue-900 dark:shadow-lg
         bg-blue-400 bg-blue-800 
         transition duration-150 ease-in-out
     `
@@ -87,7 +87,7 @@ function LinkList(props: ClickableProps & BackendProps) {
 
 function MobileHeader(props: Props & ParentProps & ClickableProps) {
     const div = `
-        bg-blue-400 dark:bg-blue-900 w-full h-16 md:hidden grid grid-rows-1 grid-cols-7 items-center justify-center
+        bg-blue-900 w-full h-16 md:hidden grid grid-rows-1 grid-cols-7 items-center justify-center
         ${props.isOpen ? 'hidden' : 'block'}
     `
     return (

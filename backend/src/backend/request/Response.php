@@ -21,7 +21,7 @@ class Response {
      */
     public function sendJSON($data, ...$headers) {
         if (is_map($data)) {
-            $this -> send(json_encode($data -> toAssocRecursive()), CORS::ALL, ContentType::JSON, ...$headers);
+            $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
         else if (is_string($data)) {
             $this -> send(json_encode(json_decode($data)), CORS::ALL, ContentType::JSON, ...$headers); // encode/decode for validation

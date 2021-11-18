@@ -2,11 +2,11 @@ import {Manager} from "./Manager";
 import {User} from "../../model/User";
 import Routes from "../request/route/Routes";
 import {Post} from "../../model/Post";
-import {isJSONArray, isJSONObject, JSONObject} from "../JSONObject";
 import {BackendAction} from "../request/BackendAction";
 import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
-import BackendError from "../error/BackendError";
+import {Show} from "../../model/Show";
+import {ModelTransformer} from "../request/Transformers";
 
 /**
  * Manages all HTTP duties for the backend
@@ -40,15 +40,22 @@ export class HttpManager extends Manager {
 
         route.withQueryParam('limit', limit.toString(10))
 
-        return BackendAction(this.backend, route, res => {
-            const arr = res.posts
+        return BackendAction(this.backend, route, ModelTransformer<Post>(res => res.posts, this.backend.entity.createPost))
+    }
 
-            if (isJSONArray(arr)) {
-                return arr.filter(isJSONObject)
-                    .map(val => this.backend.entity.createPost(val as JSONObject)) // we just filtered for this, TS just cant infer it
-            }
-            throw new BackendError('Data was invalid, expected array got ' + arr)
-        })
+    async loadShowImage(show: Show): Promise<Blob> {
+        const route = Routes.Show.IMAGE.compile()
+        route.withQueryParam('id', show.id)
+
+        return BackendAction(this.backend, route, undefined, res => res.blob())
+    }
+
+    async loadShows(limit: number): Promise<Show[]> {
+        const route = Routes.Show.LIST.compile()
+        route.withQueryParam('limit', limit.toString(10))
+
+
+        return BackendAction(this.backend, route, ModelTransformer<Show>(res => res.shows, this.backend.entity.createShow))
     }
 
     async fetchComments(limit: number, latest?: EntityIdentifier): Promise<Comment[]> {
@@ -60,14 +67,6 @@ export class HttpManager extends Manager {
 
         route.withQueryParam('limit', limit.toString(10))
 
-        return BackendAction(this.backend, route, res => {
-            const arr = res.comments
-
-            if (isJSONArray(arr)) {
-                return arr.filter(isJSONObject)
-                    .map(val => this.backend.entity.createComment(val as JSONObject)) // we just filtered for this, TS just cant infer it
-            }
-            throw new BackendError('Data was invalid, expected array got ' + arr)
-        })
+        return BackendAction(this.backend, route, ModelTransformer<Comment>(res => res.comments, this.backend.entity.createComment))
     }
 }
