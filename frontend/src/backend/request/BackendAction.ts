@@ -9,6 +9,7 @@ import {assert, assertTruthy} from "../../util/assert";
 
 export type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
 export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
+export type BackendAction<T> = Promise<T>
 
 /**
  * Create a new backend action.
@@ -24,12 +25,12 @@ export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<
  * @param requestTransformer The transformer function to transform a regular response
  * @returns A Promise representing the request
  */
-export function BackendAction<T>(
+export function newBackendAction<T>(
     backend: BackendController,
     route: CompiledRoute,
     JSONTransformer?: BackendRequestJSONTransformer<T>,
     requestTransformer?: BackendRequestTransformer<T>
-): Promise<T> {
+): BackendAction<T> {
     logger.debug('Starting backend action for URL ' + route.url)
     return new Promise<T>(async (resolve, reject) => {
         if (route.routeData.requiresAuth) {

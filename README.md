@@ -25,6 +25,7 @@
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Implement database integration in backend
+- [ ] Change TS private -> JS #
 
 
 ## Feature List 

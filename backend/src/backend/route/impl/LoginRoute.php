@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../util/Map.php';
 
 class LoginRoute extends Route {
     public function __construct() {
-        parent ::__construct("signup", [RequestMethod::POST]);
+        parent ::__construct("login", [RequestMethod::POST]);
     }
 
     public function handle($conn, $res) {

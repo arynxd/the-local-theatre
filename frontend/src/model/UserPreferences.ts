@@ -1,6 +1,6 @@
 import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
-import {LocalStorage, Theme} from "../backend/manager/ThemeManager";
 import {GenericModel} from "./GenericModel";
+import {LocalStorage, Theme} from "../backend/manager/ThemeManager";
 
 export interface UserPreferences extends GenericModel  {
     userId: EntityIdentifier

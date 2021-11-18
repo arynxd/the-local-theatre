@@ -1,7 +1,7 @@
 import {Manager} from "./Manager";
 import BackendError from "../error/BackendError";
 import Routes from "../request/route/Routes";
-import {BackendAction} from "../request/BackendAction";
+import {newBackendAction} from "../request/BackendAction";
 import {BackendController} from "../BackendController";
 import {assert} from "../../util/assert";
 
@@ -48,7 +48,7 @@ export class AuthManager extends Manager {
         route.withQueryParam('email', email)
         route.withQueryParam('password', hash(password))
 
-        const newToken = await BackendAction(this.backend, route, res => {
+        const newToken = await newBackendAction(this.backend, route, res => {
             if (typeof res.token !== 'string')
                 throw new BackendError('Token was not a string')
             return res.token

@@ -1,6 +1,6 @@
 import winston from "winston";
 
-const LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'debug' : 'error'
+const LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'info' : 'error'
 
 const config: winston.LoggerOptions = {
     level: LOG_LEVEL,
