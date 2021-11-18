@@ -14,6 +14,7 @@ interface ThemeContextProps {
 const DEFAULT_PROPS: ThemeContextProps = {
     theme: 'dark',
     setTheme: (_) => {
+        throw new TypeError("Default setTheme called, this should never happen")
     }
 }
 

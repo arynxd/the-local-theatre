@@ -32,8 +32,6 @@ export default function ThemeToggle(props: StylableProps & BackendProps) {
         )
     }
     else {
-        return (
-            <img src={moon} onClick={handler} className={props.className} alt='Dark theme toggle'/>
-        )
+        throw new TypeError("Unknown theme " + theme)
     }
 }

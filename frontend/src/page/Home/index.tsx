@@ -82,8 +82,14 @@ export default function Home(props: BackendProps) {
         if (!posts) {
             throw new TypeError("Loaded function called whilst posts was not set?")
         }
+
+        const earliestFirst = [...posts]
+            .sort((a, b) =>
+                a.createdAt - b.createdAt
+            )
+
         return (
-            <>{posts.sort((a, b) => a.createdAt - b.createdAt).map(post =>
+            <>{earliestFirst.map(post =>
                 <Activity post={post} backend={props.backend}/>
             )}</>
         )
