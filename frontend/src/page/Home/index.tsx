@@ -1,4 +1,3 @@
-import {BackendProps} from "../../component/props/BackendProps";
 import {logger} from "../../util/log";
 import {Post} from "../../model/Post";
 import {useAPI} from "../../backend/hook/useAPI";
@@ -10,6 +9,7 @@ import {User} from "../../model/User";
 import {Show} from "../../model/Show";
 import {toURL} from "../../util/image";
 import {BackendController} from "../../backend/BackendController";
+import {getBackend} from "../../backend/global-scope/util/getters";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -90,11 +90,12 @@ function Activity(props: ActivityProps) {
     )
 }
 
-function LatestShows(props: BackendProps) {
-    const shows = useAPI(() => props.backend.http.loadShows(4))
+function LatestShows() {
+    const backend = getBackend()
+    const shows = useAPI(() => backend.http.loadShows(4))
 
     const ShowElement = (showProps: { model: Show }) => {
-        const img = useAPI(() => props.backend.http.loadShowImage(showProps.model).then(toURL))
+        const img = useAPI(() => backend.http.loadShowImage(showProps.model).then(toURL))
 
         return (
             <div
@@ -115,8 +116,9 @@ function LatestShows(props: BackendProps) {
     )
 }
 
-function RecentActivity(props: BackendProps) {
-    const posts = useAPI(() => getPost(props.backend))
+function RecentActivity() {
+    const backend = getBackend()
+    const posts = useAPI(() => getPost(backend))
 
     if (!posts) {
         return <></>
@@ -130,7 +132,7 @@ function RecentActivity(props: BackendProps) {
     return (
         <>{earliestFirst.map(post =>
             <Activity
-                backend={props.backend}
+                backend={backend}
                 author={post.author}
                 linkTo={`/~20006203/post/${post.id}`}
                 message={<><b>{post.author.name}</b> created 1 new post <b>{post.title}</b></>}
@@ -140,7 +142,7 @@ function RecentActivity(props: BackendProps) {
     )
 }
 
-export default function Home(props: BackendProps) {
+export default function Home() {
     logger.debug('Rendering home page')
 
     return (
@@ -152,7 +154,7 @@ export default function Home(props: BackendProps) {
                 <Separator/>
 
                 <ul className='grid grid-cols-1 grid-flow-row auto-rows-max items-baseline'>
-                    <RecentActivity backend={props.backend}/>
+                    <RecentActivity/>
                 </ul>
             </div>
 
@@ -163,7 +165,7 @@ export default function Home(props: BackendProps) {
                 <Separator/>
 
                 <ul className='grid grid-cols-1 grid-flow-row auto-rows-max lg:grid-cols-2 items-baseline'>
-                    <LatestShows backend={props.backend}/>
+                    <LatestShows/>
                 </ul>
             </div>
         </div>

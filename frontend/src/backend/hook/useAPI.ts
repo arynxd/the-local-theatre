@@ -17,9 +17,8 @@ export function useAPI<T>(
     action: () => BackendAction<T>,
     deps: any[] = [],
     errorHandler: (err: BackendError) => void = logger.error
-) : T | undefined
-{
-    const [res, err,,] = usePromise(action, deps)
+): T | undefined {
+    const [res, err, ,] = usePromise(action, deps)
 
     if (err) {
         errorHandler(err)

@@ -1,24 +1,17 @@
-import {Manager} from "./Manager";
-import BackendError from "../error/BackendError";
-import Routes from "../request/route/Routes";
-import {newBackendAction} from "../request/BackendAction";
-import {BackendController} from "../BackendController";
-import {assert} from "../../util/assert";
+import {Context} from "./Context";
+import {assert} from "../../../util/assert";
+import BackendError from "../../error/BackendError";
+import Routes from "../../request/route/Routes";
+import {newBackendAction} from "../../request/BackendAction";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 export type AuthToken = string
 
 const AUTH_KEY = "authorisation"
 
-/**
- * Manages the authentication state for the app
- * Used to login and logout of accounts
- *
- * Also stores the token used in each backend request
- */
-export class AuthManager extends Manager {
-    constructor(backend: BackendController) {
-        super(backend);
+export class AuthContext extends Context {
+    constructor() {
+        super()
         this._state = 'none'
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
     }
@@ -48,7 +41,7 @@ export class AuthManager extends Manager {
         route.withQueryParam('email', email)
         route.withQueryParam('password', hash(password))
 
-        const newToken = await newBackendAction(this.backend, route, res => {
+        const newToken = await newBackendAction(route, res => {
             if (typeof res.token !== 'string')
                 throw new BackendError('Token was not a string')
             return res.token

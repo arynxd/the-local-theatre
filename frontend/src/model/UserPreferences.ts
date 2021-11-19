@@ -1,8 +1,9 @@
 import {EntityIdentifier, isEntityIdentifier} from "./EntityIdentifier";
 import {GenericModel} from "./GenericModel";
-import {LocalStorage, Theme} from "../backend/manager/ThemeManager";
+import {Theme} from "../backend/global-scope/context/ThemeContext";
+import {LocalStorage} from "../backend/global-scope/GlobalScope";
 
-export interface UserPreferences extends GenericModel  {
+export interface UserPreferences extends GenericModel {
     userId: EntityIdentifier
     theme: Theme
 }

@@ -4,7 +4,6 @@ import logo from '../../assets/apple-touch-icon-76x76.png'
 import {ParentProps} from "../props/ParentProps";
 import dots from '../../assets/dots-menu.png'
 import ThemeToggle from "../ThemeToggle";
-import {BackendProps} from "../props/BackendProps";
 import {StylableProps} from "../props/StylableProps";
 
 interface Props {
@@ -40,7 +39,7 @@ function MobileNavButton(props: ClickableProps) {
     )
 }
 
-function LinkList(props: ClickableProps & BackendProps) {
+function LinkList(props: ClickableProps) {
     const linkStyles = `
         z-rounded-xl text-sm font-semibold text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
         text-center p-2 m-3 w-10/12 shadow-md dark:hover:bg-blue-900 dark:shadow-lg
@@ -66,7 +65,7 @@ function LinkList(props: ClickableProps & BackendProps) {
             <Logo isOpen={props.isOpen} className='hidden md:block'/>
             <button className={closeStyles} onClick={props.onClick}>Close</button>
 
-            <ThemeToggle className={theme} backend={props.backend}/>
+            <ThemeToggle className={theme}/>
 
             <div className={divStyles}/>
             <div className={divStyles}/>
@@ -117,7 +116,7 @@ function HidingNav(props: Props & ParentProps) {
     )
 }
 
-function MobileThemeToggle(props: Props & BackendProps) {
+function MobileThemeToggle(props: Props) {
     const mobileHeaderStyles = `
         w-14 h-14 p-2
         md:hidden
@@ -125,11 +124,11 @@ function MobileThemeToggle(props: Props & BackendProps) {
     `
 
     return (
-        <ThemeToggle backend={props.backend} className={mobileHeaderStyles}/>
+        <ThemeToggle className={mobileHeaderStyles}/>
     )
 }
 
-export default function Navbar(props: BackendProps) {
+export default function Navbar() {
     const [isOpen, setOpen] = useState<boolean>(false)
 
     const sideBarToggle = (_: MouseEvent<HTMLElement>): void => {
@@ -140,12 +139,12 @@ export default function Navbar(props: BackendProps) {
         <>
             <MobileHeader isOpen={isOpen} onClick={sideBarToggle}>
                 <MobileNavButton isOpen={isOpen} onClick={sideBarToggle}/>
-                <MobileThemeToggle backend={props.backend} isOpen={isOpen}/>
+                <MobileThemeToggle isOpen={isOpen}/>
                 <Logo isOpen={isOpen} className='col-start-4'/>
             </MobileHeader>
 
             <HidingNav isOpen={isOpen}>
-                <LinkList backend={props.backend} onClick={sideBarToggle} isOpen={isOpen}/>
+                <LinkList onClick={sideBarToggle} isOpen={isOpen}/>
             </HidingNav>
         </>
     )

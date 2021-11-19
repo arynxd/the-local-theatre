@@ -1,1 +1,2 @@
-export interface GenericModel {}
+export interface GenericModel {
+}

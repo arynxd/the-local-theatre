@@ -9,6 +9,6 @@ export class CacheManager extends Manager {
     /**
      * The user cache
      */
-    public readonly user = new UserCache(this.backend)
+    public readonly user = new UserCache()
 }
 

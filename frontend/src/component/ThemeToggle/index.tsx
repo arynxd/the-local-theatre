@@ -1,25 +1,34 @@
-import {MouseEvent, useContext} from "react";
+import {MouseEvent, useState} from "react";
 import {StylableProps} from "../props/StylableProps";
 import sun from '../../assets/sun.png'
 import moon from '../../assets/moon (1).png'
-import {ThemeContext} from "../../backend/manager/ThemeManager";
-import {BackendProps} from "../props/BackendProps";
+import {distinctUntilChanged, map} from "rxjs";
+import {useSubscription} from "../../backend/hook/useSubscription";
+import {getGlobalScope, getTheme} from "../../backend/global-scope/util/getters";
 
-export default function ThemeToggle(props: StylableProps & BackendProps) {
-    const {theme, setTheme} = useContext(ThemeContext)
-    const themeManager = props.backend.theme
+//TODO investigate desyncing between theme toggle instance
+export default function ThemeToggle(props: StylableProps) {
+    const gs$$ = getGlobalScope()
+    const themeCtx = getTheme()
+    const [theme, setTheme] = useState(themeCtx.currentTheme)
+
+    const [theme$] = useState(gs$$.pipe(
+        map(state => state.context.theme.currentTheme),
+        distinctUntilChanged()
+    ))
+
+    useSubscription(theme$, newTheme => setTheme(newTheme))
 
     const handler = (_: MouseEvent<HTMLImageElement>): void => {
         if (theme === 'light') {
-            themeManager.setTheme('dark')
             setTheme('dark')
+            themeCtx.setTheme('dark')
         }
         else if (theme === 'dark') {
-            themeManager.setTheme('light')
             setTheme('light')
+            themeCtx.setTheme('light')
         }
     }
-
 
     if (theme === 'dark') {
         return (

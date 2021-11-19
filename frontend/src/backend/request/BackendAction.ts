@@ -1,11 +1,11 @@
 import {fetch} from "../../util/url";
-import {BackendController} from "../BackendController";
 import {isAPIError} from "../../model/APIError";
 import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
 import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
 import {assert, assertTruthy} from "../../util/assert";
+import {getAuth} from "../global-scope/util/getters";
 
 export type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
 export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
@@ -19,29 +19,28 @@ export type BackendAction<T> = Promise<T>
  * When requestTransformer is present, it will take priority over JSONTransformer
  * As such, Response#json will **NOT** be called when a requestTransformer is present
  *
- * @param backend The backend controller
  * @param route The route to request
  * @param JSONTransformer The transformer function to transform a JSON response
  * @param requestTransformer The transformer function to transform a regular response
  * @returns A Promise representing the request
  */
 export function newBackendAction<T>(
-    backend: BackendController,
     route: CompiledRoute,
     JSONTransformer?: BackendRequestJSONTransformer<T>,
     requestTransformer?: BackendRequestTransformer<T>
 ): BackendAction<T> {
     logger.debug('Starting backend action for URL ' + route.url)
     return new Promise<T>(async (resolve, reject) => {
+        const auth = getAuth()
         if (route.routeData.requiresAuth) {
-            if (!backend.auth.token) {
+            if (!auth.token) {
                 let msg = 'Route ' + route + ' requires auth but the AuthManager has no token set.'
 
                 logger.error(new BackendError(msg))
                 reject(new BackendError(msg))
                 throw new BackendError(msg)
             }
-            route.withHeader('Authorisation', backend.auth.token)
+            route.withHeader('Authorisation', auth.token)
             logger.debug('Authorisation required, added the header')
         }
         let result: Response

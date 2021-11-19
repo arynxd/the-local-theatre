@@ -1,29 +1,10 @@
-import {Manager} from "./Manager";
-import {JSONObject} from "../JSONObject";
-import {BackendController} from "../BackendController";
-import {createContext} from "react";
+import {Context} from "./Context";
 
 export type Theme = 'dark' | 'light'
-export type LocalStorage = JSONObject
 
-interface ThemeContextProps {
-    theme: Theme
-    setTheme: (theme: Theme) => void
-}
-
-const DEFAULT_PROPS: ThemeContextProps = {
-    theme: 'dark',
-    setTheme: (_) => {
-        throw new TypeError("Default setTheme called, this should never happen")
-    }
-}
-
-export const ThemeContext = createContext<ThemeContextProps>(DEFAULT_PROPS)
-
-
-export class ThemeManager extends Manager {
-    constructor(backend: BackendController) {
-        super(backend);
+export class ThemeContext extends Context {
+    constructor() {
+        super();
         this.loadTheme()
     }
 
@@ -32,7 +13,7 @@ export class ThemeManager extends Manager {
      *
      * @returns Theme the currently selected theme
      */
-    get theme(): Theme {
+    get currentTheme(): Theme {
         return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? 'dark'
             : 'light'
@@ -43,7 +24,7 @@ export class ThemeManager extends Manager {
      * This will trigger a re-render and thus, tailwind will load the appropriate theme styles.
      */
     loadTheme() {
-        this.theme === "dark"
+        this.currentTheme === "dark"
             ? document.documentElement.classList.add('dark')
             : document.documentElement.classList.remove('dark')
     }

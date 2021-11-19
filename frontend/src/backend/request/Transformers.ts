@@ -3,7 +3,7 @@ import {GenericModel} from "../../model/GenericModel";
 import {isJSONArray, isJSONObject, JSONObject, JSONValue} from "../JSONObject";
 import BackendError from "../error/BackendError";
 
-type JSONToModel <T extends GenericModel> = (json: JSONObject) => T
+type JSONToModel<T extends GenericModel> = (json: JSONObject) => T
 type ArrayExtraction = (json: JSONObject) => JSONValue
 
 /**
@@ -15,15 +15,15 @@ type ArrayExtraction = (json: JSONObject) => JSONValue
  * @param conversion      The conversion function, converts JSON to the model type.
  *                        This function should throw when invalid data is received
  */
-export function ModelTransformer <T extends GenericModel>
-    (arrayExtraction: ArrayExtraction, conversion: JSONToModel<T>)
+export function ModelTransformer<T extends GenericModel>
+(arrayExtraction: ArrayExtraction, conversion: JSONToModel<T>)
     : BackendRequestJSONTransformer<T[]> {
     return res => {
         const arr = arrayExtraction(res)
 
         if (isJSONArray(arr)) {
-                                           // we just filtered for this, TS just cant infer it
-                                           // as such, casting is ok
+            // we just filtered for this, TS just cant infer it
+            // as such, casting is ok
             return arr.filter(isJSONObject).map(v => conversion(v as JSONObject))
         }
         throw new BackendError('Data was invalid, expected array got ' + arr)

@@ -7,6 +7,7 @@ import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
 import {Show} from "../../model/Show";
 import {ModelTransformer} from "../request/Transformers";
+import {getBackend} from "../global-scope/util/getters";
 
 /**
  * Manages all HTTP duties for the backend
@@ -17,7 +18,7 @@ export class HttpManager extends Manager {
         const route = Routes.User.FETCH.compile()
         route.withQueryParam('id', id.toString())
 
-        return newBackendAction(this.backend, route, res => this.backend.entity.createUser(res))
+        return newBackendAction(route, res => this.backend().entity.createUser(res))
     }
 
     /**
@@ -28,7 +29,7 @@ export class HttpManager extends Manager {
         const route = Routes.User.AVATAR.compile()
         route.withQueryParam('id', user.id)
 
-        return newBackendAction(this.backend, route, undefined, res => res.blob())
+        return newBackendAction(route, undefined, res => res.blob())
     }
 
     async listPosts(limit: number, last?: EntityIdentifier): Promise<Post[]> {
@@ -40,14 +41,14 @@ export class HttpManager extends Manager {
 
         route.withQueryParam('limit', limit.toString(10))
 
-        return newBackendAction(this.backend, route, ModelTransformer<Post>(res => res.posts, this.backend.entity.createPost))
+        return newBackendAction(route, ModelTransformer<Post>(res => res.posts, this.backend().entity.createPost))
     }
 
     async loadShowImage(show: Show): Promise<Blob> {
         const route = Routes.Show.IMAGE.compile()
         route.withQueryParam('id', show.id)
 
-        return newBackendAction(this.backend, route, undefined, res => res.blob())
+        return newBackendAction(route, undefined, res => res.blob())
     }
 
     async loadShows(limit: number): Promise<Show[]> {
@@ -55,7 +56,7 @@ export class HttpManager extends Manager {
         route.withQueryParam('limit', limit.toString(10))
 
 
-        return newBackendAction(this.backend, route, ModelTransformer<Show>(res => res.shows, this.backend.entity.createShow))
+        return newBackendAction(route, ModelTransformer<Show>(res => res.shows, this.backend().entity.createShow))
     }
 
     async fetchComments(limit: number, latest?: EntityIdentifier): Promise<Comment[]> {
@@ -67,6 +68,8 @@ export class HttpManager extends Manager {
 
         route.withQueryParam('limit', limit.toString(10))
 
-        return newBackendAction(this.backend, route, ModelTransformer<Comment>(res => res.comments, this.backend.entity.createComment))
+        return newBackendAction(route, ModelTransformer<Comment>(res => res.comments, this.backend().entity.createComment))
     }
+
+    private readonly backend = () => getBackend()
 }

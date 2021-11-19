@@ -1,8 +1,6 @@
 import {HttpManager} from "./manager/HttpManager";
 import {CacheManager} from "./manager/CacheManager";
-import {AuthManager} from "./manager/AuthManager";
 import {EntityManager} from "./manager/EntityManager";
-import {ThemeManager} from "./manager/ThemeManager";
 
 /**
  * Primary class for all backend operations
@@ -13,16 +11,12 @@ import {ThemeManager} from "./manager/ThemeManager";
 export class BackendController {
     public readonly cache: CacheManager
     public readonly http: HttpManager
-    public readonly auth: AuthManager
     public readonly entity: EntityManager
-    public readonly theme: ThemeManager
 
     constructor() {
-        this.cache = new CacheManager(this)
-        this.http = new HttpManager(this)
-        this.auth = new AuthManager(this)
-        this.entity = new EntityManager(this)
-        this.theme = new ThemeManager(this)
+        this.cache = new CacheManager()
+        this.http = new HttpManager()
+        this.entity = new EntityManager()
     }
 }
 
