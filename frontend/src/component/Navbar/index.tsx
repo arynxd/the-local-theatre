@@ -89,7 +89,7 @@ function LinkList(props: ClickableProps) {
             {authState === 'authenticated'
                 ? <>
                     <p className={linkStyles}>Profile</p>
-                    <button  className={linkStyles} onClick={() => authCtx.logout()}><p>Sign Out</p></button>
+                    <button className={linkStyles} onClick={() => authCtx.logout()}><p>Sign Out</p></button>
                 </>
                 :
                 <>

@@ -99,7 +99,8 @@ function LatestShows() {
 
         return (
             <div
-                className='w-auto h-auto bg-gray-200 dark:bg-gray-500 m-2 p-4 shadow-xl rounded-xl flex flex-col place-items-center'>
+                className='w-auto h-auto bg-gray-200 dark:bg-gray-500 m-2 p-4 shadow-xl rounded-xl flex flex-col place-items-center
+                transition duration-300 ease-in-out transform  hover:scale-105'>
                 <img className='h-2/3 w-full pb-4' src={img}
                      alt={`Advertisement of ${showProps.model.title}`}/>
                 <Separator className='pt-4 w-2/3'/>

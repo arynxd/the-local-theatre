@@ -1,6 +1,8 @@
 import Separator from "../../component/Separator"
 import {ChangeEvent, FormEvent, HTMLInputTypeAttribute, useState} from "react"
 import {getAuth} from "../../backend/global-scope/util/getters";
+import {Redirect} from "react-router";
+import {Paths} from "../../util/paths";
 
 interface ErrorProps {
     errors: ErrorState
@@ -20,13 +22,16 @@ type ErrorState = {
 
 type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'logged_in'
 
-const PASSWORD_VALIDATION_REGEX = /(?=^.{8,}$)(?=.*\d)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
-
-function ErrorElement(props: { error: string[] }) {
+function ErrorElement(props: { error?: string[] }) {
+    if (!props.error) {
+        return (
+            <></>
+        )
+    }
     return (
         <>{
             props.error.map(err => {
-                return <span className='bg-gray-300 text-red-800 p-2 m-1 rounded shadow-xl'>{err}</span>
+                return <span className='bg-gray-300 dark:bg-gray-600 dark:text-red-200 text-red-800 p-2 m-1 rounded shadow-xl'>{err}</span>
             })
         }</>
     )
@@ -78,15 +83,6 @@ function Login() {
     const [email, setEmail] = useState<string>()
     const [password, setPassword] = useState<string>()
 
-    const hasAnyErrors = (obj: ErrorState): boolean => {
-        for (const [,errs] of Object.entries(obj)) {
-            if (errs && errs.length > 0) {
-                return true
-            }
-        }
-        return false
-    }
-
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
@@ -95,56 +91,58 @@ function Login() {
             password: []
         }
 
+        let err = false
+
         if (!email) {
             newErrors.email?.push("No email provided")
+            err = true
         }
 
         if (!password) {
             newErrors.password?.push("No password provided")
+            err = true
         }
 
-        if (password && !PASSWORD_VALIDATION_REGEX.test(password)) {
-            newErrors.password?.push("Password too weak")
-            newErrors.password?.push("Must must be 8 or more characters, contain at least one uppercase character, lowercase character and number")
-        }
-
-        setErrors(newErrors)
-
-        if (hasAnyErrors(newErrors)) {
+        if (err) {
             setState('validation_failed')
         }
         else {
-           setState('logging_in')
+             setState('logging_in')
         }
+
+        setErrors(newErrors)
     }
 
     if (state === 'logging_in') {
-        if (!email || !password || hasAnyErrors(errors)) {
-            throw new TypeError("Email or password was not set, or validation failed")
+        if (!email || !password) {
+            throw new TypeError("Email or password was not set")
         }
 
-        getAuth().login(email, password).then(isLoggedIn => {
-            if (isLoggedIn) {
-                setState('logged_in')
-            }
-            else {
-                const newErrors: ErrorState = {
-                    email: ["Email or password incorrect"],
-                    password: ["Email or password incorrect"]
+        getAuth().login(email, password)
+            .then(isLoggedIn => {
+                if (isLoggedIn) {
+                    setState('logged_in')
                 }
-
-                setErrors(newErrors)
-                setState('login_failed')
-            }
-        })
-        return (
-            <p>logging in</p>
-        )
+                else {
+                    setErrors({
+                        general: ["Email or password incorrect"]
+                    })
+                    setState('login_failed')
+                }
+            })
+            .catch(() => {
+                setErrors({
+                    general: ["An error occurred whilst logging in, please try again"]
+                })
+                setState("login_failed")
+                setEmail(undefined)
+                setPassword(undefined)
+            })
     }
 
     if (state === 'logged_in') {
         return (
-            <p>logged in successfully!</p>
+             <Redirect to={Paths.HOME}/>
         )
     }
 
@@ -160,8 +158,13 @@ function Login() {
                                  errors={errors}/>
                     <FormElement onChange={setPassword} name='password' placeholder='Password' type='password'
                                  errors={errors}/>
-                    <input className='p-2 m-2 w-10/12 text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
+
+                    <ErrorElement error={errors.general} />
+                    {state === 'logging_in'
+                        ? <p>loading</p>
+                        : <input className='p-2 m-2 w-10/12 text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
                            type="submit" value="Submit"/>
+                    }
                 </form>
             </div>
         </div>

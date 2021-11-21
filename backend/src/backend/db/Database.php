@@ -33,6 +33,19 @@ class Database {
             $conn -> res -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
             die(1);
         }
+
+        if ($conn -> config['env'] !== "production") {
+            $this -> initTables();
+        }
+    }
+
+    private function initTables() {
+
+    }
+
+    private function initTable($path) {
+        $sql = file_get_contents($path);
+        $this -> query($sql, []);
     }
 
     /**

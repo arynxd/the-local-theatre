@@ -11,6 +11,7 @@ import {getPrefix} from "./util/url";
 import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
 import {Post} from './page/Post'
+import {Paths} from "./util/paths";
 
 /**
  * This is the main app function, it will spawn all the components required for the app to function
@@ -29,27 +30,27 @@ export default function App() {
                     <Home/>
                 </Route>
 
-                <Route exact path="/~20006203">
+                <Route exact path={Paths.HOME}>
                     <Home/>
                 </Route>
 
-                <Route path="/~20006203/blog">
+                <Route path={Paths.BLOG}>
                     <Blog/>
                 </Route>
 
-                <Route path="/~20006203/contact">
+                <Route path={Paths.CONTACT}>
                     <Contact/>
                 </Route>
 
-                <Route path="/~20006203/login">
+                <Route path={Paths.LOGIN}>
                     <Login/>
                 </Route>
 
-                <Route path="/~20006203/signup">
+                <Route path={Paths.SIGNUP}>
                     <Signup/>
                 </Route>
 
-                <Route path="/~20006203/post/:id">
+                <Route path={Paths.POST}>
                     <Post/>
                 </Route>
 
