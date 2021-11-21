@@ -8,10 +8,10 @@ import {logger} from "./log";
  */
 export function getPrefix(): string {
     if (process.env.NODE_ENV === 'development') {
-        return 'http://localhost:8000/'
+        return 'https://localhost:8000/'
     }
     else if (process.env.NODE_ENV === 'production') {
-        return 'http://comp-server.uhi.ac.uk/~20006203/'
+        return 'https://comp-server.uhi.ac.uk/~20006203/'
     }
 
     throw new TypeError('Could not locate prefix.')
