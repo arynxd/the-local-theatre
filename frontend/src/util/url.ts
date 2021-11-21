@@ -11,7 +11,7 @@ export function getPrefix(): string {
         return 'http://localhost:8000/'
     }
     else if (process.env.NODE_ENV === 'production') {
-        return window.location.toString()
+        return 'http://comp-server.uhi.ac.uk/~20006203/'
     }
 
     throw new TypeError('Could not locate prefix.')
