@@ -39,11 +39,11 @@ function PostPlaceholders() {
     for (let i = 0; i < 10; i++) {
         elems[i] = (
             <div key={i} className='flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-                <div className='w-12 h-12 m-2 bg-blue-200 dark:bg-gray-400 rounded'/>
+                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
 
                 <div className='w-full h-full'>
-                    <div className='w-auto h-4 m-2 bg-blue-200 dark:bg-gray-400 rounded'/>
-                    <div className='w-auto h-4 m-2 bg-blue-200 dark:bg-gray-400 rounded'/>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
                 </div>
             </div>
         )
@@ -75,7 +75,7 @@ function Activity(props: ActivityProps) {
                 className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
                 {!avatar ?
                     // avatar hasn't loaded yet
-                    <div className='w-12 h-12 m-2 bg-blue-200 dark:bg-gray-400 rounded'/> :
+                    <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/> :
                     // avatar has loaded, display it
                     <img className='w-12 h-12 m-2 ml-5' src={avatar} alt="User avatar"/>
                 }

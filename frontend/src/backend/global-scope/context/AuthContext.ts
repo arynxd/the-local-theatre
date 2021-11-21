@@ -3,6 +3,7 @@ import {assert} from "../../../util/assert";
 import BackendError from "../../error/BackendError";
 import Routes from "../../request/route/Routes";
 import {newBackendAction} from "../../request/BackendAction";
+import {BehaviorSubject} from "rxjs";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 export type AuthToken = string
@@ -10,16 +11,12 @@ export type AuthToken = string
 const AUTH_KEY = "authorisation"
 
 export class AuthContext extends Context {
+    public readonly observable$$: BehaviorSubject<AuthState>
+
     constructor() {
         super()
-        this._state = 'none'
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-    }
-
-    private _state: AuthState
-
-    get state() {
-        return this._state
+        this.observable$$ = new BehaviorSubject<AuthState>(this.token ? 'authenticated' : 'none')
     }
 
     private _token?: string
@@ -29,7 +26,7 @@ export class AuthContext extends Context {
     }
 
     async login(email: string, password: string): Promise<boolean> {
-        assert(() => this._state !== 'authenticated',
+        assert(() => this.observable$$.value !== 'authenticated',
             () => new BackendError('Tried to login whilst already being authenticated.')
         )
 
@@ -47,12 +44,16 @@ export class AuthContext extends Context {
             return res.token
         })
 
+
         this._token = newToken
+        localStorage[AUTH_KEY] = newToken
+        this.observable$$.next('authenticated')
         return true
     }
 
     async logout(): Promise<void> {
-        this._state = 'signed_out'
+        this.observable$$.next('signed_out')
         this._token = undefined
+        localStorage[AUTH_KEY] = undefined
     }
 }

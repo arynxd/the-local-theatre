@@ -1,11 +1,21 @@
 import {Context} from "./Context";
+import {BehaviorSubject} from "rxjs";
 
 export type Theme = 'dark' | 'light'
 
+const THEME_KEY = 'theme'
+
 export class ThemeContext extends Context {
+    public readonly observable$$: BehaviorSubject<Theme>
+
     constructor() {
-        super();
-        this.loadTheme()
+        super()
+        this.observable$$ = new BehaviorSubject(this.currentTheme())
+
+        this.observable$$.subscribe(theme => {
+            localStorage.theme = theme
+            this.setThemeOnDOM(theme)
+        })
     }
 
     /**
@@ -13,8 +23,8 @@ export class ThemeContext extends Context {
      *
      * @returns Theme the currently selected theme
      */
-    get currentTheme(): Theme {
-        return localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    private currentTheme(): Theme {
+        return localStorage[THEME_KEY] === 'dark' || (!(THEME_KEY in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? 'dark'
             : 'light'
     }
@@ -23,20 +33,9 @@ export class ThemeContext extends Context {
      * Loads the currently set theme into the DOM.
      * This will trigger a re-render and thus, tailwind will load the appropriate theme styles.
      */
-    loadTheme() {
-        this.currentTheme === "dark"
+    private setThemeOnDOM(theme: Theme) {
+        theme === "dark"
             ? document.documentElement.classList.add('dark')
             : document.documentElement.classList.remove('dark')
-    }
-
-    /**
-     * Sets the theme in local storage
-     * This will call loadTheme()
-     *
-     * @param theme The new theme
-     */
-    setTheme(theme: Theme) {
-        localStorage.theme = theme
-        this.loadTheme()
     }
 }

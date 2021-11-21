@@ -4,7 +4,7 @@ import {AuthContext} from "../context/AuthContext";
 import {BehaviorSubject} from "rxjs";
 import {Globals, GlobalScope} from "../GlobalScope";
 
-export function getGlobals() {
+export function getGlobals(): Globals {
     return getGlobalScope().getValue()
 }
 

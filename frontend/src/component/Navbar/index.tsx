@@ -1,10 +1,13 @@
-import React, {MouseEvent, useState} from "react";
+import React, {MouseEvent, useCallback, useState} from "react";
 import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
 import {ParentProps} from "../props/ParentProps";
 import dots from '../../assets/dots-menu.png'
 import ThemeToggle from "../ThemeToggle";
 import {StylableProps} from "../props/StylableProps";
+import {AuthState} from "../../backend/global-scope/context/AuthContext";
+import {getAuth} from "../../backend/global-scope/util/getters";
+import {useSubscription} from "../../backend/hook/useSubscription";
 
 interface Props {
     isOpen: boolean
@@ -42,7 +45,7 @@ function MobileNavButton(props: ClickableProps) {
 function LinkList(props: ClickableProps) {
     const linkStyles = `
         z-rounded-xl text-sm font-semibold text-gray-300 hover:border-xl hover:bg-clip-content hover:bg-blue-600 
-        text-center p-2 m-3 w-10/12 shadow-md dark:hover:bg-blue-900 dark:shadow-lg
+        text-center p-2 m-3 w-10/12 shadow-md dark:shadow-lg
         bg-blue-400 bg-blue-800 
         transition duration-150 ease-in-out
     `
@@ -57,6 +60,12 @@ function LinkList(props: ClickableProps) {
         md:block
         h-10 w-10
     `
+
+    const authCtx = getAuth()
+    const [authState, setAuthState] = useState<AuthState>(authCtx.observable$$.value)
+
+    useSubscription(authCtx.observable$$, useCallback(newState => setAuthState(newState), []))
+
 
     const divStyles = `${props.isOpen ? 'hidden' : 'block'}`
 
@@ -77,9 +86,18 @@ function LinkList(props: ClickableProps) {
 
             <Link className={linkStyles} to="/~20006203/contact">Contact Us</Link>
 
-            <Link className={linkStyles} to="/~20006203/login">Login</Link>
+            {authState === 'authenticated'
+                ? <>
+                    <p className={linkStyles}>Profile</p>
+                    <button  className={linkStyles} onClick={() => authCtx.logout()}><p>Sign Out</p></button>
+                </>
+                :
+                <>
+                    <Link className={linkStyles} to="/~20006203/login">Login</Link>
+                    <Link className={linkStyles} to="/~20006203/signup">Signup</Link>
+                </>
 
-            <Link className={linkStyles} to="/~20006203/signup">Signup</Link>
+            }
         </>
     )
 }
