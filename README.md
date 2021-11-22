@@ -17,7 +17,7 @@
 - [x] add 20006203 prefix to all parts of the site
 - [x] Order entities by creation date
 - [ ] Abstract backend IO operations (reading files, json decoding / encoding)
-  - [ ] Add JSON stuff to map
+  - [x] Add JSON stuff to map
   - File IO does not need abstraction
 - [ ] Unify codebase (default export, naming)
 - [ ] Change CORS policy in backend
@@ -25,19 +25,18 @@
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Implement database integration in backend
-- [ ] Change TS private -> JS #
 
 
 ## Feature List 
-- [ ] Login
-- [ ] Logout
+- [x] Login
+- [x] Logout
+- [x] Post page
 - [ ] Comment list
 - [ ] Comment add
 - [ ] Comment remove
 - [ ] Moderation log
 - [ ] User promotion
 - [ ] User demotion
-- [ ] Post page
 - [ ] Post list page
 
 ## Ideas
