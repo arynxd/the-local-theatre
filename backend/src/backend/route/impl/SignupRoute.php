@@ -15,14 +15,7 @@ class SignupRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $model = SignupUser::fromJSON($conn -> jsonParams()['data']);
-        $ctx = new SignupContext($conn, $model);
-
-        if ($ctx -> hasAccount()) {
-            $res -> sendJSON(map([
-                "token" => $ctx -> login()
-            ]), StatusCode::OK);
-        }
+        $res -> sendJSON(map(["token" => 'aaaaaabbbbddddd']));
     }
 
     public function validateRequest($conn, $res) {
