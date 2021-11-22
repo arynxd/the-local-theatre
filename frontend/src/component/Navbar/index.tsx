@@ -1,13 +1,61 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
 import logoWithText from '../../assets/LogoWithTextNoBG.png'
 import {Paths} from "../../util/paths";
+import {getAuth, getBackend} from "../../backend/global-scope/util/getters";
+import {useSubscription} from "../../backend/hook/useSubscription";
+import {useAPI} from "../../backend/hook/useAPI";
+import {toURL} from "../../backend/request/mappers";
+import ThemeToggle from "../ThemeToggle";
+import Separator from "../Separator";
+
+function ProfileMenu() {
+    const [isOpen, setOpen] = useState(false)
+    const selfAvatar = useAPI(() =>
+        getAuth().loadSelfUser()
+            .flatMap(getBackend().http.loadAvatar)
+            .map(toURL)
+    )
+
+    const imageStyles = `
+        origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-100 dark:bg-gray-700 ring-1 focus:outline-none
+        ${isOpen ? 'absolute' : 'hidden'} 
+   `
+    return (
+        <>
+            <button onClick={() => setOpen(!isOpen)} className="bg-gray-800 flex text-sm rounded-full focus:outline-none">
+                <span className="sr-only">Open user menu</span>
+                <img className="h-10 w-10 rounded-full" src={selfAvatar} alt='Your avatar'/>
+            </button>
+            <div className={imageStyles}>
+                <div className='grid grid-cols-1 place-items-center w-full h-full'>
+                    <h1 className='font-semibold text-xl dark:text-gray-200'>Profile</h1>
+                    <Separator className='w-2/3'/>
+
+                    <button className='dark:text-gray-300' onClick={() => getAuth().logout()}>Sign out</button>
+                    <Separator className='w-1/3'/>
+
+                    <div className='flex flex-row items-center justify-center'>
+                        <h2 className='dark:text-gray-300'>Theme toggle</h2>
+                        <ThemeToggle className='w-12 h-12 p-2'/>
+                    </div>
+                    <Separator className='w-3/5'/>
+                </div>
+            </div>
+        </>
+    )
+}
 
 export default function Navbar() {
     //TODO: get the animation to work when the navbar comes down on mobile
-    //TODO: auto close the navbar when a link is selected
+
+    const auth$$ = getAuth().observable$$
+
+    const [authState, setAuthState] = useState(auth$$.value)
     const [isMobileOpen, setMobileOpen] = useState(false)
+
+    useSubscription(auth$$, useCallback((newAuth) => setAuthState(newAuth), []))
 
     const hamburgerCloseStyles = `
         ${isMobileOpen ? 'hidden' : 'block'} h-6 w-6
@@ -35,7 +83,7 @@ export default function Navbar() {
     const MobileStyledLink = (props: { text: string, path: string }) => {
         const styles = 'bg-blue-700 block text-white hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
         return (
-            <Link className={styles} to={props.path}>{props.text}</Link>
+            <Link className={styles} onClick={() => setMobileOpen(false)} to={props.path}>{props.text}</Link>
         )
     }
 
@@ -45,7 +93,7 @@ export default function Navbar() {
     return (
         <>
             <div onClick={() => setMobileOpen(!isMobileOpen)} className={mobileBackdropStyles}/>
-            <ul className='bg-blue-800 relative z-30'>
+            <nav className='bg-blue-800 relative z-30'>
                 <div className='px-2 sm:px-6 lg:px-8'>
                     <div className='relative flex items-center justify-between h-16'>
                         <div className='absolute z-40 inset-y-0 left-0 flex items-center sm:hidden'>
@@ -84,9 +132,22 @@ export default function Navbar() {
                                     <DesktopStyledLink text='Home' path={Paths.HOME}/>
                                     <DesktopStyledLink text='Blog' path={Paths.BLOG}/>
                                     <DesktopStyledLink text='Contact Us' path={Paths.CONTACT}/>
-                                    <DesktopStyledLink text='Login' path={Paths.LOGIN}/>
-                                    <DesktopStyledLink text='Sign up' path={Paths.SIGNUP}/>
+                                    {authState !== 'authenticated'
+                                        ? <>
+                                            <DesktopStyledLink text='Login' path={Paths.LOGIN}/>
+                                            <DesktopStyledLink text='Sign up' path={Paths.SIGNUP}/>
+                                        </>
+                                        : <> </>
+                                    }
                                 </div>
+                            </div>
+                        </div>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                            <div className="ml-3 relative">
+                                {authState === 'authenticated'
+                                    ? <ProfileMenu/>
+                                    : <> </>
+                                }
                             </div>
                         </div>
                     </div>
@@ -97,11 +158,17 @@ export default function Navbar() {
                         <MobileStyledLink text='Home' path={Paths.HOME}/>
                         <MobileStyledLink text='Blog' path={Paths.BLOG}/>
                         <MobileStyledLink text='Contact Us' path={Paths.CONTACT}/>
-                        <MobileStyledLink text='Login' path={Paths.LOGIN}/>
-                        <MobileStyledLink text='Sign up' path={Paths.SIGNUP}/>
+
+                        {authState !== 'authenticated'
+                            ? <>
+                                <MobileStyledLink text='Login' path={Paths.LOGIN}/>
+                                <MobileStyledLink text='Sign up' path={Paths.SIGNUP}/>
+                            </>
+                            : <></>
+                        }
                     </div>
                 </div>
-            </ul>
+            </nav>
         </>
     )
 }

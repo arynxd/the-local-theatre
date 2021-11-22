@@ -3,6 +3,7 @@ import {logger} from "../../util/log";
 import BackendError from "../error/BackendError";
 import {BackendAction} from "./BackendAction";
 import {GenericModel} from "../../model/GenericModel";
+import {getBackend} from "../global-scope/util/getters";
 
 export interface ValidTypeOf {
      'undefined': undefined,
@@ -60,11 +61,22 @@ export function fromPromise<T>(promise: Promise<T>): BackendAction<T> {
  * @param conversion      The conversion function, converts JSON to the model type.
  *                        This function should throw when invalid data is received
  */
-export function toModel<T extends GenericModel>(value: JSONValue, conversion: (json: JSONObject) => T): T[] {
+export function toModelArray<T extends GenericModel>(value: JSONValue, conversion: (json: JSONObject) => T): T[] {
     if (isJSONArray(value)) {
         // we just filtered for this, TS just cant infer it
         // as such, casting is ok
-        return value.filter(isJSONObject).map(v => conversion(v as JSONObject))
+        return value.filter(isJSONObject).map(v => conversion.call(getBackend().entity, v as JSONObject))
     }
-    throw new BackendError('Data was invalid, expected array got ' + value)
+    throw new BackendError('Data was invalid, expected array got ' + JSON.stringify(value))
+}
+
+export function toModel <T extends GenericModel>(value: JSONValue, conversion: (json: JSONObject) => T): T {
+    if (isJSONObject(value)) {
+        return conversion.call(getBackend().entity, value)
+    }
+    throw new BackendError("Data was invalid, expected object got " + JSON.stringify(value))
+}
+
+export function toURL(blob: Blob): string {
+    return URL.createObjectURL(blob)
 }

@@ -1,9 +1,9 @@
 import {StylableProps} from "../props/StylableProps";
 import {User} from "../../model/User";
 import {getBackend} from "../../backend/global-scope/util/getters";
-import {toURL} from "../../util/image";
 import {useAPI} from "../../backend/hook/useAPI";
 import {ImgHTMLAttributes} from "react";
+import {toURL} from "../../backend/request/mappers";
 
 interface AvatarProps extends StylableProps, ImgHTMLAttributes<HTMLImageElement>{
     user: User

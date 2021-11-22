@@ -6,9 +6,8 @@ import {BackendAction} from "../request/BackendAction";
 import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {Comment} from "../../model/Comment";
 import {Show} from "../../model/Show";
-import {getBackend} from "../global-scope/util/getters";
-import {AuthToken} from "../global-scope/context/AuthContext";
-import {fromPromise, toJSON, toModel} from "../request/mappers";
+import {getAuth, getBackend} from "../global-scope/util/getters";
+import {fromPromise, toJSON, toModel, toModelArray} from "../request/mappers";
 
 /**
  * Manages all HTTP duties for the backend
@@ -47,7 +46,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModel(v.posts, this.backend().entity.createPost))
+            .map(v => toModelArray(v.posts, this.backend().entity.createPost))
     }
 
     loadShowImage(show: Show): BackendAction<Blob> {
@@ -65,7 +64,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModel(v.shows, this.backend().entity.createShow))
+            .map(v => toModelArray(v.shows, this.backend().entity.createShow))
     }
 
     fetchComments(limit: number, latest?: EntityIdentifier): BackendAction<Comment[]> {
@@ -77,19 +76,34 @@ export class HttpManager extends Manager {
 
         route.withQueryParam('limit', limit.toString(10))
 
-         return BackendAction.new(route)
+        return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModel(v.comments, this.backend().entity.createComment))
+            .map(v => toModelArray(v.comments, this.backend().entity.createComment))
     }
 
     private readonly backend = () => getBackend()
 
-    loadSelfUser(token: AuthToken): BackendAction<User> {
-         const route = Routes.Self.FETCH.compile()
-        route.withQueryParam('token', token)
+    loadSelfUser(): BackendAction<User> {
+        const route = Routes.Self.FETCH.compile()
 
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(this.backend().entity.createUser)
+    }
+
+    loadPing(): BackendAction<number> {
+        const now = () => Math.floor(Date.now() / 1000)
+        let time = now()
+        return getAuth().loadSelfUser().map(() => now() - time)
+    }
+
+    loadPost(id: EntityIdentifier): BackendAction<Post> {
+        const route = Routes.Post.FETCH.compile()
+        route.withQueryParam('id', id)
+
+        return BackendAction.new(route)
+            .flatMap(toJSON)
+            .map(v => toModel(v.post, this.backend().entity.createPost))
+
     }
 }

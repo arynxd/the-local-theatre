@@ -1,4 +1,4 @@
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, skip} from "rxjs";
 import {JSONObject} from "../JSONObject";
 import {BackendController} from "../BackendController";
 import {ContextController} from "./ContextController";
@@ -16,4 +16,13 @@ export class Globals {
 }
 
 export const GlobalScope = new BehaviorSubject<Globals>(new Globals())
+
+GlobalScope
+    .pipe(
+        skip(1) // skip the first element, which is the current value
+    )
+    .subscribe(() => {
+        throw new TypeError("Globals have changed, this is a bug.")
+    }
+)
 

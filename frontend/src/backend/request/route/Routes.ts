@@ -31,6 +31,6 @@ export default class Routes {
     }
 
     public static readonly Self = class {
-        public static readonly FETCH = new Route('api/user/@me', 'GET', ['token'], [], false)
+        public static readonly FETCH = new Route('api/user/@me', 'GET', [], [], true)
     }
 }

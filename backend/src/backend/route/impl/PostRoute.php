@@ -6,6 +6,8 @@
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
+require_once __DIR__ . '/../../util/Map.php';
+require_once __DIR__ . '/../../util/identifier.php';
 require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . '/../../model/PostModel.php';
 require_once __DIR__ . '/../../util/constant/Constants.php';
@@ -16,10 +18,12 @@ class PostRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user = new UserModel(1, 'john doe', 0, 1, 1, 'jdoe', Constants::AVATAR_URL_PREFIX());
-        $model = new PostModel(1, $user, "Lorem ipsum sit amet", 1, 0);
+        $user = new UserModel(createIdentifier(), 'john doe', 0, 1, 1, 'jdoe', Constants::AVATAR_URL_PREFIX());
+        $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", 50), "Post title here, filler filler filler filler", 163761416);
 
-        $res -> sendJSON($model -> toMap(), StatusCode::OK);
+        $res -> sendJSON(map([
+            'post' => $model -> toMap()
+        ]), StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

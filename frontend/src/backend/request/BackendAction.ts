@@ -31,17 +31,26 @@ export class BackendAction<T> extends Promise<T> {
 
     private throwIfTypeOfInvalid<U extends keyof ValidTypeOf>(value: unknown, type: U): asserts value is ValidTypeOf[U] {
         if (typeof value !== type) {
-            throw new TypeError("Assertion failed, value was not of type " + type)
+            throw new TypeError("Assertion failed, value was not of type " + type + " \n Got " + JSON.stringify(value) + " instead")
         }
     }
 
-    public throwIfTypeIsnt<U extends keyof ValidTypeOf>(type: U): BackendAction<ValidTypeOf[U]> {
+    public assertTypeOf<U extends keyof ValidTypeOf>(type: U): BackendAction<ValidTypeOf[U]> {
         return new BackendAction<ValidTypeOf[U]>((res, rej) => {
             return this.then(v => {
                 this.throwIfTypeOfInvalid(v, type)
                 res(v)
             }).catch(rej)
         })
+    }
+
+    public also(effect: (value: T) => void): BackendAction<T> {
+        this.then(effect)
+        return this
+    }
+
+    public toPromise(): Promise<T> {
+        return this
     }
 
 

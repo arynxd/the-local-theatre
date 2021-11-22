@@ -7,9 +7,9 @@ import Separator from "../../component/Separator";
 import {toDate} from "../../util/time";
 import {User} from "../../model/User";
 import {Show} from "../../model/Show";
-import {toURL} from "../../util/image";
 import {BackendController} from "../../backend/BackendController";
 import {getBackend} from "../../backend/global-scope/util/getters";
+import {toURL} from "../../backend/request/mappers";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -58,7 +58,6 @@ function Activity(props: ActivityProps) {
 
     const avatar = useAPI(() => props.backend.http.loadAvatar(props.author).map(toURL))
 
-
     const formatDate = (d: Date): string => {
         return `on ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} at
     ${d.toLocaleTimeString(undefined, {
@@ -104,7 +103,7 @@ function LatestShows() {
                 <img className='h-2/3 w-full pb-4' src={img}
                      alt={`Advertisement of ${showProps.model.title}`}/>
                 <Separator className='pt-4 w-2/3'/>
-                <h1 className='text-bold text-lg text-gray-900 dark:text-gray-200'>{showProps.model.title}</h1>
+                <h1 className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</h1>
             </div>
         )
     };

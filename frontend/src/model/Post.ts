@@ -13,6 +13,7 @@ export interface Post extends IdentifiedEntity, GenericModel {
 
 export function isPost(json: JSONObject | Post): json is Post {
     const now = new Date()
+
     return isEntityIdentifier(json.id) &&
         isJSONObject(json.author as JSONValue) && // it will always be a value of some sort
         isUser(json.author as JSONObject) &&      // if its an object ^, we can cast it
