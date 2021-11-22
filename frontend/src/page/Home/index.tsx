@@ -38,10 +38,10 @@ function PostPlaceholders() {
 
     for (let i = 0; i < 10; i++) {
         elems[i] = (
-            <div key={i} className='flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+            <div key={i} className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
                 <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
 
-                <div className='w-full h-full'>
+                <div className='w-full h-full animate-pulse'>
                     <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
                     <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
                 </div>

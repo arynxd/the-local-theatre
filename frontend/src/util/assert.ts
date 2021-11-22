@@ -1,6 +1,4 @@
-import {logger} from "./log";
-
-export const ASSERT_ENABLED = logger.isDebugEnabled()
+export const ASSERT_ENABLED = true
 
 
 /**

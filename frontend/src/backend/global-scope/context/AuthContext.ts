@@ -4,6 +4,7 @@ import BackendError from "../../error/BackendError";
 import Routes from "../../request/route/Routes";
 import {newBackendAction} from "../../request/BackendAction";
 import {BehaviorSubject} from "rxjs";
+import {getBackend} from "../util/getters";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 export type AuthToken = string
@@ -12,17 +13,28 @@ const AUTH_KEY = "authorisation"
 
 export class AuthContext extends Context {
     public readonly observable$$: BehaviorSubject<AuthState>
-
-    constructor() {
-        super()
-        this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-        this.observable$$ = new BehaviorSubject<AuthState>(this.token ? 'authenticated' : 'none')
-    }
-
     private _token?: string
 
     get token(): AuthToken | undefined {
         return this._token
+    }
+
+    constructor() {
+        super()
+        this._token = localStorage.getItem(AUTH_KEY) ?? undefined
+        this.observable$$ = new BehaviorSubject<AuthState>(this.token != null ? 'authenticated' : 'none')
+    }
+
+    async loadSelfUser() {
+        assert(() => this.observable$$.value === 'authenticated',
+            () => new BackendError('Tried to load self user without being authenticated')
+        )
+
+        if (this._token === undefined) {
+            throw new BackendError('Tried to load self user without a token present')
+        }
+
+        return await getBackend().http.loadSelfUser(this._token)
     }
 
     async login(email: string, password: string): Promise<boolean> {
@@ -41,12 +53,15 @@ export class AuthContext extends Context {
         const newToken = await newBackendAction(route, res => {
             if (typeof res.token !== 'string')
                 throw new BackendError('Token was not a string')
+
+
             return res.token
         })
 
 
         this._token = newToken
         localStorage[AUTH_KEY] = newToken
+
         this.observable$$.next('authenticated')
         return true
     }

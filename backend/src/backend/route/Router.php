@@ -8,6 +8,7 @@ require_once __DIR__ . '/../route/impl/LoginRoute.php';
 require_once __DIR__ . '/../route/impl/ModerationRoute.php';
 require_once __DIR__ . '/../route/impl/PostListRoute.php';
 require_once __DIR__ . '/../route/impl/PostRoute.php';
+require_once __DIR__ . '/../route/impl/SelfUserRoute.php';
 require_once __DIR__ . '/../route/impl/ShowImageRoute.php';
 require_once __DIR__ . '/../route/impl/ShowListRoute.php';
 require_once __DIR__ . '/../route/impl/SignupRoute.php';
@@ -32,6 +33,7 @@ class Router {
             new ModerationRoute(),
             new PostListRoute(),
             new PostRoute(),
+            new SelfUserRoute(),
             new ShowImageRoute(),
             new ShowListRoute(),
             new SignupRoute(),

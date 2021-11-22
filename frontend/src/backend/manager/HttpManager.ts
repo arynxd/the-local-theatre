@@ -8,6 +8,7 @@ import {Comment} from "../../model/Comment";
 import {Show} from "../../model/Show";
 import {ModelTransformer} from "../request/Transformers";
 import {getBackend} from "../global-scope/util/getters";
+import {AuthToken} from "../global-scope/context/AuthContext";
 
 /**
  * Manages all HTTP duties for the backend
@@ -18,7 +19,7 @@ export class HttpManager extends Manager {
         const route = Routes.User.FETCH.compile()
         route.withQueryParam('id', id.toString())
 
-        return newBackendAction(route, res => this.backend().entity.createUser(res))
+        return newBackendAction(route, this.backend().entity.createUser)
     }
 
     /**
@@ -72,4 +73,11 @@ export class HttpManager extends Manager {
     }
 
     private readonly backend = () => getBackend()
+
+    async loadSelfUser(token: AuthToken): Promise<User> {
+         const route = Routes.Self.FETCH.compile()
+        route.withQueryParam('token', token)
+
+        return newBackendAction(route, this.backend().entity.createUser)
+    }
 }

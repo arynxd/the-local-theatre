@@ -4,7 +4,7 @@ import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
 import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
-import {assert, assertTruthy} from "../../util/assert";
+import {assert} from "../../util/assert";
 import {getAuth} from "../global-scope/util/getters";
 
 export type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
@@ -84,7 +84,7 @@ export function newBackendAction<T>(
                     let msg = ""
 
                     msg += "Failed to parse JSON for backend response. Expected valid JSON got: \n"
-                    msg += json
+                    msg += JSON.stringify(json)
                     logger.error(new BackendError(msg))
                     throw new BackendError(msg)
                 }
@@ -94,13 +94,13 @@ export function newBackendAction<T>(
             }
         }
         else {
-            const json = await result.json()
+            const json = JSON.parse(await result.text())
 
-            const ex = new BackendError('JSON response was malformed. Expected object, got ' + json)
+            const ex = new BackendError('JSON response was malformed. Expected object, got ' + JSON.stringify(json))
 
             // assert that the json we received was of type object, and was not null/undefined
             assert(() => typeof json === 'object', () => ex)
-            assertTruthy(() => json, () => ex)
+            assert(() => json != null, () => ex)
 
             if (isAPIError(json)) {
                 logger.error("API returned an error: \n " + JSON.stringify(json))

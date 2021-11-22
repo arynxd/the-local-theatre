@@ -15,7 +15,7 @@ class LoginRoute extends Route {
 
     public function handle($conn, $res) {
         $res -> sendJSON(map([
-            "token" => "aaaaabbbbbbcccccddddddeeeeefffff",
+            "token" => "aaaaabbbbbbcccccddddddeeeeefffff"
         ]), StatusCode::OK);
     }
 
