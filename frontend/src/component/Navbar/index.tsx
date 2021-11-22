@@ -7,6 +7,8 @@ import {Paths} from "../../util/paths";
 export default function Navbar() {
     //TODO: get the animation to work when the navbar comes down on mobile
     //TODO: auto close the navbar when a link is selected
+    //TODO: add stateful profile logic to the right hand side of the navbar 
+    
     const [isMobileOpen, setMobileOpen] = useState(false)
 
     const hamburgerCloseStyles = `
