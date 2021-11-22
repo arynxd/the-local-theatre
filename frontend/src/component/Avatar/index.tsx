@@ -13,7 +13,7 @@ interface AvatarProps extends StylableProps, ImgHTMLAttributes<HTMLImageElement>
 export default function Avatar(props: AvatarProps) {
     const {user, notLoaded, ...rest} = props
 
-    const avatar = useAPI(() => getBackend().http.loadAvatar(user).then(toURL))
+    const avatar = useAPI(() => getBackend().http.loadAvatar(user).map(toURL))
 
     if (!avatar) {
         return (

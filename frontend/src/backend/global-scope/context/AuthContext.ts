@@ -2,9 +2,10 @@ import {Context} from "./Context";
 import {assert} from "../../../util/assert";
 import BackendError from "../../error/BackendError";
 import Routes from "../../request/route/Routes";
-import {newBackendAction} from "../../request/BackendAction";
+import {BackendAction} from "../../request/BackendAction";
 import {BehaviorSubject} from "rxjs";
 import {getBackend} from "../util/getters";
+import {toJSON} from "../../request/mappers";
 
 export type AuthState = 'none' | 'authenticated' | 'signed_out'
 export type AuthToken = string
@@ -50,13 +51,10 @@ export class AuthContext extends Context {
         route.withQueryParam('email', email)
         route.withQueryParam('password', hash(password))
 
-        const newToken = await newBackendAction(route, res => {
-            if (typeof res.token !== 'string')
-                throw new BackendError('Token was not a string')
-
-
-            return res.token
-        })
+        const newToken = await BackendAction.new(route)
+            .flatMap(toJSON)
+            .map(res => res.token)
+            .throwIfTypeIsnt('string')
 
 
         this._token = newToken

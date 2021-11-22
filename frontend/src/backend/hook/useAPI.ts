@@ -1,6 +1,5 @@
 import {logger} from "../../util/log";
 import BackendError from "../error/BackendError";
-import {BackendAction} from "../request/BackendAction";
 import usePromise from "react-use-promise";
 
 /**
@@ -14,8 +13,8 @@ import usePromise from "react-use-promise";
  * @returns Promise<T>|undefined The  resolved value, or undefined if this request has not resolved yet
  */
 export function useAPI<T>(
-    action: () => BackendAction<T>,
-    deps: any[] = [],
+    action: () => Promise<T>,
+    deps: unknown[] = [],
     errorHandler: (err: BackendError) => void = logger.error
 ): T | undefined {
     const [res, err, ,] = usePromise(action, deps)

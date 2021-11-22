@@ -56,7 +56,7 @@ function Activity(props: ActivityProps) {
     m-4 text-md text-gray-900 dark:text-gray-200
     `
 
-    const avatar = useAPI(() => props.backend.http.loadAvatar(props.author).then(toURL))
+    const avatar = useAPI(() => props.backend.http.loadAvatar(props.author).map(toURL))
 
 
     const formatDate = (d: Date): string => {
@@ -95,7 +95,7 @@ function LatestShows() {
     const shows = useAPI(() => backend.http.loadShows(4))
 
     const ShowElement = (showProps: { model: Show }) => {
-        const img = useAPI(() => backend.http.loadShowImage(showProps.model).then(toURL))
+        const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))
 
         return (
             <div

@@ -6,31 +6,65 @@ import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
 import {getAuth} from "../global-scope/util/getters";
+import {ValidTypeOf} from "./mappers";
 
-export type BackendRequestTransformer<T> = (res: Response) => T | Promise<T>
-export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | Promise<T>
-export type BackendAction<T> = Promise<T>
+export type BackendRequestTransformer<T> = (res: Response) => T | BackendAction<T>
+export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | BackendAction<T>
+export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
-/**
- * Create a new backend action.
- * This is just a function around a Promise.
- * This function will always reject with a BackendError, so it is safe to cast to this type.
- *
- * When requestTransformer is present, it will take priority over JSONTransformer
- * As such, Response#json will **NOT** be called when a requestTransformer is present
- *
- * @param route The route to request
- * @param JSONTransformer The transformer function to transform a JSON response
- * @param requestTransformer The transformer function to transform a regular response
- * @returns A Promise representing the request
- */
-export function newBackendAction<T>(
-    route: CompiledRoute,
-    JSONTransformer?: BackendRequestJSONTransformer<T>,
-    requestTransformer?: BackendRequestTransformer<T>
-): BackendAction<T> {
+export class BackendAction<T> extends Promise<T> {
+    public flatMap<U>(mapper: (action: T) => BackendActionLike<U>): BackendAction<U> {
+        return new BackendAction<U>((res, rej) => {
+            return this.then(v => {
+                mapper(v)
+                    .then(v2 => res(v2))
+                    .catch(err => rej(err))
+            }).catch(err => rej(err))
+        })
+    }
+
+    public map<U>(mapper: (value: T) => U): BackendAction<U> {
+        return new BackendAction<U>((res, rej) => {
+            return this.then(v => res(mapper(v))).catch(rej)
+        })
+    }
+
+    private throwIfTypeOfInvalid<U extends keyof ValidTypeOf>(value: unknown, type: U): asserts value is ValidTypeOf[U] {
+        if (typeof value !== type) {
+            throw new TypeError("Assertion failed, value was not of type " + type)
+        }
+    }
+
+    public throwIfTypeIsnt<U extends keyof ValidTypeOf>(type: U): BackendAction<ValidTypeOf[U]> {
+        return new BackendAction<ValidTypeOf[U]>((res, rej) => {
+            return this.then(v => {
+                this.throwIfTypeOfInvalid(v, type)
+                res(v)
+            }).catch(rej)
+        })
+    }
+
+
+    /**
+     * Create a new backend action.
+     * This is just a class around a Promise.
+     * This function will always reject with a BackendError, so it is safe to cast to this type.
+
+     * @param route The route to request
+     * @returns BackendAction<T> An action representing the request
+     */
+    public static new(
+        route: CompiledRoute
+    ): BackendAction<Response> {
+        return newBackendAction(route)
+    }
+}
+
+function newBackendAction(
+    route: CompiledRoute
+): BackendAction<Response> {
     logger.debug('Starting backend action for URL ' + route.url)
-    return new Promise<T>(async (resolve, reject) => {
+    return new BackendAction<Response>(async (resolve, reject) => {
         const auth = getAuth()
         if (route.routeData.requiresAuth) {
             if (!auth.token) {
@@ -69,29 +103,7 @@ export function newBackendAction<T>(
         }
 
         if (result.ok) {
-            if (requestTransformer) {
-                resolve(await requestTransformer(result))
-            }
-            else if (JSONTransformer) {
-                const json = await result.text()
-
-                let jsonObj: JSONObject
-
-                try {
-                    jsonObj = JSON.parse(json) as JSONObject
-                }
-                catch (ex) {
-                    let msg = ""
-
-                    msg += "Failed to parse JSON for backend response. Expected valid JSON got: \n"
-                    msg += JSON.stringify(json)
-                    logger.error(new BackendError(msg))
-                    throw new BackendError(msg)
-                }
-
-                logger.debug('Got a valid JSON response: \n ' + JSON.stringify(jsonObj))
-                resolve(await JSONTransformer(jsonObj))
-            }
+            resolve(result)
         }
         else {
             const json = JSON.parse(await result.text())
@@ -109,4 +121,5 @@ export function newBackendAction<T>(
         }
     })
 }
+
 
