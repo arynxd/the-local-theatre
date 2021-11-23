@@ -16,7 +16,7 @@
 - [x] Make posts a separate page
 - [x] add 20006203 prefix to all parts of the site
 - [x] Order entities by creation date
-- [ ] Abstract backend IO operations (reading files, json decoding / encoding)
+- [x] Abstract backend IO operations (reading files, json decoding / encoding)
   - [x] Add JSON stuff to map
   - File IO does not need abstraction
 - [ ] Unify codebase (default export, naming)
