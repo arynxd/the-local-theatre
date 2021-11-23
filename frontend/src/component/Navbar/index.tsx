@@ -9,9 +9,11 @@ import Separator from "../Separator";
 import {useSelfUser} from "../../backend/hook/useSelfUser";
 import Avatar from "../Avatar";
 import {hasPermission} from "../../model/Permission";
+import ThemeToggle from "../ThemeToggle";
 
 function ProfileMenu() {
     const [isOpen, setOpen] = useState(false)
+
     const selfUser = useSelfUser()
 
     if (!selfUser) {
@@ -21,7 +23,7 @@ function ProfileMenu() {
     }
 
     const imageStyles = `
-        origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-100 dark:bg-gray-700 ring-1 focus:outline-none
+        origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-100 dark:bg-gray-600 ring-1 focus:outline-none
         ${isOpen ? 'absolute' : 'hidden'} 
    `
 
@@ -30,17 +32,23 @@ function ProfileMenu() {
             <button onClick={() => setOpen(!isOpen)}
                     className="bg-gray-800 flex text-sm rounded-full focus:outline-none">
                 <span className="sr-only">Open user menu</span>
-                <Avatar className="h-10 w-10 rounded-full" user={selfUser} notLoaded={() => <p>loading</p>}/>
+                <Avatar className="h-10 w-10 rounded-full" user={selfUser}/>
             </button>
             <div className={imageStyles}>
                 <div className='grid grid-cols-1 place-items-center w-full h-full'>
                     <h1 className='font-semibold text-xl dark:text-gray-200'>Profile</h1>
                     <Separator className='w-2/3'/>
 
-                    <Link onClick={() => setOpen(false)} to={Paths.USER_SETTINGS}>Settings</Link>
+                    <div className='flex flex-row items-center'>
+                        <h2 className='p-2 dark:text-gray-200'>Theme Toggle: </h2>
+                        <ThemeToggle className='h-9 h-9'/>
+                    </div>
+                    <Separator className='w-6/12' />
+
+                    <Link className='dark:text-gray-200' onClick={() => setOpen(false)} to={Paths.USER_SETTINGS}>Settings</Link>
                     <Separator className='w-1/3'/>
 
-                    <button className='dark:text-gray-300' onClick={() => getAuth().logout()}>Sign out</button>
+                    <Link to={Paths.HOME} className='dark:text-gray-200' onClick={() => getAuth().logout()}>Sign out</Link>
                 </div>
             </div>
         </>
@@ -75,14 +83,14 @@ export default function Navbar() {
     `
 
     const DesktopStyledLink = (props: { text: string, path: string }) => {
-        const styles = 'bg-blue-700 text-white hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+        const styles = 'bg-blue-700 text-white hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium select-none'
         return (
             <Link className={styles} to={props.path}>{props.text}</Link>
         )
     }
 
     const MobileStyledLink = (props: { text: string, path: string }) => {
-        const styles = 'bg-blue-700 block text-white hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+        const styles = 'bg-blue-700 block text-white hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium select-none'
         return (
             <Link className={styles} onClick={() => setMobileOpen(false)} to={props.path}>{props.text}</Link>
         )

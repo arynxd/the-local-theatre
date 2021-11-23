@@ -42,7 +42,7 @@ export class AuthContext extends Context {
             if (this.isAuthenticated()) {
                 this.loadSelfUser()
             }
-        }, 500)
+        }, 1)
     }
 
     private _token?: string

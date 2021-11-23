@@ -12,7 +12,7 @@ export class UserCache extends AbstractCache<User> {
     }
 
     public async fetch(key: EntityIdentifier): Promise<User> {
-        return this.get(key) ?? await getBackend().http.loadUser(key)
+        return this.get(key) ?? getBackend().http.loadUser(key)
     }
 
     public cache(key: EntityIdentifier, value: User): void {

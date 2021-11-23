@@ -10,6 +10,7 @@ import {Show} from "../../model/Show";
 import {ManagerController} from "../../backend/manager/ManagerController";
 import {getBackend} from "../../backend/global-scope/util/getters";
 import {toURL} from "../../backend/request/mappers";
+import {createPlaceholders} from "../../util/tsx";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -31,25 +32,6 @@ interface ActivityProps {
     timeCreated: Date
     backend: ManagerController
     linkTo: string
-}
-
-function PostPlaceholders() {
-    const elems: JSX.Element[] = []
-
-    for (let i = 0; i < 10; i++) {
-        elems[i] = (
-            <div key={i}
-                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-
-                <div className='w-full h-full animate-pulse'>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                </div>
-            </div>
-        )
-    }
-    return elems
 }
 
 function Activity(props: ActivityProps) {
@@ -91,8 +73,22 @@ function Activity(props: ActivityProps) {
 }
 
 function LatestShows() {
+    //TODO have shows display the date they happen on
     const backend = getBackend()
     const shows = useAPI(() => backend.http.loadShows())
+
+    const PostPlaceholders = () =>
+        createPlaceholders((i) =>
+            <div key={i}
+                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+
+                <div className='w-full h-full animate-pulse'>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                </div>
+            </div>
+        )
 
     const ShowElement = (showProps: { model: Show }) => {
         const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))

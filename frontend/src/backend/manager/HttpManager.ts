@@ -117,4 +117,29 @@ export class HttpManager extends Manager {
     }
 
     private readonly backend = () => getBackend()
+
+    updateUser(newUser: User): BackendAction<void> {
+        const route = Routes.User.UPDATE.compile()
+            .withBody({
+                data: {
+                    id: newUser.id,
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                    permissions: newUser.permissions,
+                    dob: newUser.dob,
+                    joinDate: newUser.dob,
+                    username: newUser.username
+                }
+            })
+
+        return BackendAction.new(route)
+            .toVoid()
+    }
+
+    deleteUser(id: EntityIdentifier): BackendAction<void> {
+        const route = Routes.User.DELETE.compile()
+            .withQueryParam('id', id)
+
+        return BackendAction.new(route).toVoid()
+    }
 }

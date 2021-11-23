@@ -3,9 +3,10 @@ import {Post as PostModel} from "../../../model/Post";
 import commentIco from '../../../assets/comment.png'
 import {ChangeEvent, useCallback, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
-import {getBackend} from "../../../backend/global-scope/util/getters";
+import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
 import {Comment} from "../Comment";
 import Separator from "../../Separator";
+import {assert} from "../../../util/assert";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -19,9 +20,26 @@ interface AddCommentProps {
 
 function CommentView(props: PostProps) {
     const comments = useAPI(() => getBackend().http.fetchComments(props.post.id))
+
+    const LoadingComments = () => {
+        const out: JSX.Element[] = []
+        for (let _ = 0; _ < 10; _++) {
+            out.push(
+                <div className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
+                    <div className='bg-gray-300 w-2/5 h-4 animate-pulse rounded-xl m-2 mb-3'/>
+
+                    <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
+                    <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
+                </div>
+            )
+        }
+        return out
+    }
     if (!comments) {
         return (
-            <p>Loading</p>
+            <>{
+                LoadingComments()
+            }</>
         )
     }
 
@@ -35,8 +53,13 @@ function CommentView(props: PostProps) {
 function AddCommentView(props: PostProps & AddCommentProps) {
     const [text, setText] = useState("")
 
-    //TODO Length limits
     const submitHandler = useCallback(() => {
+        assert(() => text.length <= MAX_COMMENT_LENGTH,
+            () => new TypeError("Text exceeded the maximum of " + MAX_COMMENT_LENGTH))
+
+        assert(() => text.length > 0,
+            () => new TypeError("Text was empty"))
+
         getBackend().http.addComment(props.post.id, text)
             .then(() => {
                 setText('')
@@ -49,12 +72,12 @@ function AddCommentView(props: PostProps & AddCommentProps) {
     }, [])
 
     return (
-        <div className='bg-gray-100 mt-2 p-2 shadow rounded w-full'>
-            <h2 className='select-none'>Add a comment</h2>
+        <div className='bg-gray-100 dark:bg-gray-600 mt-2 p-2 shadow rounded w-full'>
+            <h2 className='select-none dark:text-gray-100'>Add a comment</h2>
             <Separator className='mx-0'/>
 
             <textarea minLength={1} maxLength={MAX_COMMENT_LENGTH} onChange={changeHandler}
-                      className='w-full h-44 rounded-xl shadow p-2'/>
+                      className='w-full h-44 rounded-xl shadow p-2 dark:bg-gray-600 dark:text-gray-100'/>
 
             <button onClick={submitHandler}
                     className='p-1 mt-4 w-6/12 text-gray-100 font-semibold text-md bg-blue-900 rounded shadow-xl'>
@@ -66,6 +89,7 @@ function AddCommentView(props: PostProps & AddCommentProps) {
 
 export default function Post(props: PostProps) {
     const post = props.post
+    //TODO change to a stateful cache for comments and update when it's empty
     const [isCommentsOpen, setCommentsOpen] = useState(false)
     const [isAddingComment, setAddingComment] = useState(false)
 
@@ -84,28 +108,30 @@ export default function Post(props: PostProps) {
             <div className='w-1/2'>
                 <div className='flex flex-col md:flex-row'>
                     <div
-                        className='block w-full h-10 bg-gray-100 shadow-xl rounded mb-1 md:mr-1 md:my-0'>
+                        className='block w-full h-10 bg-gray-100 dark:bg-gray-500 shadow-xl rounded mb-1 md:mr-1 md:my-0'>
                         <div onClick={() => {
                             setCommentsOpen(!isCommentsOpen)
                             setAddingComment(false)
                         }}
                              className='flex flex-row items-center justify-center h-full'>
                             <img className='w-5 h-5 m-2' src={commentIco} alt='Click to see comments'/>
-                            <p className='m-2 block select-none text-sm'>See comments</p>
+                            <p className='m-2 block select-none text-sm dark:text-gray-100'>See comments</p>
                         </div>
                     </div>
 
-                    <div
-                        className='block w-full h-10 bg-gray-100 shadow-xl rounded mt-1 md:ml-1 md:my-0'>
-                        <div onClick={() => {
-                            setAddingComment(!isAddingComment)
-                            setCommentsOpen(false)
-                        }}
-                             className='flex flex-row items-center justify-center h-full'>
-                            <img className='w-5 h-5 m-2' src={commentIco} alt='Click to see comments'/>
-                            <p className='m-2 block select-none text-sm'>Add comment</p>
+                    {getAuth().isAuthenticated()
+                        ? <div
+                            className='block w-full h-10 bg-gray-100 dark:bg-gray-500 shadow-xl rounded mt-1 md:ml-1 md:my-0'>
+                            <div onClick={() => {
+                                setAddingComment(!isAddingComment)
+                                setCommentsOpen(false)
+                            }}
+                                 className='flex flex-row items-center justify-center h-full'>
+                                <img className='w-5 h-5 m-2' src={commentIco} alt='Click to see comments'/>
+                                <p className='m-2 block select-none text-sm dark:text-gray-100'>Add comment</p>
+                            </div>
                         </div>
-                    </div>
+                        : <> </>}
                 </div>
 
                 {isCommentsOpen

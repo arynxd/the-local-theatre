@@ -2,14 +2,11 @@ import {fetch} from "../../util/url";
 import {isAPIError} from "../../model/APIError";
 import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
-import {JSONObject} from "../JSONObject";
 import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
 import {getAuth} from "../global-scope/util/getters";
 import {ValidTypeOf} from "./mappers";
 
-export type BackendRequestTransformer<T> = (res: Response) => T | BackendAction<T>
-export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | BackendAction<T>
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
 export class BackendAction<T> extends Promise<T> {

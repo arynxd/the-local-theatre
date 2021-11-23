@@ -7,17 +7,22 @@ import {toURL} from "../../backend/request/mappers";
 
 interface AvatarProps extends StylableProps, ImgHTMLAttributes<HTMLImageElement> {
     user: User
-    notLoaded: () => JSX.Element
 }
 
 export default function Avatar(props: AvatarProps) {
-    const {user, notLoaded, ...rest} = props
+    const {user, ...rest} = props
 
     const avatar = useAPI(() => getBackend().http.loadAvatar(user).map(toURL))
+    const styles = `
+        ${props.className}
+        animation-pulse rounded-xl bg-gray-300
+    `
 
     if (!avatar) {
         return (
-            <>{props.notLoaded()}</>
+            <div className={styles}>
+
+            </div>
         )
     }
     return (

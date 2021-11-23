@@ -2,9 +2,14 @@ import email from '../../assets/email.png'
 import phone from '../../assets/calling.png'
 import Separator from "../../component/Separator";
 
+const CONTACT_DETAILS = Object.freeze({
+    email: "admin@test.com",
+    phone: "00000 000 000"
+})
+
+
 export default function Contact() {
     return (
-        //TODO extract the contact details into somewhere else for maintainability
         <div className='md:flex md:justify-center md:w-auto md:h-screen'>
             <div
                 className='flex flex-col w-auto items-center md:w-1/3 h-44 m-2 rounded-2xl shadow-xl bg-gray-200 dark:bg-gray-500'>
@@ -15,12 +20,12 @@ export default function Contact() {
                 <div className='flex flex-row items-center'>
                     <img className='w-10 h-10 m-2' src={email} alt="Email icon"/>
                     <a href="mailto:admin@test.com"><p
-                        className='text-xl m-2 text-gray-800 dark:text-gray-300'>admin@test.com</p></a>
+                        className='text-xl m-2 text-gray-800 dark:text-gray-300'>{CONTACT_DETAILS.email}</p></a>
                 </div>
 
                 <div className='flex flex-row items-center mb-4'>
                     <img className='w-10 h-10 m-1' src={phone} alt="Phone icon"/>
-                    <p className='text-xl m-3 text-gray-800 dark:text-gray-300'>00000 000 000</p>
+                    <p className='text-xl m-3 text-gray-800 dark:text-gray-300'>{CONTACT_DETAILS.phone}</p>
                 </div>
             </div>
         </div>

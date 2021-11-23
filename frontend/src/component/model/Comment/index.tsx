@@ -85,9 +85,9 @@ export function Comment(props: CommentProps & StylableProps) {
 
     return (
         <div className={props.className}>
-            <div className='group bg-gray-100 shadow-xl my-2 relative rounded'>
-                <h3 className='text-xl p-2 w-max'>{author.firstName} {author.lastName}</h3>
-                <p className='text-md p-2 w-max'>{model.content}</p>
+            <div className='group bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded'>
+                <h3 className='text-xl p-2 w-max dark:text-gray-200'>{author.firstName} {author.lastName}</h3>
+                <p className='text-md p-2 w-max dark:text-gray-300'>{model.content}</p>
                 <div onClick={() => setContextOpen(!isContextOpen)}
                      className={contextStyles}>
                     <img className='h-4 w-4' src={menuIco} alt='Click to show comment menu'/>
