@@ -62,7 +62,7 @@ function ContextMenu(props: ContextMenuProps) {
     )
 }
 
-export function Comment(props: CommentProps & StylableProps) {
+export default function Comment(props: CommentProps & StylableProps) {
     const model = props.model
     const author = model.author
 

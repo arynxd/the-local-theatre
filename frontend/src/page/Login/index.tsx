@@ -3,7 +3,7 @@ import {FormEvent, useState} from "react"
 import {getAuth} from "../../backend/global-scope/util/getters";
 import {Redirect} from "react-router";
 import {Paths} from "../../util/paths";
-import {ErrorElement, ErrorState, FormElement} from "../../component/FormElement";
+import {FormElement, ErrorElement, ErrorState} from "../../component/FormElement";
 import {logger} from "../../util/log";
 
 type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'success'

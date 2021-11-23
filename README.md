@@ -19,18 +19,17 @@
 - [ ] Abstract backend IO operations (reading files, json decoding / encoding)
   - [x] Add JSON stuff to map
   - File IO does not need abstraction
-- [ ] Unify codebase (default export, naming)
+- [x] Unify codebase (default export, naming)
+- [x] Add placeholder divs for async tasks
 - [ ] Change CORS policy in backend
 - [ ] Make comments a separate page (so that users can click back to go back to the post)
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Implement database integration in backend
-- [ ] Unify select rings
 - [ ] Unify shadows
 - [ ] 404 Page
 - [ ] Perm checks for restricted pages
-- [ ] Add placeholder divs for async tasks
-
+- [ ] Change inline buttons to blue
 
 ## Feature List 
 - [x] Login
@@ -40,10 +39,9 @@
 - [x] Post list page
 - [x] Comment remove
 - [x] Comment add
+- [x] User promotion
+- [x] User demotion
 - [ ] Moderation log
-- [ ] User promotion
-- [ ] User demotion
-
 
 ## Ideas
 

@@ -4,9 +4,10 @@ import commentIco from '../../../assets/comment.png'
 import {ChangeEvent, useCallback, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
-import {Comment} from "../Comment";
+import Comment from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
+import {createPlaceholders} from "../../../util/tsx";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -21,20 +22,16 @@ interface AddCommentProps {
 function CommentView(props: PostProps) {
     const comments = useAPI(() => getBackend().http.fetchComments(props.post.id))
 
-    const LoadingComments = () => {
-        const out: JSX.Element[] = []
-        for (let _ = 0; _ < 10; _++) {
-            out.push(
-                <div className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
-                    <div className='bg-gray-300 w-2/5 h-4 animate-pulse rounded-xl m-2 mb-3'/>
+    const LoadingComments = () =>
+        createPlaceholders(() =>
+            <div className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
+                <div className='bg-gray-300 w-2/5 h-4 animate-pulse rounded-xl m-2 mb-3'/>
 
-                    <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
-                    <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
-                </div>
-            )
-        }
-        return out
-    }
+                <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
+                <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
+            </div>
+        )
+    
     if (!comments) {
         return (
             <>{
