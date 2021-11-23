@@ -25,19 +25,25 @@
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Implement database integration in backend
+- [ ] Unify select rings
+- [ ] Unify shadows
+- [ ] 404 Page
+- [ ] Perm checks for restricted pages
+- [ ] Add placeholder divs for async tasks
 
 
 ## Feature List 
 - [x] Login
 - [x] Logout
 - [x] Post page
-- [ ] Comment list
-- [ ] Comment add
-- [ ] Comment remove
+- [x] Comment list
+- [x] Post list page
+- [x] Comment remove
+- [x] Comment add
 - [ ] Moderation log
 - [ ] User promotion
 - [ ] User demotion
-- [ ] Post list page
+
 
 ## Ideas
 

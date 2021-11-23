@@ -1,5 +1,5 @@
 import {ThemeContext} from "../context/ThemeContext";
-import {BackendController} from "../../BackendController";
+import {ManagerController} from "../../manager/ManagerController";
 import {AuthContext} from "../context/AuthContext";
 import {BehaviorSubject} from "rxjs";
 import {Globals, GlobalScope} from "../GlobalScope";
@@ -16,7 +16,7 @@ export function getAuth(): AuthContext {
     return getGlobals().context.auth
 }
 
-export function getBackend(): BackendController {
+export function getBackend(): ManagerController {
     return getGlobals().backend
 }
 

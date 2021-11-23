@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../util/Map.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../util/constant/Constants.php';
+require_once __DIR__ . '/../../util/identifier.php';
 
 class UserListRoute extends Route {
     public function __construct() {
@@ -13,14 +14,14 @@ class UserListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $limit = $conn -> queryParams()['limit'];
 
         $out = new Map();
 
-        for ($i = 0; $i < $limit; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             $model = new UserModel(
-                $i,
-                'John Doe',
+                createIdentifier(),
+                'John',
+                'Doe',
                 0,
                 0,
                 0,
@@ -29,15 +30,13 @@ class UserListRoute extends Route {
             );
             $out -> push($model -> toMap());
         }
-        $res -> sendJSON($out, StatusCode::OK);
+        $res -> sendJSON(map([
+            'users' => $out
+        ]), StatusCode::OK);
 
     }
 
     public function validateRequest($conn, $res) {
-        $params = $conn -> queryParams();
-        if (!$params -> exists('limit') || $params['limit'] <= 0) {
-            return BadRequest("Limit Not Provided");
-        }
         return Ok();
     }
 }

@@ -12,6 +12,8 @@ import {NotFound} from "./page/NotFound";
 import Footer from "./component/Footer";
 import {Post} from './page/Post'
 import {Paths} from "./util/paths";
+import UserSettings from "./page/UserSettings";
+import Moderation from "./page/Moderation";
 
 /**
  * This is the main app function, it will spawn all the components required for the app to function
@@ -52,6 +54,14 @@ export default function App() {
 
                 <Route path={Paths.POST}>
                     <Post/>
+                </Route>
+
+                <Route path={Paths.USER_SETTINGS}>
+                    <UserSettings/>
+                </Route>
+
+                <Route path={Paths.MODERATION}>
+                    <Moderation/>
                 </Route>
 
                 <Route>

@@ -1,6 +1,6 @@
-import {HttpManager} from "./manager/HttpManager";
-import {CacheManager} from "./manager/CacheManager";
-import {EntityManager} from "./manager/EntityManager";
+import {HttpManager} from "./HttpManager";
+import {CacheManager} from "./CacheManager";
+import {EntityManager} from "./EntityManager";
 
 /**
  * Primary class for all backend operations
@@ -8,7 +8,7 @@ import {EntityManager} from "./manager/EntityManager";
  *
  * This class should only be created once, due to the expensive nature of its creation
  */
-export class BackendController {
+export class ManagerController {
     public readonly cache: CacheManager
     public readonly http: HttpManager
     public readonly entity: EntityManager

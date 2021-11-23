@@ -5,10 +5,10 @@ import Routes from "../../request/route/Routes";
 import {BackendAction} from "../../request/BackendAction";
 import {BehaviorSubject} from "rxjs";
 import {getBackend} from "../util/getters";
-import {toJSON} from "../../request/mappers";
+import {fromPromise, toJSON} from "../../request/mappers";
 import {User} from "../../../model/User";
 
-export type AuthState = 'none' | 'authenticated' | 'signed_out'
+export type AuthState = 'unauthenticated' | 'authenticated'
 export type AuthToken = string
 
 const AUTH_KEY = "authorisation"
@@ -23,7 +23,9 @@ export interface SignupObj {
 }
 
 export class AuthContext extends Context {
-    public readonly observable$$: BehaviorSubject<AuthState>
+    public readonly observeAuth$$: BehaviorSubject<AuthState>
+    public readonly observeUser$$: BehaviorSubject<User | undefined>
+
     private _token?: string
 
     get token(): AuthToken | undefined {
@@ -33,11 +35,24 @@ export class AuthContext extends Context {
     constructor() {
         super()
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-        this.observable$$ = new BehaviorSubject<AuthState>(!!this._token ? 'authenticated' : 'none')
+        this.observeUser$$ = new BehaviorSubject<User | undefined>(undefined)
+
+        let currentState: AuthState = 'unauthenticated'
+        if (this._token && this._token !== 'null') {
+            currentState = 'authenticated'
+        }
+        this.observeAuth$$ = new BehaviorSubject<AuthState>(currentState)
+
+        //FIXME remove this hack lol
+        setTimeout(() => {
+            if (this.isAuthenticated()) {
+                this.loadSelfUser()
+            }
+        }, 500)
     }
 
-    loadSelfUser(): BackendAction<User> {
-        assert(() => this.observable$$.value === 'authenticated',
+    private async loadSelfUser0(): Promise<User> {
+        assert(() => this.isAuthenticated(),
             () => new BackendError('Tried to load self user without being authenticated')
         )
 
@@ -45,11 +60,17 @@ export class AuthContext extends Context {
             throw new BackendError('Tried to load self user without a token present')
         }
 
-        return getBackend().http.loadSelfUser();
+        const user = await getBackend().http.loadSelfUser()
+        this.observeUser$$.next(user)
+        return user;
+    }
+
+    loadSelfUser(): BackendAction<User> {
+        return fromPromise(this.loadSelfUser0())
     }
 
     async login(email: string, password: string): Promise<boolean> {
-        assert(() => this.observable$$.value !== 'authenticated',
+        assert(() => !this.isAuthenticated(),
             () => new BackendError('Tried to login whilst already being authenticated.')
         )
 
@@ -69,13 +90,13 @@ export class AuthContext extends Context {
 
         this._token = newToken
         localStorage[AUTH_KEY] = newToken
-
-        this.observable$$.next('authenticated')
+        this.observeAuth$$.next('authenticated')
+        this.observeUser$$.next(await this.loadSelfUser())
         return true
     }
 
     async signup(obj: SignupObj): Promise<string> {
-        assert(() => this.observable$$.value !== 'authenticated',
+        assert(() => !this.isAuthenticated(),
             () => new BackendError('Tried to sign up whilst already being authenticated.')
         )
 
@@ -100,17 +121,17 @@ export class AuthContext extends Context {
 
         this._token = tok
         localStorage[AUTH_KEY] = tok
-        this.observable$$.next('authenticated')
+        this.observeAuth$$.next('authenticated')
         return 'success'
     }
 
     logout(): void {
-        this.observable$$.next('signed_out')
+        this.observeAuth$$.next('unauthenticated')
         this._token = undefined
         localStorage[AUTH_KEY] = null
     }
 
     isAuthenticated() {
-        return this.observable$$.value === 'authenticated'
+        return this.observeAuth$$.value === 'authenticated' && !!this._token
     }
 }

@@ -1,5 +1,5 @@
-import {BackendController} from "../../backend/BackendController";
+import {ManagerController} from "../../backend/manager/ManagerController";
 
 export interface BackendProps {
-    backend: BackendController
+    backend: ManagerController
 }

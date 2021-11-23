@@ -3,44 +3,44 @@ import {Link} from "react-router-dom";
 import logo from '../../assets/apple-touch-icon-76x76.png'
 import logoWithText from '../../assets/LogoWithTextNoBG.png'
 import {Paths} from "../../util/paths";
-import {getAuth, getBackend} from "../../backend/global-scope/util/getters";
+import {getAuth} from "../../backend/global-scope/util/getters";
 import {useSubscription} from "../../backend/hook/useSubscription";
-import {useAPI} from "../../backend/hook/useAPI";
-import {toURL} from "../../backend/request/mappers";
-import ThemeToggle from "../ThemeToggle";
 import Separator from "../Separator";
+import {useSelfUser} from "../../backend/hook/useSelfUser";
+import Avatar from "../Avatar";
+import {hasPermission} from "../../model/Permission";
 
 function ProfileMenu() {
     const [isOpen, setOpen] = useState(false)
-    const selfAvatar = useAPI(() =>
-        getAuth().loadSelfUser()
-            .flatMap(getBackend().http.loadAvatar)
-            .map(toURL)
-    )
+    const selfUser = useSelfUser()
+
+    if (!selfUser) {
+        return (
+            <> </>
+        )
+    }
 
     const imageStyles = `
         origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-100 dark:bg-gray-700 ring-1 focus:outline-none
         ${isOpen ? 'absolute' : 'hidden'} 
    `
+
     return (
         <>
-            <button onClick={() => setOpen(!isOpen)} className="bg-gray-800 flex text-sm rounded-full focus:outline-none">
+            <button onClick={() => setOpen(!isOpen)}
+                    className="bg-gray-800 flex text-sm rounded-full focus:outline-none">
                 <span className="sr-only">Open user menu</span>
-                <img className="h-10 w-10 rounded-full" src={selfAvatar} alt='Your avatar'/>
+                <Avatar className="h-10 w-10 rounded-full" user={selfUser} notLoaded={() => <p>loading</p>}/>
             </button>
             <div className={imageStyles}>
                 <div className='grid grid-cols-1 place-items-center w-full h-full'>
                     <h1 className='font-semibold text-xl dark:text-gray-200'>Profile</h1>
                     <Separator className='w-2/3'/>
 
-                    <button className='dark:text-gray-300' onClick={() => getAuth().logout()}>Sign out</button>
+                    <Link onClick={() => setOpen(false)} to={Paths.USER_SETTINGS}>Settings</Link>
                     <Separator className='w-1/3'/>
 
-                    <div className='flex flex-row items-center justify-center'>
-                        <h2 className='dark:text-gray-300'>Theme toggle</h2>
-                        <ThemeToggle className='w-12 h-12 p-2'/>
-                    </div>
-                    <Separator className='w-3/5'/>
+                    <button className='dark:text-gray-300' onClick={() => getAuth().logout()}>Sign out</button>
                 </div>
             </div>
         </>
@@ -50,10 +50,11 @@ function ProfileMenu() {
 export default function Navbar() {
     //TODO: get the animation to work when the navbar comes down on mobile
 
-    const auth$$ = getAuth().observable$$
+    const auth$$ = getAuth().observeAuth$$
 
     const [authState, setAuthState] = useState(auth$$.value)
     const [isMobileOpen, setMobileOpen] = useState(false)
+    const selfUser = useSelfUser()
 
     useSubscription(auth$$, useCallback((newAuth) => setAuthState(newAuth), []))
 
@@ -137,12 +138,20 @@ export default function Navbar() {
                                             <DesktopStyledLink text='Login' path={Paths.LOGIN}/>
                                             <DesktopStyledLink text='Sign up' path={Paths.SIGNUP}/>
                                         </>
-                                        : <> </>
+                                        : <>
+                                            {selfUser && (hasPermission(selfUser.permissions, 'moderator'))
+                                                ? <>
+                                                    <DesktopStyledLink text='Moderation' path={Paths.MODERATION}/>
+                                                </>
+                                                : <></>
+                                            }
+                                        </>
                                     }
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                        <div
+                            className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                             <div className="ml-3 relative">
                                 {authState === 'authenticated'
                                     ? <ProfileMenu/>
@@ -164,7 +173,14 @@ export default function Navbar() {
                                 <MobileStyledLink text='Login' path={Paths.LOGIN}/>
                                 <MobileStyledLink text='Sign up' path={Paths.SIGNUP}/>
                             </>
-                            : <></>
+                            : <>
+                                {selfUser && (hasPermission(selfUser.permissions, 'moderator'))
+                                    ? <>
+                                        <MobileStyledLink text='Moderation' path={Paths.MODERATION}/>
+                                    </>
+                                    : <></>
+                                }
+                            </>
                         }
                     </div>
                 </div>

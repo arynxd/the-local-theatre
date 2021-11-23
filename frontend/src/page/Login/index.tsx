@@ -6,7 +6,7 @@ import {Paths} from "../../util/paths";
 import {logger} from "../../util/log";
 import {ErrorState, FormElement, ErrorElement} from "../../component/FormElement";
 
-type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'logged_in'
+type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'success'
 
 export default function Login() {
     const [state, setState] = useState<LoginState>('idle')
@@ -34,14 +34,20 @@ export default function Login() {
             err = true
         }
 
+        setErrors(newErrors)
+
         if (err) {
             setState('validation_failed')
         }
         else {
              setState('logging_in')
         }
+    }
 
-        setErrors(newErrors)
+    if (getAuth().isAuthenticated() || state === 'success') {
+        return (
+             <Redirect to={Paths.HOME}/>
+        )
     }
 
     if (state === 'logging_in') {
@@ -52,7 +58,7 @@ export default function Login() {
         getAuth().login(email, password)
             .then(isLoggedIn => {
                 if (isLoggedIn) {
-                    setState('logging_in')
+                    setState('success')
                 }
                 else {
                     setErrors({
@@ -66,16 +72,8 @@ export default function Login() {
                     general: ["An error occurred whilst logging in, please try again"]
                 })
                 setState("login_failed")
-                setEmail(undefined)
-                setPassword(undefined)
                 logger.error(err)
             })
-    }
-
-    if (state === 'logged_in') {
-        return (
-             <Redirect to={Paths.HOME}/>
-        )
     }
 
     return (
@@ -86,7 +84,7 @@ export default function Login() {
 
                 <Separator className='w-2/3'/>
                 <form className='flex flex-col w-full items-center' onSubmit={handleSubmit}>
-                    <FormElement onChange={setEmail} name='email' placeholder='Email' type='text'
+                    <FormElement onChange={setEmail} name='email' placeholder='Email' type='email'
                                  errors={errors}/>
                     <FormElement onChange={setPassword} name='password' placeholder='Password' type='password'
                                  errors={errors}/>

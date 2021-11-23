@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../util/Map.php';
 
 class CommentRoute extends Route {
     public function __construct() {
-        parent ::__construct("comment", [RequestMethod::GET, RequestMethod::POST]);
+        parent ::__construct("comment", [RequestMethod::GET, RequestMethod::POST, RequestMethod::DELETE]);
     }
 
     public function handle($conn, $res) {

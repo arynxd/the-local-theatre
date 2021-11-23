@@ -5,6 +5,7 @@ import {logger} from "../../util/log";
 import {Redirect} from "react-router";
 import {Paths} from "../../util/paths";
 import Separator from "../../component/Separator";
+import {isStrongPassword} from "../../util/const";
 
 type SignupState = 'signing_up' | 'validation_failed' | 'signup_failed' | 'idle' | 'signed_up'
 
@@ -64,6 +65,11 @@ export default function Signup() {
             err = true
         }
 
+        if (password && !isStrongPassword(password)) {
+            newErrors.password?.push("Password is too weak")
+            err = true
+        }
+
         if (err) {
             setState('validation_failed')
         }
@@ -117,7 +123,7 @@ export default function Signup() {
                                  errors={errors}/>
                     <FormElement onChange={setUsername} name='username' placeholder='Username' type='text'
                                  errors={errors}/>
-                    <FormElement onChange={setEmail} name='email' placeholder='Email' type='text'
+                    <FormElement onChange={setEmail} name='email' placeholder='Email' type='email'
                                  errors={errors}/>
                     <FormElement onChange={setDob} name='dob' placeholder='Date of birth' type='date'
                                  errors={errors}/>

@@ -18,7 +18,7 @@ class PostListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user = new UserModel(createIdentifier(), 'john doe', 0, 1, 1, 'jdoe', Constants::AVATAR_URL_PREFIX());
+        $user = new UserModel(createIdentifier(), 'john', 'doe', 0, 1, 1, 'jdoe', Constants::AVATAR_URL_PREFIX());
         $posts = new Map();
 
         for ($i = 1; $i < 11; $i++) {

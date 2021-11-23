@@ -71,8 +71,8 @@ export class CompiledRoute {
 
         if (!hasAllQueryParams) {
             throw new BackendError(
-                'Route failed validation. Missing query params. ' +
-                'Expected ' + this.routeData.requiredQueryParams +
+                'Route failed validation. Missing query params. \n' +
+                'Expected \n' + this.routeData.requiredQueryParams +
                 'Received ' + this.flattenQueryParams()
             )
         }

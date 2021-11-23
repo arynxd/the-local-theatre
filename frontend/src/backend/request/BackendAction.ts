@@ -49,6 +49,10 @@ export class BackendAction<T> extends Promise<T> {
         return this
     }
 
+    public toVoid(): BackendAction<void> {
+        return this.map(() => null!!)
+    }
+
     public toPromise(): Promise<T> {
         return this
     }
@@ -74,6 +78,7 @@ function newBackendAction(
 ): BackendAction<Response> {
     logger.debug('Starting backend action for URL ' + route.url)
     return new BackendAction<Response>(async (resolve, reject) => {
+        route.validate()
         const auth = getAuth()
         if (route.routeData.requiresAuth) {
             if (!auth.token) {

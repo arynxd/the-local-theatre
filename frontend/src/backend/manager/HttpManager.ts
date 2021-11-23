@@ -16,7 +16,7 @@ import {fromPromise, toJSON, toModel, toModelArray} from "../request/mappers";
 export class HttpManager extends Manager {
     loadUser(id: EntityIdentifier): BackendAction<User> {
         const route = Routes.User.FETCH.compile()
-        route.withQueryParam('id', id.toString())
+            .withQueryParam('id', id.toString())
 
         return BackendAction.new(route)
             .flatMap(toJSON)
@@ -29,20 +29,14 @@ export class HttpManager extends Manager {
      */
     loadAvatar(user: User): BackendAction<Blob> {
         const route = Routes.User.AVATAR.compile()
-        route.withQueryParam('id', user.id)
+            .withQueryParam('id', user.id)
 
         return BackendAction.new(route)
             .flatMap(res => fromPromise(res.blob()))
     }
 
-    listPosts(limit: number, last?: EntityIdentifier): BackendAction<Post[]> {
+    listPosts(): BackendAction<Post[]> {
         const route = Routes.Post.LIST.compile()
-
-        if (last) {
-            route.withQueryParam('start', last.toString())
-        }
-
-        route.withQueryParam('limit', limit.toString(10))
 
         return BackendAction.new(route)
             .flatMap(toJSON)
@@ -51,30 +45,23 @@ export class HttpManager extends Manager {
 
     loadShowImage(show: Show): BackendAction<Blob> {
         const route = Routes.Show.IMAGE.compile()
-        route.withQueryParam('id', show.id)
+            .withQueryParam('id', show.id)
 
         return BackendAction.new(route)
             .flatMap(res => fromPromise(res.blob()))
     }
 
-    loadShows(limit: number): BackendAction<Show[]> {
+    loadShows(): BackendAction<Show[]> {
         const route = Routes.Show.LIST.compile()
-        route.withQueryParam('limit', limit.toString(10))
-
 
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(v => toModelArray(v.shows, this.backend().entity.createShow))
     }
 
-    fetchComments(limit: number, latest?: EntityIdentifier): BackendAction<Comment[]> {
+    fetchComments(id: EntityIdentifier): BackendAction<Comment[]> {
         const route = Routes.Comment.LIST.compile()
-
-        if (latest) {
-            route.withQueryParam('last', latest.toString())
-        }
-
-        route.withQueryParam('limit', limit.toString(10))
+            .withQueryParam('id', id)
 
         return BackendAction.new(route)
             .flatMap(toJSON)
@@ -94,16 +81,40 @@ export class HttpManager extends Manager {
     loadPing(): BackendAction<number> {
         const now = () => Math.floor(Date.now() / 1000)
         let time = now()
-        return getAuth().loadSelfUser().map(() => now() - time)
+        return fromPromise(getAuth().loadSelfUser()).map(() => now() - time)
     }
 
     loadPost(id: EntityIdentifier): BackendAction<Post> {
         const route = Routes.Post.FETCH.compile()
-        route.withQueryParam('id', id)
+            .withQueryParam('id', id)
 
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(v => toModel(v.post, this.backend().entity.createPost))
 
+    }
+
+    deleteComment(id: EntityIdentifier): BackendAction<void> {
+        const route = Routes.Comment.DELETE.compile()
+            .withQueryParam('id', id)
+
+        return BackendAction.new(route).toVoid()
+    }
+
+    addComment(postId: EntityIdentifier, text: string): BackendAction<void> {
+        const route = Routes.Comment.ADD.compile()
+            .withBody({
+                id: postId,
+                data: text
+            })
+
+        return BackendAction.new(route).toVoid()
+    }
+
+    loadUsers(): BackendAction<User[]> {
+        const route = Routes.User.FETCH_ALL.compile()
+        return BackendAction.new(route)
+                .flatMap(toJSON)
+                .map(v => toModelArray(v.users, this.backend().entity.createUser))
     }
 }

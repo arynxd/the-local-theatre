@@ -9,7 +9,7 @@ interface FormElementProps {
     name: string
     placeholder: string
     type: HTMLInputTypeAttribute
-
+    initialState?: string
 }
 
 export type ErrorState = {
@@ -32,7 +32,7 @@ export function ErrorElement(props: { error?: string[] }) {
 }
 
 export function FormElement(props: FormElementProps & ErrorProps) {
-    const [state, setState] = useState<string>()
+    const [state, setState] = useState<string | undefined>(props.initialState)
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         props.onChange(event.target.value)

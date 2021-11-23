@@ -5,4 +5,6 @@ export class Paths {
     public static readonly LOGIN = Paths.HOME + '/login'
     public static readonly SIGNUP = Paths.HOME + '/signup'
     public static readonly POST = Paths.HOME + '/post/:id'
+    public static readonly USER_SETTINGS = Paths.HOME + '/settings'
+    public static readonly MODERATION = Paths.HOME + '/moderation'
 }

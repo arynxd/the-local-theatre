@@ -5,7 +5,8 @@ import {IdentifiedEntity} from "./IdentifiedEntity";
 import {GenericModel} from "./GenericModel";
 
 export interface User extends IdentifiedEntity, GenericModel {
-    name: string,
+    firstName: string,
+    lastName: string,
     permissions: PermissionValue,
     dob: number,
     joinDate: number,
@@ -14,7 +15,8 @@ export interface User extends IdentifiedEntity, GenericModel {
 
 export function isUser(json: JSONObject | User): json is User {
     return isEntityIdentifier(json.id) &&
-        typeof json.name === "string" &&
+        typeof json.firstName === "string" &&
+        typeof json.lastName === "string" &&
         typeof json.permissions === "number" &&
         typeof json.dob === "number" &&
         typeof json.joinDate === "number" &&

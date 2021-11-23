@@ -15,8 +15,9 @@ class SelfUserRoute extends Route {
     public function handle($conn, $res) {
         $m = new UserModel(
                 createIdentifier(),
-                'John Doe',
-                0,
+                'John',
+                'Doe',
+                2,
                 0,
                 0,
                 'jdoe',

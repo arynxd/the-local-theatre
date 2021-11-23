@@ -6,7 +6,7 @@ import {Route} from "./Route";
 export default class Routes {
     public static readonly User = class {
         public static readonly FETCH = new Route('api/user', 'GET', ['id'], [], false)
-        public static readonly FETCH_ALL = new Route('api/user/list', 'GET', ['limit'], [], false)
+        public static readonly FETCH_ALL = new Route('api/user/list', 'GET', [], [], false)
         public static readonly UPDATE = new Route('api/user', 'POST', [], [], true)
         public static readonly AVATAR = new Route('api/avatar', 'GET', ['id'], [], false)
     }
@@ -22,11 +22,13 @@ export default class Routes {
     }
 
     public static readonly Comment = class {
-        public static readonly LIST = new Route('api/comment/list', 'GET', [], [], false)
+        public static readonly LIST = new Route('api/comment/list', 'GET', ['id'], [], false)
+        public static readonly DELETE = new Route('api/comment', 'DELETE', [], [], true)
+        public static readonly ADD = new Route('api/comment', 'POST', [], ['text'], true)
     }
 
     public static readonly Show = class {
-        public static readonly LIST = new Route('api/show/list', 'GET', ['limit'], [], false)
+        public static readonly LIST = new Route('api/show/list', 'GET', [], [], false)
         public static readonly IMAGE = new Route('api/show/image', 'GET', ['id'], [], false)
     }
 

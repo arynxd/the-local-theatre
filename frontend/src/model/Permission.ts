@@ -26,7 +26,8 @@ function throwNotExistsValue(value: PermissionValue): never {
 }
 
 export function hasPermission(perms: PermissionValue, level: PermissionLevel): boolean {
-    return LEVEL_TO_VALUE.get(level) === perms
+    const val = LEVEL_TO_VALUE.get(level)
+    return !!val && val <= perms
 }
 
 export function toValue(level: PermissionLevel): PermissionValue {

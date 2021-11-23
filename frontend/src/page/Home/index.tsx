@@ -7,14 +7,14 @@ import Separator from "../../component/Separator";
 import {toDate} from "../../util/time";
 import {User} from "../../model/User";
 import {Show} from "../../model/Show";
-import {BackendController} from "../../backend/BackendController";
+import {ManagerController} from "../../backend/manager/ManagerController";
 import {getBackend} from "../../backend/global-scope/util/getters";
 import {toURL} from "../../backend/request/mappers";
 
 const HOME_PAGE_POST_COUNT = 10
 
-async function getPost(backend: BackendController): Promise<Post[]> {
-    const posts = await backend.http.listPosts(1)
+async function getPost(backend: ManagerController): Promise<Post[]> {
+    const posts = await backend.http.listPosts()
     if (posts) {
         logger.debug('Received valid post ' + JSON.stringify(posts))
         return posts.slice(0, HOME_PAGE_POST_COUNT)
@@ -29,7 +29,7 @@ interface ActivityProps {
     author: User
     message: JSX.Element
     timeCreated: Date
-    backend: BackendController
+    backend: ManagerController
     linkTo: string
 }
 
@@ -91,7 +91,7 @@ function Activity(props: ActivityProps) {
 
 function LatestShows() {
     const backend = getBackend()
-    const shows = useAPI(() => backend.http.loadShows(4))
+    const shows = useAPI(() => backend.http.loadShows())
 
     const ShowElement = (showProps: { model: Show }) => {
         const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))
@@ -135,7 +135,7 @@ function RecentActivity() {
                 backend={backend}
                 author={post.author}
                 linkTo={`/~20006203/post/${post.id}`}
-                message={<><b>{post.author.name}</b> created 1 new post <b>{post.title}</b></>}
+                message={<><b>{post.author.firstName} {post.author.lastName}</b> created 1 new post <b>{post.title}</b></>}
                 timeCreated={toDate(post.createdAt)}
             />)
         }</>

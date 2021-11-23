@@ -10,7 +10,12 @@ class UserModel extends Model {
     /**
      * @var
      */
-    public $name;
+    public $firstName;
+
+    /**
+     * @var
+     */
+    public $lastName;
     /**
      * @var
      */
@@ -32,21 +37,10 @@ class UserModel extends Model {
      */
     public $avatar;
 
-
-    /**
-     * Constructs a user model from the given data.
-     *
-     * @param $id           string  The ID of the user (stored as UUID)
-     * @param $name         string  The name of the user
-     * @param $permissions  int     The permission level of the user
-     * @param $dob
-     * @param $joinDate
-     * @param $username
-     * @param $avatar
-     */
-    public function __construct($id, $name, $permissions, $dob, $joinDate, $username, $avatar) {
+    public function __construct($id, $firstName, $lastName, $permissions, $dob, $joinDate, $username, $avatar) {
         $this -> id = $id;
-        $this -> name = $name;
+        $this -> firstName = $firstName;
+        $this -> lastName = $lastName;
         $this -> permissions = $permissions;
         $this -> dob = $dob;
         $this -> joinDate = $joinDate;
@@ -63,7 +57,8 @@ class UserModel extends Model {
     public static function fromJSON($data) {
         return new UserModel(
             $data['id'],
-            $data['name'],
+            $data['firstName'],
+            $data['lastName'],
             $data['permissions'],
             $data['dob'],
             $data['joinDate'],
@@ -76,7 +71,8 @@ class UserModel extends Model {
         return new Map(
             [
                 'id' => $this -> id,
-                'name' => $this -> name,
+                'firstName' => $this -> firstName,
+                'lastName' => $this -> lastName,
                 'permissions' => $this -> permissions,
                 'dob' => $this -> dob,
                 'joinDate' => $this -> joinDate,

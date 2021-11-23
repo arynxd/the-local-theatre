@@ -23,7 +23,8 @@ class UserRoute extends Route {
         if ($method == RequestMethod::GET) {
             $model = new UserModel(
                 $conn -> queryParams()['id'],
-                'John Doe',
+                'John',
+                'Doe',
                 0,
                 0,
                 0,
@@ -37,7 +38,8 @@ class UserRoute extends Route {
             $data = $conn -> jsonParams()['data'];
             $model = new UserModel(
                 $data['id'],
-                $data['name'],
+                $data['firstName'],
+                $data['lastName'],
                 $data['permissions'],
                 $data['dob'],
                 $data['joinDate'],
