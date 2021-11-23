@@ -38,7 +38,8 @@ function PostPlaceholders() {
 
     for (let i = 0; i < 10; i++) {
         elems[i] = (
-            <div key={i} className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+            <div key={i}
+                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
                 <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
 
                 <div className='w-full h-full animate-pulse'>
@@ -135,7 +136,8 @@ function RecentActivity() {
                 backend={backend}
                 author={post.author}
                 linkTo={`/~20006203/post/${post.id}`}
-                message={<><b>{post.author.firstName} {post.author.lastName}</b> created 1 new post <b>{post.title}</b></>}
+                message={<><b>{post.author.firstName} {post.author.lastName}</b> created 1 new
+                    post <b>{post.title}</b></>}
                 timeCreated={toDate(post.createdAt)}
             />)
         }</>

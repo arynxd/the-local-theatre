@@ -13,7 +13,7 @@ export default function Blog() {
     return (
         <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>
             {
-                posts.map(post => <Post post={post} />)
+                posts.map(post => <Post post={post}/>)
             }
         </div>
     )

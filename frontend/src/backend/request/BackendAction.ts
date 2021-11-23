@@ -13,6 +13,20 @@ export type BackendRequestJSONTransformer<T> = (res: JSONObject) => T | BackendA
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
 export class BackendAction<T> extends Promise<T> {
+    /**
+     * Create a new backend action.
+     * This is just a class around a Promise.
+     * This function will always reject with a BackendError, so it is safe to cast to this type.
+
+     * @param route The route to request
+     * @returns BackendAction<T> An action representing the request
+     */
+    public static new(
+        route: CompiledRoute
+    ): BackendAction<Response> {
+        return newBackendAction(route)
+    }
+
     public flatMap<U>(mapper: (action: T) => BackendActionLike<U>): BackendAction<U> {
         return new BackendAction<U>((res, rej) => {
             return this.then(v => {
@@ -27,12 +41,6 @@ export class BackendAction<T> extends Promise<T> {
         return new BackendAction<U>((res, rej) => {
             return this.then(v => res(mapper(v))).catch(rej)
         })
-    }
-
-    private throwIfTypeOfInvalid<U extends keyof ValidTypeOf>(value: unknown, type: U): asserts value is ValidTypeOf[U] {
-        if (typeof value !== type) {
-            throw new TypeError("Assertion failed, value was not of type " + type + " \n Got " + JSON.stringify(value) + " instead")
-        }
     }
 
     public assertTypeOf<U extends keyof ValidTypeOf>(type: U): BackendAction<ValidTypeOf[U]> {
@@ -57,19 +65,10 @@ export class BackendAction<T> extends Promise<T> {
         return this
     }
 
-
-    /**
-     * Create a new backend action.
-     * This is just a class around a Promise.
-     * This function will always reject with a BackendError, so it is safe to cast to this type.
-
-     * @param route The route to request
-     * @returns BackendAction<T> An action representing the request
-     */
-    public static new(
-        route: CompiledRoute
-    ): BackendAction<Response> {
-        return newBackendAction(route)
+    private throwIfTypeOfInvalid<U extends keyof ValidTypeOf>(value: unknown, type: U): asserts value is ValidTypeOf[U] {
+        if (typeof value !== type) {
+            throw new TypeError("Assertion failed, value was not of type " + type + " \n Got " + JSON.stringify(value) + " instead")
+        }
     }
 }
 

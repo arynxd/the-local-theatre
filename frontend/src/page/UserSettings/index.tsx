@@ -50,7 +50,7 @@ export default function UserSettings() {
 
     if (state === 'success') {
         return (
-            <Redirect to={Paths.HOME} />
+            <Redirect to={Paths.HOME}/>
         )
     }
 
@@ -63,11 +63,14 @@ export default function UserSettings() {
 
                 <Separator className='w-2/3'/>
                 <form className='flex flex-col w-full items-center' onSubmit={handleSubmit}>
-                    <FormElement initialState={firstName} onChange={setFirstName} name='firstName' placeholder='First name' type='text'
+                    <FormElement initialState={firstName} onChange={setFirstName} name='firstName'
+                                 placeholder='First name' type='text'
                                  errors={errors}/>
-                    <FormElement initialState={lastName} onChange={setLastName} name='lastName' placeholder='Last name' type='text'
+                    <FormElement initialState={lastName} onChange={setLastName} name='lastName' placeholder='Last name'
+                                 type='text'
                                  errors={errors}/>
-                    <FormElement initialState={username} onChange={setUsername} name='username' placeholder='Username' type='text'
+                    <FormElement initialState={username} onChange={setUsername} name='username' placeholder='Username'
+                                 type='text'
                                  errors={errors}/>
                     <FormElement initialState={email} onChange={setEmail} name='email' placeholder='Email' type='email'
                                  errors={errors}/>

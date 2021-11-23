@@ -6,15 +6,15 @@ import {GenericModel} from "../../model/GenericModel";
 import {getBackend} from "../global-scope/util/getters";
 
 export interface ValidTypeOf {
-     'undefined': undefined,
-     'null': null,
-     'boolean': boolean,
-     'string': string,
-     'number': number,
-     'bigint': bigint,
-     'symbol': symbol,
-     'object': object,
-     'function': ((...args: unknown[]) => unknown)
+    'undefined': undefined,
+    'null': null,
+    'boolean': boolean,
+    'string': string,
+    'number': number,
+    'bigint': bigint,
+    'symbol': symbol,
+    'object': object,
+    'function': ((...args: unknown[]) => unknown)
 }
 
 export function toJSON(response: Response): BackendAction<JSONObject> {
@@ -49,8 +49,8 @@ export function throwIfNull<T>(value: T | undefined | null): T {
 }
 
 export function fromPromise<T>(promise: Promise<T>): BackendAction<T> {
-        return new BackendAction((res, rej) => promise.then(res).catch(rej))
-    }
+    return new BackendAction((res, rej) => promise.then(res).catch(rej))
+}
 
 
 /**
@@ -70,7 +70,7 @@ export function toModelArray<T extends GenericModel>(value: JSONValue, conversio
     throw new BackendError('Data was invalid, expected array got ' + JSON.stringify(value))
 }
 
-export function toModel <T extends GenericModel>(value: JSONValue, conversion: (json: JSONObject) => T): T {
+export function toModel<T extends GenericModel>(value: JSONValue, conversion: (json: JSONObject) => T): T {
     if (isJSONObject(value)) {
         return conversion.call(getBackend().entity, value)
     }

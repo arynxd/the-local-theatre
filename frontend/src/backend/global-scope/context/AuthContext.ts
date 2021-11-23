@@ -26,12 +26,6 @@ export class AuthContext extends Context {
     public readonly observeAuth$$: BehaviorSubject<AuthState>
     public readonly observeUser$$: BehaviorSubject<User | undefined>
 
-    private _token?: string
-
-    get token(): AuthToken | undefined {
-        return this._token
-    }
-
     constructor() {
         super()
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
@@ -51,18 +45,10 @@ export class AuthContext extends Context {
         }, 500)
     }
 
-    private async loadSelfUser0(): Promise<User> {
-        assert(() => this.isAuthenticated(),
-            () => new BackendError('Tried to load self user without being authenticated')
-        )
+    private _token?: string
 
-        if (this._token === undefined) {
-            throw new BackendError('Tried to load self user without a token present')
-        }
-
-        const user = await getBackend().http.loadSelfUser()
-        this.observeUser$$.next(user)
-        return user;
+    get token(): AuthToken | undefined {
+        return this._token
     }
 
     loadSelfUser(): BackendAction<User> {
@@ -133,5 +119,19 @@ export class AuthContext extends Context {
 
     isAuthenticated() {
         return this.observeAuth$$.value === 'authenticated' && !!this._token
+    }
+
+    private async loadSelfUser0(): Promise<User> {
+        assert(() => this.isAuthenticated(),
+            () => new BackendError('Tried to load self user without being authenticated')
+        )
+
+        if (this._token === undefined) {
+            throw new BackendError('Tried to load self user without a token present')
+        }
+
+        const user = await getBackend().http.loadSelfUser()
+        this.observeUser$$.next(user)
+        return user;
     }
 }

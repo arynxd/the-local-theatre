@@ -53,7 +53,8 @@ function AddCommentView(props: PostProps & AddCommentProps) {
             <h2 className='select-none'>Add a comment</h2>
             <Separator className='mx-0'/>
 
-            <textarea minLength={1} maxLength={MAX_COMMENT_LENGTH} onChange={changeHandler} className='w-full h-44 rounded-xl shadow p-2'/>
+            <textarea minLength={1} maxLength={MAX_COMMENT_LENGTH} onChange={changeHandler}
+                      className='w-full h-44 rounded-xl shadow p-2'/>
 
             <button onClick={submitHandler}
                     className='p-1 mt-4 w-6/12 text-gray-100 font-semibold text-md bg-blue-900 rounded shadow-xl'>

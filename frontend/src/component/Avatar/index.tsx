@@ -5,7 +5,7 @@ import {useAPI} from "../../backend/hook/useAPI";
 import {ImgHTMLAttributes} from "react";
 import {toURL} from "../../backend/request/mappers";
 
-interface AvatarProps extends StylableProps, ImgHTMLAttributes<HTMLImageElement>{
+interface AvatarProps extends StylableProps, ImgHTMLAttributes<HTMLImageElement> {
     user: User
     notLoaded: () => JSX.Element
 }

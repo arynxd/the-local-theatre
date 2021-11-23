@@ -22,7 +22,8 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
     const [level, setLevel] = useState(0)
 
     return (
-        <div className='absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow p-2 ring-1'>
+        <div
+            className='absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow p-2 ring-1'>
             <h2 className='font-md'>Editing {props.user.username}'s permissions</h2>
             <Separator className='w-4/5'/>
 
@@ -35,7 +36,9 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
 
             <Separator className='w-2/5'/>
 
-            <button className='text-sm bg-gray-100 px-2 py-1 shadow rounded' onClick={() => props.done(toLevel(level))}>Done</button>
+            <button className='text-sm bg-gray-100 px-2 py-1 shadow rounded'
+                    onClick={() => props.done(toLevel(level))}>Done
+            </button>
         </div>
     )
 }

@@ -93,7 +93,9 @@ export function Comment(props: CommentProps & StylableProps) {
                     <img className='h-4 w-4' src={menuIco} alt='Click to show comment menu'/>
                 </div>
                 {isContextOpen
-                    ? <ContextMenu model={props.model} deleteComment={deleteHandler} editComment={() => {throw TypeError("Unimplemented")}}/>
+                    ? <ContextMenu model={props.model} deleteComment={deleteHandler} editComment={() => {
+                        throw TypeError("Unimplemented")
+                    }}/>
                     : <> </>
                 }
             </div>

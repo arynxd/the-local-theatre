@@ -25,7 +25,8 @@ export function ErrorElement(props: { error?: string[] }) {
     return (
         <>{
             props.error.map(err => {
-                return <span className='bg-gray-300 dark:bg-gray-600 dark:text-red-200 text-red-800 p-2 m-1 rounded shadow-xl'>{err}</span>
+                return <span
+                    className='bg-gray-300 dark:bg-gray-600 dark:text-red-200 text-red-800 p-2 m-1 rounded shadow-xl'>{err}</span>
             })
         }</>
     )
@@ -48,9 +49,9 @@ export function FormElement(props: FormElementProps & ErrorProps) {
         transition duration-300 ease-in-out transform focus:-translate-y-1 
        
         ${hasError
-            ? 'focus:scale-110 focus:outline-none ring-red-900 ring-2'
-            : 'ring-0 focus:scale-110 focus:outline-none focus:ring-blue-900 focus:ring-2'
-        }
+        ? 'focus:scale-110 focus:outline-none ring-red-900 ring-2'
+        : 'ring-0 focus:scale-110 focus:outline-none focus:ring-blue-900 focus:ring-2'
+    }
         
         focus:placeholder-gray-900 dark:focus:placeholder-gray-100 
         text-gray-800 dark:text-gray-100

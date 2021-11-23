@@ -5,7 +5,7 @@ import {useAPI} from "../../backend/hook/useAPI";
 import {getBackend} from "../../backend/global-scope/util/getters";
 
 export function Post() {
-    const id = useParams<{id: EntityIdentifier}>().id
+    const id = useParams<{ id: EntityIdentifier }>().id
     const post = useAPI(() => getBackend().http.loadPost(id))
 
     if (!post) {
@@ -16,7 +16,7 @@ export function Post() {
 
     return (
         <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>
-            <PostElement post={post} />
+            <PostElement post={post}/>
         </div>
     )
 }

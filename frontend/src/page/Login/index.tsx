@@ -4,7 +4,7 @@ import {getAuth} from "../../backend/global-scope/util/getters";
 import {Redirect} from "react-router";
 import {Paths} from "../../util/paths";
 import {logger} from "../../util/log";
-import {ErrorState, FormElement, ErrorElement} from "../../component/FormElement";
+import {ErrorElement, ErrorState, FormElement} from "../../component/FormElement";
 
 type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'success'
 
@@ -40,13 +40,13 @@ export default function Login() {
             setState('validation_failed')
         }
         else {
-             setState('logging_in')
+            setState('logging_in')
         }
     }
 
     if (getAuth().isAuthenticated() || state === 'success') {
         return (
-             <Redirect to={Paths.HOME}/>
+            <Redirect to={Paths.HOME}/>
         )
     }
 
@@ -89,11 +89,12 @@ export default function Login() {
                     <FormElement onChange={setPassword} name='password' placeholder='Password' type='password'
                                  errors={errors}/>
 
-                    <ErrorElement error={errors.general} />
+                    <ErrorElement error={errors.general}/>
                     {state === 'logging_in'
                         ? <p>loading</p>
-                        : <input className='p-2 m-2 w-10/12 text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
-                           type="submit" value="Submit"/>
+                        : <input
+                            className='p-2 m-2 w-10/12 text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
+                            type="submit" value="Submit"/>
                     }
                 </form>
             </div>
