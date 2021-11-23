@@ -5,7 +5,7 @@ require_once __DIR__ . "/../util/constant/StatusCode.php";
 /**
  * The result of a validation within a route
  * @see Route
- * 
+ *
  * The following factory methods should be used to construct this class
  * @see Ok
  * @see BadRequest
@@ -19,10 +19,10 @@ class RouteValidationResult {
 
     /**
      * Constructs a new result
-     * 
-     * @param int          $httpCode  the response code to use
-     * @param string|null  $error     the error string to use, JSON format
-     * @param string[]     $headers   the headers to use
+     *
+     * @param int $httpCode the response code to use
+     * @param string|null $error the error string to use, JSON format
+     * @param string[] $headers the headers to use
      */
     function __construct($httpCode, $error, $headers) {
         $this -> httpCode = $httpCode;
@@ -32,8 +32,8 @@ class RouteValidationResult {
 
     /**
      * Determines if this result is erroneous
-     * 
-     * @return bool true if this result is an error, false otherwise 
+     *
+     * @return bool true if this result is an error, false otherwise
      */
     function isError() {
         return isset($this -> error);

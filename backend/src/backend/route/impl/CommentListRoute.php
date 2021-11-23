@@ -17,11 +17,11 @@ class CommentListRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        $user =  new UserModel(createIdentifier(), 'john', 'doe', 1, 1, 1, 'jdoe', Constants::AVATAR_URL_PREFIX());
+        $user = new UserModel(createIdentifier(), 'john', 'doe', 1, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
 
         $result = new Map();
 
-        for ($_ = 0; $_ < 10; $_++) {
+        for ($_ = 0; $_ < 10; $_ ++) {
             $post = new PostModel(createIdentifier(), $user, 'Lorem ipsum sit damet', 'Latest Latest Latest', 1);
             $result -> push($post -> toMap());
         }

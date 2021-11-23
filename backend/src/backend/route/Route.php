@@ -11,8 +11,8 @@ abstract class Route {
 
     /**
      * A subclass constructor for the Route
-     * @param  string           $path the path for the route (eg; 'user/list')
-     * @param  RequestMethod[]  $methods the request methods this route accepts
+     * @param string $path the path for the route (eg; 'user/list')
+     * @param RequestMethod[] $methods the request methods this route accepts
      */
     protected function __construct($path, $methods) {
         $this -> path = $path;
@@ -23,8 +23,8 @@ abstract class Route {
      * Handle an incoming request, ideally this function never throws.
      * All validation should be performed in validate($conn, $res, ...$params)
      *
-     * @param   Connection  $conn         the current connection
-     * @param   Response    $res            the response to send data to
+     * @param Connection $conn the current connection
+     * @param Response $res the response to send data to
      * @return              null        the return value is ignored
      */
     public abstract function handle($conn, $res);
@@ -35,8 +35,8 @@ abstract class Route {
      * If the validation fails, the request fails.
      * Validation should only check the state of the data, in a pure form. It should not query outside sources.
      *
-     * @param   Connection  $conn      the current connection
-     * @param   Response    $res       the response to send data to
+     * @param Connection $conn the current connection
+     * @param Response $res the response to send data to
      * @return  RouteValidationResult  the result of the validation
      */
     public abstract function validateRequest($conn, $res);
@@ -44,7 +44,7 @@ abstract class Route {
     /**
      * Validates this route based on an incoming request's methods.
      *
-     * @param   Connection  $conn         the current connection
+     * @param Connection $conn the current connection
      * @return  boolean                   true, if the validation passed, false otherwise
      */
     public function validateMethod($conn) {

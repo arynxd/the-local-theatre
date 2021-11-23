@@ -23,10 +23,6 @@ class Map implements ArrayAccess, JsonSerializable {
         return array_copy($this -> arr);
     }
 
-    private function rawInternal() {
-        return $this -> arr;
-    }
-
     function toAssocRecursive() {
         return $this -> mapValuesRecursive(function ($item) {
             if ($item instanceof Map) {
@@ -59,6 +55,10 @@ class Map implements ArrayAccess, JsonSerializable {
         };
 
         return new Map(array_map_assoc($func, $this -> rawInternal()));
+    }
+
+    private function rawInternal() {
+        return $this -> arr;
     }
 
     function mapValues($mapper) {
@@ -124,6 +124,12 @@ class Map implements ArrayAccess, JsonSerializable {
         }
     }
 
+    private function throwIfFrozen() {
+        if ($this -> frozen) {
+            throw new ValueError('Map is frozen and cannot be modified');
+        }
+    }
+
     public function offsetExists($offset) {
         return isset($this -> rawInternal()[$offset]);
     }
@@ -146,22 +152,17 @@ class Map implements ArrayAccess, JsonSerializable {
         return $this -> frozen;
     }
 
-    private function throwIfFrozen() {
-        if ($this -> frozen) {
-            throw new ValueError('Map is frozen and cannot be modified');
-        }
-    }
-
     public function toJSON() {
         return json_encode($this -> raw());
     }
 
     public function push($value) {
         $this -> throwIfFrozen();
-        $array = $this->rawInternal();
+        $array = $this -> rawInternal();
         array_push($array, $value);
         $this -> arr = $array;
     }
+
     public function __toString() {
         $res = "object(Map){";
 

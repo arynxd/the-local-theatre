@@ -5,8 +5,8 @@ require_once __DIR__ . '/constant/ErrorStrings.php';
 require_once __DIR__ . '/constant/StatusCode.php';
 
 class Logger {
-     private $res;
-     private $cfg;
+    private $res;
+    private $cfg;
 
     public function __construct($conn) {
         $this -> res = $conn -> res;
@@ -29,14 +29,15 @@ class Logger {
         );
     }
 
-    public function debug($msg) {
-
-    }
     public function log($ex) {
         if ($this -> cfg['debug']) {
             echo "An unexpected error occurred:";
             echo $ex -> getCode();
             echo $ex -> getMessage();
         }
+    }
+
+    public function debug($msg) {
+
     }
 }

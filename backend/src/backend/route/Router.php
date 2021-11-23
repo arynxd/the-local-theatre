@@ -45,8 +45,8 @@ class Router {
 
     /**
      * Gets the route for a given path.
-     * 
-     * @param   string[]  $parts  the path
+     *
+     * @param string[] $parts the path
      * @return  Route|false       returns false if the route is not found
      */
     public function getRouteForPath($parts) {

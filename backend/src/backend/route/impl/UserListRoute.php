@@ -17,7 +17,7 @@ class UserListRoute extends Route {
 
         $out = new Map();
 
-        for ($i = 0; $i < 1; $i++) {
+        for ($i = 0; $i < 1; $i ++) {
             $model = new UserModel(
                 createIdentifier(),
                 'John',
@@ -26,7 +26,7 @@ class UserListRoute extends Route {
                 0,
                 0,
                 'jdoe',
-                Constants::AVATAR_URL_PREFIX()
+                Constants ::AVATAR_URL_PREFIX()
             );
             $out -> push($model -> toMap());
         }

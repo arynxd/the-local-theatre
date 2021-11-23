@@ -14,14 +14,14 @@ class SelfUserRoute extends Route {
 
     public function handle($conn, $res) {
         $m = new UserModel(
-                createIdentifier(),
-                'John',
-                'Doe',
-                2,
-                0,
-                0,
-                'jdoe',
-                Constants::AVATAR_URL_PREFIX()
+            createIdentifier(),
+            'John',
+            'Doe',
+            2,
+            0,
+            0,
+            'jdoe',
+            Constants ::AVATAR_URL_PREFIX()
         );
         $res -> sendJSON($m -> toMap());
     }

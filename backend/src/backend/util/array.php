@@ -18,10 +18,17 @@ function array_map_assoc($cb, $assoc) {
 
 function array_copy($arr) {
     $newArray = array();
-    foreach($arr as $key => $value) {
-        if(is_array($value)) $newArray[$key] = array_copy($value);
-        else if(is_object($value)) $newArray[$key] = clone $value;
-        else $newArray[$key] = $value;
+    foreach ($arr as $key => $value) {
+        if (is_array($value)) {
+            $newArray[$key] = array_copy($value);
+        }
+        else if (is_object($value)) {
+            $newArray[$key] = clone $value;
+        }
+        else {
+            $newArray[$key] = $value;
+        }
+
     }
     return $newArray;
 }

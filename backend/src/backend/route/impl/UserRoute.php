@@ -29,7 +29,7 @@ class UserRoute extends Route {
                 0,
                 0,
                 'jdoe',
-                Constants::AVATAR_URL_PREFIX()
+                Constants ::AVATAR_URL_PREFIX()
             );
         }
 

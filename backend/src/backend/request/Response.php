@@ -9,15 +9,15 @@ require_once __DIR__ . '/../util/Map.php';
  * Utility object for sending responses to the client
  * This can be freely constructed wherever needed however the Connection
  * always holds an instance (Connection::$res)
- * 
+ *
  * @see Connection
  */
 class Response {
     /**
      * Sends JSON to the client
-     * 
-     * @param Map|string    $data     a Map, or string, representing the JSON to send in the response
-     * @param string[]      $headers  the headers to include in the response
+     *
+     * @param Map|string $data a Map, or string, representing the JSON to send in the response
+     * @param string[] $headers the headers to include in the response
      */
     public function sendJSON($data, ...$headers) {
         if (is_map($data)) {
@@ -37,9 +37,9 @@ class Response {
     /**
      * Sends arbitrary data to the client.
      * This method performs NO validation on the input, use it with caution.
-     * 
-     * @param  mixed     $data     the data to send in the response
-     * @param  string[]  $headers  the headers to send in the response
+     *
+     * @param mixed $data the data to send in the response
+     * @param string[] $headers the headers to send in the response
      */
     public function send($data, ...$headers) {
         foreach ($headers as $header) {
@@ -52,9 +52,9 @@ class Response {
 
     /**
      * Sends an error message to the client
-     * 
-     * @param  string    $message  the message to send in the response, must be JSON serializable
-     * @param  string[]  $headers  the headers to send in the response
+     *
+     * @param string $message the message to send in the response, must be JSON serializable
+     * @param string[] $headers the headers to send in the response
      */
     public function sendError($message, ...$headers) {
         $this -> send(json_encode([

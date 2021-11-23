@@ -91,7 +91,7 @@ class Connection {
     }
 
     private function parseRoute() {
-        
+
         $result = $this -> router -> getRouteForPath($this -> uri);
 
         if (!$result) {
