@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../util/constant/ContentType.php';
+require_once __DIR__ . '/../util/constant/ErrorStrings.php';
 require_once __DIR__ . '/../util/constant/StatusCode.php';
 require_once __DIR__ . '/../util/constant/CORS.php';
 require_once __DIR__ . '/../util/Map.php';
@@ -53,13 +54,31 @@ class Response {
     /**
      * Sends an error message to the client
      *
+     * This function will kill the program, stopping execution
+     *
      * @param string $message the message to send in the response, must be JSON serializable
      * @param string[] $headers the headers to send in the response
+     *
+     * @return void This function never returns
      */
     public function sendError($message, ...$headers) {
         $this -> send(json_encode([
             "error" => true,
             "message" => $message
         ]), ContentType::JSON, CORS::ALL, ...$headers);
+        die(1);
+    }
+
+    /**
+     * Sends a generic internal error response
+     *
+     * This function will kill the program, stopping execution
+     *
+     * @return void This function never returns
+     */
+    public function exitWithInternalError() {
+        $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
+        die(1);
+        throw new UnexpectedValueException("Somehow we didnt exit the process");
     }
 }

@@ -21,7 +21,7 @@ if (!$routeResult -> isError()) {
         $conn -> route -> handle($conn, $conn -> res);
     }
     catch (Exception $ex) {
-        $conn -> res -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
+        $conn -> res -> exitWithInternalError();
     }
 }
 else {

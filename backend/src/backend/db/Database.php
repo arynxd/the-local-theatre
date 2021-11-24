@@ -23,15 +23,14 @@ class Database {
         $opts = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_TIMEOUT => 5
+            PDO::ATTR_TIMEOUT => 5,
         ];
 
         try {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
         catch (PDOException $e) {
-            $conn -> res -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
-            die(1);
+            $conn -> res -> exitWithInternalError();
         }
 
         if ($conn -> config['env'] !== "production") {
@@ -40,11 +39,11 @@ class Database {
     }
 
     private function initTables() {
-
+        $this -> initTable("tables.sql");
     }
 
-    private function initTable($path) {
-        $sql = file_get_contents($path);
+    private function initTable($fileName) {
+        $sql = file_get_contents(__DIR__ . "/../sql/" . $fileName);
         $this -> query($sql, []);
     }
 
@@ -54,18 +53,28 @@ class Database {
      *
      * @param $sql      string   the sql string
      * @param $params   array    associative array of params to prepare
-     * @return          array | false    the associative array representing the query, false if the query failed
+     * @return          PDOStatement | false    the associative array representing the query, false if the query failed
      */
     public function query($sql, $params) {
-        return $this -> prepare($sql, $params) -> fetch(PDO::FETCH_ASSOC);
+        $st = $this -> prepare($sql, $params);
+
+        if (!$st -> execute()) {
+            return false;
+        }
+        return $st;
     }
 
     private function prepare($sql, $params) {
         $stmt = $this -> dbh -> prepare($sql);
+
         foreach ($params as $key => $value) {
             $stmt -> bindParam($key, $value);
         }
 
         return $stmt;
+    }
+
+    public function errorInfo() {
+        return $this -> dbh -> errorInfo();
     }
 }
