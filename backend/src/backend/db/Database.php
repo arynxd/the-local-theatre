@@ -10,7 +10,7 @@ class Database {
      * This connection will persist through runs of script.
      *
      * This class implements the following options for the connection:
-     *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+     *  PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
      *  PDO::ATTR_PERSISTENT => true,
      *  PDO::ATTR_TIMEOUT => 5
      *
@@ -21,7 +21,7 @@ class Database {
      */
     public function __construct($url, $username, $password, $conn) {
         $opts = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_TIMEOUT => 5,
         ];
@@ -30,7 +30,7 @@ class Database {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
         catch (PDOException $e) {
-            $conn -> res -> exitWithInternalError();
+            $conn -> res -> sendInternalError();
         }
 
         if ($conn -> config['env'] !== "production") {
@@ -49,23 +49,30 @@ class Database {
 
     /**
      * Performs the given $sql query using the $params.
-     *
+     * This function will attempt to execute the query, returning false if that fails.
+     * If this function returns a non-false value,
+     *  the query was successful and all data can be accessed without checks
      *
      * @param $sql      string   the sql string
      * @param $params   array    associative array of params to prepare
      * @return          PDOStatement | false    the associative array representing the query, false if the query failed
      */
-    public function query($sql, $params) {
+    public function query($sql, $params = []) {
         $st = $this -> prepare($sql, $params);
 
         if (!$st -> execute()) {
             return false;
         }
+
         return $st;
     }
 
     private function prepare($sql, $params) {
         $stmt = $this -> dbh -> prepare($sql);
+
+        if (!$stmt) {
+            return false;
+        }
 
         foreach ($params as $key => $value) {
             $stmt -> bindParam($key, $value);

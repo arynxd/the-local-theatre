@@ -15,9 +15,7 @@ class AvatarRoute extends Route {
     }
 
     public function handle($conn, $res) {
-        header(ContentType::PNG);
-        header(CORS::ALL);
-        readfile(__DIR__ . '/../impl/avatar.png');
+        readData("avatar.png", ContentType::PNG, CORS::ALL, StatusCode::OK);
     }
 
     public function validateRequest($conn, $res) {

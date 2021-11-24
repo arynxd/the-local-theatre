@@ -17,8 +17,12 @@ class Response {
     /**
      * Sends JSON to the client
      *
+     * This function will end the program exit code 0, stopping execution
+     *
      * @param Map|string $data a Map, or string, representing the JSON to send in the response
      * @param string[] $headers the headers to include in the response
+     *
+     * @return void This function never returns
      */
     public function sendJSON($data, ...$headers) {
         if (is_map($data)) {
@@ -33,14 +37,19 @@ class Response {
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
         }
+        die(0);
     }
 
     /**
      * Sends arbitrary data to the client.
      * This method performs NO validation on the input, use it with caution.
      *
+     * This function will end the program exit code 0, stopping execution
+     *
      * @param mixed $data the data to send in the response
      * @param string[] $headers the headers to send in the response
+     *
+     * @return void This function never returns
      */
     public function send($data, ...$headers) {
         foreach ($headers as $header) {
@@ -48,7 +57,7 @@ class Response {
         }
 
         echo $data;
-        exit;
+        die(0);
     }
 
     /**
@@ -76,9 +85,8 @@ class Response {
      *
      * @return void This function never returns
      */
-    public function exitWithInternalError() {
+    public function sendInternalError() {
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
         die(1);
-        throw new UnexpectedValueException("Somehow we didnt exit the process");
     }
 }

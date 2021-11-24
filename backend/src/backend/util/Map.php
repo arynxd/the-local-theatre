@@ -54,12 +54,9 @@ class Map implements ArrayAccess, JsonSerializable {
             return $r;
         };
 
-        return new Map(array_map_assoc($func, $this -> rawInternal()));
+        return new Map(array_map_assoc($func, $this -> arr));
     }
 
-    private function rawInternal() {
-        return $this -> arr;
-    }
 
     function mapValues($mapper) {
         $func = function ($_, $value) use ($mapper) {
@@ -71,7 +68,7 @@ class Map implements ArrayAccess, JsonSerializable {
 
     function map($mapper) {
         $res = new Map();
-        foreach ($this -> rawInternal() as $key => $value) {
+        foreach ($this -> arr as $key => $value) {
             $res[$key] = call_user_func($mapper, $key, $value);
         }
         return $res;
@@ -79,7 +76,7 @@ class Map implements ArrayAccess, JsonSerializable {
 
     function filter($filter) {
         $res = new Map();
-        foreach ($this -> rawInternal() as $key => $value) {
+        foreach ($this -> arr as $key => $value) {
             if (call_user_func($filter, $key, $value)) {
                 $res[$key] = $value;
             }
@@ -95,7 +92,7 @@ class Map implements ArrayAccess, JsonSerializable {
     }
 
     function length() {
-        return count($this -> rawInternal());
+        return count($this -> arr);
     }
 
     public function orFalse($key) {
@@ -106,21 +103,21 @@ class Map implements ArrayAccess, JsonSerializable {
         if (!$this -> exists($key)) {
             return $default;
         }
-        return $this -> rawInternal()[$key];
+        return $this -> arr[$key];
     }
 
     public function exists($key) {
-        return array_key_exists($key, $this -> rawInternal());
+        return array_key_exists($key, $this -> arr);
     }
 
     public function offsetSet($offset, $value) {
         $this -> throwIfFrozen();
 
         if (is_null($offset)) {
-            $this -> rawInternal()[] = $value;
+            $this -> arr[] = $value;
         }
         else {
-            $this -> rawInternal()[$offset] = $value;
+            $this -> arr[$offset] = $value;
         }
     }
 
@@ -131,7 +128,7 @@ class Map implements ArrayAccess, JsonSerializable {
     }
 
     public function offsetExists($offset) {
-        return isset($this -> rawInternal()[$offset]);
+        return isset($this -> arr[$offset]);
     }
 
     public function offsetUnset($offset) {
@@ -140,7 +137,7 @@ class Map implements ArrayAccess, JsonSerializable {
     }
 
     public function offsetGet($offset) {
-        return isset($this -> rawInternal()[$offset]) ? $this -> rawInternal()[$offset] : null;
+        return isset($this -> arr[$offset]) ? $this -> arr[$offset] : null;
     }
 
     public function freeze() {
@@ -158,15 +155,13 @@ class Map implements ArrayAccess, JsonSerializable {
 
     public function push($value) {
         $this -> throwIfFrozen();
-        $array = $this -> rawInternal();
-        array_push($array, $value);
-        $this -> arr = $array;
+        array_push($this -> arr, $value);
     }
 
     public function __toString() {
         $res = "object(Map){";
 
-        foreach ($this -> rawInternal() as $key => $value) {
+        foreach ($this -> arr as $key => $value) {
             $res .= "$key => $value,";
         }
         return $res . "}";

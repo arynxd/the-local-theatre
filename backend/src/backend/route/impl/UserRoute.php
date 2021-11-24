@@ -36,19 +36,9 @@ class UserRoute extends Route {
         }
 
         $dbRes = map($dbRes -> first()); // we get arrays back from the db, convert it to a map
+        $dbRes['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $dbRes['id'];
 
-
-        $model = new UserModel(
-            $dbRes['id'],
-            $dbRes['firstName'],
-            $dbRes['lastName'],
-            $dbRes['permissions'],
-            $dbRes['dob'],
-            $dbRes['joinDate'],
-            $dbRes['username'],
-            Constants ::AVATAR_URL_PREFIX() . "?id=$targetId"
-        );
-        return $model;
+        return UserModel ::fromJSON($dbRes);
     }
 
     public function handle($conn, $res) {
