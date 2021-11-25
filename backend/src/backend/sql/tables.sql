@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `post` (
 
 CREATE TABLE IF NOT EXISTS `credential` (
   `userId` char(36) PRIMARY KEY,
-  `email` varchar(64) NOT NULL,
+  `email` varchar(64) NOT NULL UNIQUE,
   `password` varchar(124) NOT NULL,
-  `token` char(64) NOT NULL
+  `token` char(64)
 );
 
 CREATE TABLE IF NOT EXISTS `comment` (

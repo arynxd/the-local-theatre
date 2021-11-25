@@ -12,7 +12,7 @@ class Constants {
         return "https://$_SERVER[HTTP_HOST]/~20006203/api/";
     }
 
-    public static final function SHOW_IMAGE__URL_PREFIX() {
+    public static final function SHOW_IMAGE_URL_PREFIX() {
         return self ::SERVER_URL_PREFIX() . 'show/image';
     }
 }

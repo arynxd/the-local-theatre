@@ -11,11 +11,11 @@ class ShowImageRoute extends Route {
         parent ::__construct("show/image", [RequestMethod::GET]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         readData("show.jpg", ContentType::JPEG, CORS::ALL, StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

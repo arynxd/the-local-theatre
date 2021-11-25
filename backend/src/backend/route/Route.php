@@ -23,11 +23,11 @@ abstract class Route {
      * Handle an incoming request, ideally this function never throws.
      * All validation should be performed in validate($conn, $res, ...$params)
      *
-     * @param Connection $conn the current connection
+     * @param Session $sess the current session
      * @param Response $res the response to send data to
      * @return              null        the return value is ignored
      */
-    public abstract function handle($conn, $res);
+    public abstract function handle($sess, $res);
 
     /**
      * Validates this route based on an incoming request.
@@ -35,19 +35,19 @@ abstract class Route {
      * If the validation fails, the request fails.
      * Validation should only check the state of the data, in a pure form. It should not query outside sources.
      *
-     * @param Connection $conn the current connection
+     * @param Session $sess the current connection
      * @param Response $res the response to send data to
      * @return  RouteValidationResult  the result of the validation
      */
-    public abstract function validateRequest($conn, $res);
+    public abstract function validateRequest($sess, $res);
 
     /**
      * Validates this route based on an incoming request's methods.
      *
-     * @param Connection $conn the current connection
+     * @param Session $sess the current connection
      * @return  boolean                   true, if the validation passed, false otherwise
      */
-    public function validateMethod($conn) {
-        return in_array($conn -> method, $this -> methods);
+    public function validateMethod($sess) {
+        return in_array($sess -> method, $this -> methods);
     }
 }

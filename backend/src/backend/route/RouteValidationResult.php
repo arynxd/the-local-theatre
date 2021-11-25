@@ -52,6 +52,6 @@ function Unprocessable($error, ...$headers) {
     return new RouteValidationResult(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
 }
 
-function Result($code, $error, $headers) {
+function Result($code, $error, ...$headers) {
     return new RouteValidationResult($code, $error, $headers);
 }

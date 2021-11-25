@@ -17,7 +17,7 @@ class Database {
      * @param  $url       string      The URL to use
      * @param  $username  string      The username to use
      * @param  $password  string      The password to use
-     * @param  $conn      Connection  The current connection
+     * @param  $conn      Session  The current connection
      */
     public function __construct($url, $username, $password, $conn) {
         $opts = [
@@ -61,7 +61,7 @@ class Database {
         $st = $this -> prepare($sql, $params);
 
         if (!$st -> execute()) {
-            return false;
+            throw new UnexpectedValueException("Database query failed, ");
         }
 
         return $st;

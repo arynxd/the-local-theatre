@@ -16,7 +16,7 @@ class CommentListRoute extends Route {
         parent ::__construct("comment/list", [RequestMethod::GET]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $user = new UserModel(createIdentifier(), 'john', 'doe', 1, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
 
         $result = new Map();
@@ -29,7 +29,7 @@ class CommentListRoute extends Route {
         $res -> sendJSON(map(['comments' => $result, 'count' => 10]), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

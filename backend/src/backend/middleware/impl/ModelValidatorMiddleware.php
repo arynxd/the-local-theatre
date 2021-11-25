@@ -13,7 +13,7 @@ class ModelValidatorMiddleware extends Middleware {
         $this -> err = $err;
     }
 
-    public function apply($conn) {
+    public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {
                 BadRequest($this -> err);

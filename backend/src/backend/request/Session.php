@@ -10,7 +10,7 @@ require_once __DIR__ . "/../db/Database.php";
 require_once __DIR__ . "/../route/Router.php";
 require_once __DIR__ . "/Response.php";
 
-class Connection {
+class Session {
     public $res;
     public $config;
     public $database;
@@ -20,6 +20,7 @@ class Connection {
     public $route;
     public $method;
     public $logger;
+    public $headers;
 
     public function __construct() {
         $this -> res = $this -> generateResponse();
@@ -32,6 +33,7 @@ class Connection {
         $this -> route = $this -> parseRoute();
         $this -> method = $this -> parseMethod();
         $this -> logger = $this -> loadLogger();
+        $this -> headers = $this -> parseHeaders();
 
         $this -> router -> handleCors();
     }
@@ -71,7 +73,7 @@ class Connection {
     }
 
     private function parseRawURI() {
-        return "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        return "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     }
 
     private function parseURI() {
@@ -147,5 +149,12 @@ class Connection {
         if ($wareResult -> isError()) {
             $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
         }
+    }
+
+    private function parseHeaders() {
+        if (!function_exists('getallheaders')) {
+            throw new UnexpectedValueException("getallheaders function did not exist? are we actually running under apache??");
+        }
+        return getallheaders();
     }
 }

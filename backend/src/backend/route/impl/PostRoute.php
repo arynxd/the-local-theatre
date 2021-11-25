@@ -17,7 +17,7 @@ class PostRoute extends Route {
         parent ::__construct("post", [RequestMethod::GET, RequestMethod::POST]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $user = new UserModel(createIdentifier(), 'john', 'doe', 0, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
         $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", 50), "Post title here, filler filler filler filler", 163761416);
 
@@ -26,7 +26,7 @@ class PostRoute extends Route {
         ]), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

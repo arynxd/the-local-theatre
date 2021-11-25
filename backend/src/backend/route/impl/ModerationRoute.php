@@ -12,7 +12,7 @@ class ModerationRoute extends Route {
         parent ::__construct("moderation", [RequestMethod::POST]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $res -> sendJSON(map([
             "id" => "0",
             "user_id" => "1",
@@ -20,7 +20,7 @@ class ModerationRoute extends Route {
         ]), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

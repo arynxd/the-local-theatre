@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../util/constant/ParamSource.php';
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../model/UserModel.php';
-require_once __DIR__ . "/../../util/RequestValidator.php";
+require_once __DIR__ . "/../../util/ModelModelKeys.php";
 require_once __DIR__ . "/../../middleware/impl/AuthenticationMiddleware.php";
 require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
 require_once __DIR__ . '/../../util/constant/Constants.php';
@@ -18,7 +18,7 @@ class UserRoute extends Route {
     }
 
     private function getUserById($conn, $res) {
-        $query = "SELECT * from sql20006203.user WHERE sql20006203.user.id = :id";
+        $query = "SELECT * FROM user WHERE user.id = :id";
 
         $targetId = $conn -> queryParams()['id'];
         $st = $conn -> database -> query($query, [
@@ -26,7 +26,7 @@ class UserRoute extends Route {
         ]);
 
         if (!$st) {
-            $res -> exitWithInternalError();
+            $res -> sendInternalError();
         }
 
         $dbRes = map($st -> fetchAll());
@@ -41,17 +41,17 @@ class UserRoute extends Route {
         return UserModel ::fromJSON($dbRes);
     }
 
-    public function handle($conn, $res) {
-        $method = $conn -> method;
+    public function handle($sess, $res) {
+        $method = $sess -> method;
         $model = null;
 
         if ($method == RequestMethod::GET) {
-            $res -> sendJSON($this -> getUserById($conn, $res) -> toMap());
+            $res -> sendJSON($this -> getUserById($sess, $res) -> toMap());
         }
 
         if ($method == RequestMethod::POST) {
-            $conn -> applyMiddleware(new AuthenticationMiddleware());
-            $data = $conn -> jsonParams()['data'];
+            $sess -> applyMiddleware(new AuthenticationMiddleware());
+            $data = $sess -> jsonParams()['data'];
 
 
             $model = new UserModel(
@@ -69,20 +69,20 @@ class UserRoute extends Route {
         $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
-        if ($conn -> method == RequestMethod::GET && !isset($conn -> queryParams()["id"])) {
+    public function validateRequest($sess, $res) {
+        if ($sess -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
             return BadRequest("No ID Provided");
         }
 
-        if ($conn -> method == RequestMethod::POST) {
-            $data = $conn -> jsonParams()['data'];
+        if ($sess -> method == RequestMethod::POST) {
+            $data = $sess -> jsonParams()['data'];
 
             if (!isset($data)) {
                 return BadRequest("No Data Provided");
             }
 
-            $validator = new ModelValidatorMiddleware(Keys::USER_MODEL, $data, "Invalid Data Provided");
-            $conn -> applyMiddleware($validator);
+            $validator = new ModelValidatorMiddleware(ModelKeys::USER_MODEL, $data, "Invalid Data Provided");
+            $sess -> applyMiddleware($validator);
         }
 
         return Ok();

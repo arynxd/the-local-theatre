@@ -11,7 +11,7 @@ require_once __DIR__ . '/../util/Map.php';
  * This can be freely constructed wherever needed however the Connection
  * always holds an instance (Connection::$res)
  *
- * @see Connection
+ * @see Session
  */
 class Response {
     /**
@@ -71,11 +71,12 @@ class Response {
      * @return void This function never returns
      */
     public function sendError($message, ...$headers) {
+        //TODO log exceptions to stderr when we get them
         $this -> send(json_encode([
             "error" => true,
             "message" => $message
         ]), ContentType::JSON, CORS::ALL, ...$headers);
-        die(1);
+        die(0);
     }
 
     /**
@@ -86,6 +87,7 @@ class Response {
      * @return void This function never returns
      */
     public function sendInternalError() {
+        //TODO log exceptions to stderr when we get them
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
         die(1);
     }

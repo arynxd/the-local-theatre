@@ -12,7 +12,7 @@ class CommentRoute extends Route {
         parent ::__construct("comment", [RequestMethod::GET, RequestMethod::POST, RequestMethod::DELETE]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $res -> sendJSON(map([
             "id" => "0",
             "user_id" => "1",
@@ -20,7 +20,7 @@ class CommentRoute extends Route {
         ]), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

@@ -5,27 +5,27 @@ Logger ::enableErrors();
 
 require_once 'backend/util/constant/StatusCode.php';
 require_once 'backend/util/constant/ErrorStrings.php';
-require_once 'backend/request/Connection.php';
+require_once 'backend/request/Session.php';
 
-$conn = new Connection();
+$sess = new Session();
 
-if (!$conn -> route -> validateMethod($conn)) {
-    $conn -> res -> sendError("Invalid Method " . $conn -> method, StatusCode::BAD_REQUEST);
+if (!$sess -> route -> validateMethod($sess)) {
+    $sess -> res -> sendError("Invalid Method " . $sess -> method, StatusCode::BAD_REQUEST);
     exit;
 }
 
-$routeResult = $conn -> route -> validateRequest($conn, $conn -> res);
+$routeResult = $sess -> route -> validateRequest($sess, $sess -> res);
 
 if (!$routeResult -> isError()) {
     try {
-        $conn -> route -> handle($conn, $conn -> res);
+        $sess -> route -> handle($sess, $sess -> res);
     }
     catch (Exception $ex) {
-        $conn -> res -> sendInternalError();
+        $sess -> res -> sendInternalError();
     }
 }
 else {
-    $conn -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
+    $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
     exit;
 }
 

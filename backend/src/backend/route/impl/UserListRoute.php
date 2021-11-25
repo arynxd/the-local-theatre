@@ -14,10 +14,10 @@ class UserListRoute extends Route {
         parent ::__construct("user/list", [RequestMethod::GET]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $out = new Map();
 
-        $st = $conn -> database -> query("SELECT * FROM sql20006203.user");
+        $st = $sess -> database -> query("SELECT * FROM user");
 
         if (!$st) {
             $res -> sendInternalError();
@@ -40,7 +40,7 @@ class UserListRoute extends Route {
         $res -> sendJSON($out, StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }

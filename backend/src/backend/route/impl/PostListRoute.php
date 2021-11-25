@@ -17,7 +17,7 @@ class PostListRoute extends Route {
         parent ::__construct("post/list", [RequestMethod::GET]);
     }
 
-    public function handle($conn, $res) {
+    public function handle($sess, $res) {
         $user = new UserModel(createIdentifier(), 'john', 'doe', 0, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
         $posts = new Map();
 
@@ -31,7 +31,7 @@ class PostListRoute extends Route {
         ]), StatusCode::OK);
     }
 
-    public function validateRequest($conn, $res) {
+    public function validateRequest($sess, $res) {
         return Ok();
     }
 }
