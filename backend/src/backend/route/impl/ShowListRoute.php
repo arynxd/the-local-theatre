@@ -14,18 +14,13 @@ class ShowListRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $models = map([
-            new ShowModel(createIdentifier(), 'Show title 1', 0, Constants::SHOW_IMAGE_URL_PREFIX()),
-            new ShowModel(createIdentifier(), 'Show title 2', 0, Constants::SHOW_IMAGE_URL_PREFIX()),
-            new ShowModel(createIdentifier(), 'Show title 3', 0, Constants::SHOW_IMAGE_URL_PREFIX()),
-            new ShowModel(createIdentifier(), 'Show title 4', 0, Constants::SHOW_IMAGE_URL_PREFIX())
-        ]);
+        $maps = map([]);
 
-        $mapper =  function ($item) {
-            return $item -> toMap();
-        };
+        for ($i = 0; $i < 4; $i++) {
+            $maps -> push(new ShowModel(createIdentifier(), "Show title $i", 0, Constants::SHOW_IMAGE_URL_PREFIX()));
+        }
 
-        $res -> sendJSON(map($models -> map($mapper)), StatusCode::OK);
+        $res -> sendJSON($maps, StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {

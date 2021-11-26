@@ -21,9 +21,7 @@ class PostRoute extends Route {
         $user = new UserModel(createIdentifier(), 'john', 'doe', 0, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
         $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", 50), "Post title here, filler filler filler filler", 163761416);
 
-        $res -> sendJSON(map([
-            'post' => $model -> toMap()
-        ]), StatusCode::OK);
+        $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {

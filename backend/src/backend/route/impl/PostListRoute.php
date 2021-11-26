@@ -26,9 +26,7 @@ class PostListRoute extends Route {
             $posts -> push($model -> toMap());
         }
 
-        $res -> sendJSON(map([
-            $posts
-        ]), StatusCode::OK);
+        $res -> sendJSON($posts, StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {
