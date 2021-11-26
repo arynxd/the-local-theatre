@@ -40,7 +40,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModelArray(v.posts, this.backend().entity.createPost))
+            .map(v => toModelArray(v, this.backend().entity.createPost))
     }
 
     loadShowImage(show: Show): BackendAction<Blob> {
@@ -65,7 +65,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModelArray(v.comments, this.backend().entity.createComment))
+            .map(v => toModelArray(v, this.backend().entity.createComment))
     }
 
     loadSelfUser(): BackendAction<User> {
@@ -88,7 +88,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModel(v.post, this.backend().entity.createPost))
+            .map(v => toModel(v, this.backend().entity.createPost))
 
     }
 
@@ -113,7 +113,7 @@ export class HttpManager extends Manager {
         const route = Routes.User.FETCH_ALL.compile()
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModelArray(v.users, this.backend().entity.createUser))
+            .map(v => toModelArray(v, this.backend().entity.createUser))
     }
 
     private readonly backend = () => getBackend()

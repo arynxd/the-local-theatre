@@ -57,7 +57,7 @@ class Response {
         }
 
         echo $data;
-        die(0);
+        exit(0);
     }
 
     /**
@@ -76,7 +76,7 @@ class Response {
             "error" => true,
             "message" => $message
         ]), ContentType::JSON, CORS::ALL, ...$headers);
-        die(0);
+        exit(0);
     }
 
     /**
@@ -89,6 +89,6 @@ class Response {
     public function sendInternalError() {
         //TODO log exceptions to stderr when we get them
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
-        die(1);
+        exit(1);
     }
 }

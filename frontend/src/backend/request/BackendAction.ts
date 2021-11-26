@@ -5,7 +5,8 @@ import {CompiledRoute} from "./route/CompiledRoute";
 import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
 import {getAuth} from "../global-scope/util/getters";
-import {ValidTypeOf} from "./mappers";
+import {toJSON, ValidTypeOf} from "./mappers";
+import {JSONObject} from "../JSONObject";
 
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
@@ -93,7 +94,7 @@ function newBackendAction(
             let opts: RequestInit = {
                 method: route.routeData.method,
                 headers: route.flattenHeaders(),
-                mode: 'cors'
+                mode: 'no-cors'
             }
 
             if (route.routeData.method !== 'GET') {
@@ -116,7 +117,7 @@ function newBackendAction(
             resolve(result)
         }
         else {
-            const json = JSON.parse(await result.text())
+            const json = await toJSON(result)
 
             const ex = new BackendError('JSON response was malformed. Expected object, got ' + JSON.stringify(json))
 

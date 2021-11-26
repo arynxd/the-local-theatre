@@ -20,7 +20,7 @@ class SelfUserRoute extends Route {
             throw new UnexpectedValueException("Self user was not set? The validation middleware must have failed..");
         }
 
-        $res -> sendJSON($selfUser -> toMap());
+        $res -> sendJSON($selfUser -> toMap(), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {

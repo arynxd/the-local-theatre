@@ -27,7 +27,7 @@ class PostListRoute extends Route {
         }
 
         $res -> sendJSON(map([
-            'posts' => $posts
+            $posts
         ]), StatusCode::OK);
     }
 

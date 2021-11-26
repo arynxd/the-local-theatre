@@ -65,8 +65,8 @@ class Router {
      */
     function handleCors() {
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
-            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+            header("Access-Control-Allow-Methods: *");
+            header("Access-Control-Allow-Headers: *");
             header("Access-Control-Allow-Origin: *");
             exit(0);
         }

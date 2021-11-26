@@ -3,8 +3,9 @@ import {FormEvent, useState} from "react"
 import {getAuth} from "../../backend/global-scope/util/getters";
 import {Redirect} from "react-router";
 import {Paths} from "../../util/paths";
-import {FormElement, ErrorElement, ErrorState} from "../../component/FormElement";
+import {ErrorElement, ErrorState, FormElement} from "../../component/FormElement";
 import {logger} from "../../util/log";
+import {isAPIError} from "../../model/APIError";
 
 type LoginState = 'logging_in' | 'validation_failed' | 'login_failed' | 'idle' | 'success'
 
@@ -57,24 +58,31 @@ export default function Login() {
 
         setTimeout(() => {
             getAuth().login(email, password)
-            .then(isLoggedIn => {
-                if (isLoggedIn) {
-                    setState('success')
-                }
-                else {
-                    setErrors({
-                        general: ["Email or password incorrect"]
-                    })
-                    setState('login_failed')
-                }
-            })
-            .catch((err) => {
-                setErrors({
-                    general: ["An error occurred whilst logging in, please try again"]
+                .then(isLoggedIn => {
+                    if (isLoggedIn) {
+                        setState('success')
+                    }
+                    else {
+                        setErrors({
+                            general: ["Email or password incorrect"]
+                        })
+                        setState('login_failed')
+                    }
                 })
-                setState("login_failed")
-                logger.error(err)
-            })
+                .catch((err) => {
+                    if (isAPIError(err)) {
+                        setErrors({
+                            general: ["Email or password incorrect."]
+                        })
+                    }
+                    else {
+                        setErrors({
+                            general: ["An error occurred whilst logging in, please try again"]
+                        })
+                        logger.error(err)
+                    }
+                    setState("login_failed")
+                })
         }, 5_000)
     }
 
@@ -93,14 +101,16 @@ export default function Login() {
 
                     <ErrorElement error={errors.general}/>
 
-                    <button className='p-2 m-2 w-10/12 inline-flex items-center justify-center text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl' type='submit'>
+                    <button
+                        className='p-2 m-2 w-10/12 inline-flex items-center justify-center text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
+                        type='submit'>
                         {state === 'logging_in'
                             ? <svg className="animate-spin mx-2 h-5 w-5 text-white"
                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                        stroke-width="4"></circle>
+                                        strokeWidth="4"/>
                                 <path className="opacity-75" fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                             </svg>
                             : <> </>
                         }

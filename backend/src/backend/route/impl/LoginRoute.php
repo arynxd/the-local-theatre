@@ -34,14 +34,18 @@ class LoginRoute extends Route {
         ]);
 
         $accountDetails = $accountDetails -> fetch();
-        $accountDetails = map($accountDetails);
 
+        if (!$accountDetails) {
+            $res -> sendError("Account does not exist, or email / password was incorrect.", StatusCode::UNAUTHORIZED);
+        }
+
+        $accountDetails = map($accountDetails);
         if ($accountDetails -> length() == 0) {
-            $res -> sendError("Account does not exist, or email / password was incorrect.", StatusCode::FORBIDDEN);
+            $res -> sendError("Account does not exist, or email / password was incorrect.", StatusCode::UNAUTHORIZED);
         }
 
         if (!verifyPassword($password, $accountDetails['password'])) {
-            $res -> sendError("Account does not exist, or email / password was incorrect.", StatusCode::FORBIDDEN);
+            $res -> sendError("Account does not exist, or email / password was incorrect.", StatusCode::UNAUTHORIZED);
         }
 
         $res -> sendJSON(map([
