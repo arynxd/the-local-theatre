@@ -8,4 +8,5 @@ class StatusCode {
     const UNPROCESSABLE_ENTITY = 'HTTP/1.1 422 Unprocessable Entity';
     const FORBIDDEN = 'HTTP/1.1 403 Forbidden';
     const UNAUTHORIZED = 'HTTP/1.1 401 Unauthorized';
+    const CONFLICT = 'HTTP/1.1 409 Conflict';
 }

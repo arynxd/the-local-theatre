@@ -10,7 +10,7 @@ class Database {
      * This connection will persist through runs of script.
      *
      * This class implements the following options for the connection:
-     *  PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+     *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
      *  PDO::ATTR_PERSISTENT => true,
      *  PDO::ATTR_TIMEOUT => 5
      *
@@ -21,7 +21,7 @@ class Database {
      */
     public function __construct($url, $username, $password, $conn) {
         $opts = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_TIMEOUT => 5,
         ];
@@ -55,27 +55,20 @@ class Database {
      *
      * @param $sql      string   the sql string
      * @param $params   array    associative array of params to prepare
-     * @return          PDOStatement | false    the associative array representing the query, false if the query failed
+     * @return          PDOStatement the statement representing this query
      */
     public function query($sql, $params = []) {
-        $st = $this -> prepare($sql, $params);
-
-        if (!$st -> execute()) {
-            throw new UnexpectedValueException("Database query failed, ");
-        }
+        $st = $this -> prepare($sql);
+        $st -> execute($params);
 
         return $st;
     }
 
-    private function prepare($sql, $params) {
+    private function prepare($sql) {
         $stmt = $this -> dbh -> prepare($sql);
 
         if (!$stmt) {
             return false;
-        }
-
-        foreach ($params as $key => $value) {
-            $stmt -> bindParam($key, $value);
         }
 
         return $stmt;

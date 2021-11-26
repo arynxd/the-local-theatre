@@ -19,10 +19,6 @@ class UserListRoute extends Route {
 
         $st = $sess -> database -> query("SELECT * FROM user");
 
-        if (!$st) {
-            $res -> sendInternalError();
-        }
-
         $dbRes = map($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {

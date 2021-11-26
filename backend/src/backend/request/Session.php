@@ -21,6 +21,7 @@ class Session {
     public $method;
     public $logger;
     public $headers;
+    public $selfUser;
 
     public function __construct() {
         $this -> res = $this -> generateResponse();
@@ -155,6 +156,6 @@ class Session {
         if (!function_exists('getallheaders')) {
             throw new UnexpectedValueException("getallheaders function did not exist? are we actually running under apache??");
         }
-        return getallheaders();
+        return map(getallheaders());
     }
 }

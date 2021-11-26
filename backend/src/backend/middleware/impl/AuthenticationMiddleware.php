@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../Middleware.php";
+require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . "/../../route/RouteValidationResult.php";
 
 class AuthenticationMiddleware extends Middleware {
@@ -10,11 +11,19 @@ class AuthenticationMiddleware extends Middleware {
             return Result(StatusCode::FORBIDDEN, "You are not permitted to perform this action.");
         }
 
-        $exists = $sess -> database -> query("SELECT COUNT(*) FROM credential WHERE token = :token", ['token' => $token]) -> fetch()[0];
+         $query = "SELECT u.* FROM credential c
+                    LEFT JOIN user u on u.id = c.userId
+                  WHERE token = :token";
 
-        if ($exists == 0) {
+        $selfUser = $sess -> database -> query($query, ['token' => $token]) -> fetch();
+        $selfUser = map($selfUser);
+
+        if ($selfUser -> length() == 0) {
             return Result(StatusCode::FORBIDDEN, "Invalid or expired token provided.");
         }
+
+       $selfUser['avatar'] = Constants::AVATAR_URL_PREFIX() . "?id=" . $selfUser['id'];
+        $sess -> selfUser = UserModel::fromJSON($selfUser);
 
         return Ok();
     }

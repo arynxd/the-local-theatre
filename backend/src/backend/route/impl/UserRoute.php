@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../util/constant/ParamSource.php';
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../route/RouteValidationResult.php';
 require_once __DIR__ . '/../../model/UserModel.php';
-require_once __DIR__ . "/../../util/ModelModelKeys.php";
+require_once __DIR__ . "/../../util/model.php";
 require_once __DIR__ . "/../../middleware/impl/AuthenticationMiddleware.php";
 require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
 require_once __DIR__ . '/../../util/constant/Constants.php';
@@ -17,17 +17,12 @@ class UserRoute extends Route {
         parent ::__construct("user", [RequestMethod::GET, RequestMethod::POST]);
     }
 
-    private function getUserById($conn, $res) {
-        $query = "SELECT * FROM user WHERE user.id = :id";
+    private function getUserById($sess, $res, $id) {
+        $query = "SELECT * FROM user WHERE id = :id";
 
-        $targetId = $conn -> queryParams()['id'];
-        $st = $conn -> database -> query($query, [
-            'id' => $targetId
+        $st = $sess -> database -> query($query, [
+            'id' => $id
         ]);
-
-        if (!$st) {
-            $res -> sendInternalError();
-        }
 
         $dbRes = map($st -> fetchAll());
 
@@ -41,47 +36,79 @@ class UserRoute extends Route {
         return UserModel ::fromJSON($dbRes);
     }
 
+    private function updateUser($sess, $data) {
+        $query = "UPDATE user SET
+                    firstName = :firstName,
+                    lastName = :lastName,
+                    username = :username,
+                    dob = :dob,
+                    permissions = :permissions
+        ";
+
+        $sess -> database -> query($query, [
+            'firstName' => $data['firstName'],
+            'lastName' => $data['lastName'],
+            'username' => $data['username'],
+            'dob' => $data['dob'],
+            'permissions' => $data['permissions']
+        ]);
+    }
+
     public function handle($sess, $res) {
         $method = $sess -> method;
-        $model = null;
 
         if ($method == RequestMethod::GET) {
-            $res -> sendJSON($this -> getUserById($sess, $res) -> toMap());
+            $res -> sendJSON($this -> getUserById($sess, $res, $sess -> queryParams()['id']) -> toMap());
         }
 
         if ($method == RequestMethod::POST) {
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
             $data = $sess -> jsonParams()['data'];
 
+            $selfUser = $sess -> selfUser;
 
-            $model = new UserModel(
-                $data['id'],
-                $data['firstName'],
-                $data['lastName'],
-                $data['permissions'],
-                $data['dob'],
-                $data['joinDate'],
-                $data['username'],
-                $data['avatar']
-            );
+            if (!isset($selfUser)) {
+                throw new UnexpectedValueException("Self user was not set");
+            }
+
+            $isModifyingSelf = $selfUser -> id == $data['id'];
+            $isSelfAdmin = $selfUser -> permissions == 2;
+            $isEditingPerms = $selfUser -> permissions != $data['permissions'];
+
+            if (!$isModifyingSelf && !$isSelfAdmin) {
+                $res -> sendError("You may only modify your own user account", StatusCode::UNAUTHORIZED);
+            }
+
+            if ($isModifyingSelf && $isEditingPerms) {
+                $res -> sendError("You cannot change your own permissions", StatusCode::UNAUTHORIZED);
+            }
+
+            $this -> updateUser($sess, $data);
+
+            $selfUser = $selfUser -> toMap();
+
+            foreach ($data as $k => $v) {
+                $selfUser[$k] = $v;
+            }
+
+            $res -> sendJSON($selfUser);
         }
-
-        $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {
         if ($sess -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
-            return BadRequest("No ID Provided");
+            return BadRequest("No ID provided");
         }
 
         if ($sess -> method == RequestMethod::POST) {
             $data = $sess -> jsonParams()['data'];
 
             if (!isset($data)) {
-                return BadRequest("No Data Provided");
+                return BadRequest("No data provided");
             }
 
-            $validator = new ModelValidatorMiddleware(ModelKeys::USER_MODEL, $data, "Invalid Data Provided");
+            $sess -> applyMiddleware(new AuthenticationMiddleware());
+
+            $validator = new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL, $data, "Invalid data provided");
             $sess -> applyMiddleware($validator);
         }
 

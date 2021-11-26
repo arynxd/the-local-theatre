@@ -107,7 +107,7 @@ class Map implements ArrayAccess, JsonSerializable {
     }
 
     public function exists($key) {
-        return array_key_exists($key, $this -> arr);
+        return isset($this[$key]);
     }
 
     public function offsetSet($offset, $value) {

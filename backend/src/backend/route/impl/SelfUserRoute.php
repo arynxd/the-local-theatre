@@ -14,24 +14,13 @@ class SelfUserRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $token = $sess -> headers['Authorisation'];
-
-        if (!$token) {
-            throw new UnexpectedValueException("Token was not set? The validation middleware must have failed..");
-        }
-
-        $query = "SELECT u.* FROM credential c
-                    LEFT JOIN user u on u.id = c.userId
-                  WHERE token = :token";
-
-        $selfUser = $sess -> database -> query($query, ['token' => $token]) -> fetch();
+        $selfUser = $sess -> selfUser;
 
         if (!$selfUser) {
-            throw new UnexpectedValueException("Self user did not exist? The validation middleware must have failed");
+            throw new UnexpectedValueException("Self user was not set? The validation middleware must have failed..");
         }
 
-        $m = UserModel::fromJSON(map($selfUser));
-        $res -> sendJSON($m -> toMap());
+        $res -> sendJSON($selfUser -> toMap());
     }
 
     public function validateRequest($sess, $res) {

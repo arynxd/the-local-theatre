@@ -7,6 +7,11 @@ class ModelValidatorMiddleware extends Middleware {
     private $data;
     private $err;
 
+    /**
+     * @param $required array The required keys
+     * @param $data Map The input data
+     * @param $err string The error string
+     */
     public function __construct($required, $data, $err) {
         $this -> required = $required;
         $this -> data = $data;
@@ -16,7 +21,7 @@ class ModelValidatorMiddleware extends Middleware {
     public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {
-                BadRequest($this -> err);
+                return BadRequest($this -> err);
             }
         }
         return Ok();

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/constant/ParamSource.php';
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../model/UserModel.php';
-require_once __DIR__ . "/../../util/ModelModelKeys.php";
+require_once __DIR__ . "/../../util/model.php";
 require_once __DIR__ . "/../../util/Map.php";
 require_once __DIR__ . "/../../middleware/impl/ModelValidatorMiddleware.php";
 require_once __DIR__ . '/../../route/RouteValidationResult.php';

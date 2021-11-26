@@ -21,6 +21,7 @@ if (!$routeResult -> isError()) {
         $sess -> route -> handle($sess, $sess -> res);
     }
     catch (Exception $ex) {
+        echo $ex -> getMessage();
         $sess -> res -> sendInternalError();
     }
 }
