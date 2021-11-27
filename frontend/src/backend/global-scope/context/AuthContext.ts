@@ -51,7 +51,7 @@ export class AuthContext extends Context {
         return this._token
     }
 
-    loadSelfUser(): BackendAction<User> {
+    loadSelfUser(): BackendAction<User | undefined> {
         return fromPromise(this.loadSelfUser0())
     }
 
@@ -72,7 +72,12 @@ export class AuthContext extends Context {
             .flatMap(toJSON)
             .map(res => res.token)
             .assertTypeOf('string')
+            .catch(() => 'error')
 
+
+        if (newToken === 'error') {
+            return false
+        }
 
         this._token = newToken
         localStorage[AUTH_KEY] = newToken
@@ -121,7 +126,7 @@ export class AuthContext extends Context {
         return this.observeAuth$$.value === 'authenticated' && !!this._token
     }
 
-    private async loadSelfUser0(): Promise<User> {
+    private async loadSelfUser0(): Promise<User | undefined> {
         assert(() => this.isAuthenticated(),
             () => new BackendError('Tried to load self user without being authenticated')
         )
@@ -131,6 +136,10 @@ export class AuthContext extends Context {
         }
 
         const user = await getBackend().http.loadSelfUser()
+            .catch(() => {
+                this.logout()
+                return undefined
+            })
         this.observeUser$$.next(user)
         return user;
     }

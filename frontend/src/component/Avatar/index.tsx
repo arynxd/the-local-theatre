@@ -20,9 +20,7 @@ export default function Avatar(props: AvatarProps) {
 
     if (!avatar) {
         return (
-            <div className={styles}>
-
-            </div>
+            <div className={styles}/>
         )
     }
     return (
