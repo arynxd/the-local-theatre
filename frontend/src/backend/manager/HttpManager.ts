@@ -56,16 +56,22 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModelArray(v.shows, this.backend().entity.createShow))
+            .map(v => toModelArray(v, this.backend().entity.createShow))
     }
 
-    fetchComments(id: EntityIdentifier): BackendAction<Comment[]> {
+    fetchComments(id: EntityIdentifier): BackendAction<[Comment[], number]> {
         const route = Routes.Comment.LIST.compile()
             .withQueryParam('id', id)
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => toModelArray(v, this.backend().entity.createComment))
+            .map(v => {
+                const count = v.count
+                if (typeof count !== 'number')
+                    throw new TypeError("Count was not a number")
+
+                return [toModelArray(v.comments, this.backend().entity.createComment), count]
+            })
     }
 
     loadSelfUser(): BackendAction<User> {
@@ -73,7 +79,7 @@ export class HttpManager extends Manager {
 
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(this.backend().entity.createUser)
+            .map(v => this.backend().entity.createUser(v))
     }
 
     loadPing(): BackendAction<number> {

@@ -6,7 +6,6 @@ import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
 import {getAuth} from "../global-scope/util/getters";
 import {toJSON, ValidTypeOf} from "./mappers";
-import {JSONObject} from "../JSONObject";
 
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
@@ -94,13 +93,14 @@ function newBackendAction(
             let opts: RequestInit = {
                 method: route.routeData.method,
                 headers: route.flattenHeaders(),
-                mode: 'no-cors'
+                mode: 'cors'
             }
 
             if (route.routeData.method !== 'GET') {
                 opts.body = route.stringifyBody()
             }
-            logger.debug("Route & Opts ", route, opts)
+
+            logger.debug("Route & Opts ", route, " Opts => ", opts)
             result = await fetch(route.url, opts)
         }
         catch (ex) {

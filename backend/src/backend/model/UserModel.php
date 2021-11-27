@@ -32,12 +32,8 @@ class UserModel extends Model {
      * @var string
      */
     public $username;
-    /**
-     * @var
-     */
-    public $avatar;
 
-    public function __construct($id, $firstName, $lastName, $permissions, $dob, $joinDate, $username, $avatar) {
+    public function __construct($id, $firstName, $lastName, $permissions, $dob, $joinDate, $username) {
         $this -> id = $id;
         $this -> firstName = $firstName;
         $this -> lastName = $lastName;
@@ -45,7 +41,6 @@ class UserModel extends Model {
         $this -> dob = $dob;
         $this -> joinDate = $joinDate;
         $this -> username = $username;
-        $this -> avatar = $avatar;
     }
 
     /**
@@ -62,8 +57,7 @@ class UserModel extends Model {
             $data['permissions'],
             $data['dob'],
             $data['joinDate'],
-            $data['username'],
-            $data['avatar']
+            $data['username']
         );
     }
 
@@ -76,8 +70,7 @@ class UserModel extends Model {
                 'permissions' => $this -> permissions,
                 'dob' => $this -> dob,
                 'joinDate' => $this -> joinDate,
-                'username' => $this -> username,
-                'avatar' => $this -> avatar
+                'username' => $this -> username
             ]
         );
     }

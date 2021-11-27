@@ -7,13 +7,11 @@ class ShowModel extends Model {
     public $id;
     public $title;
     public $showDate;
-    public $imageURL;
 
-    public function __construct($id, $title, $showDate, $imageURL) {
+    public function __construct($id, $title, $showDate) {
         $this -> id = $id;
         $this -> title = $title;
         $this -> showDate = $showDate;
-        $this -> imageURL = $imageURL;
     }
 
     public function toMap() {
@@ -21,7 +19,6 @@ class ShowModel extends Model {
             'id' => $this -> id,
             'title' => $this -> title,
             'showDate' => $this -> showDate,
-            'image' => $this -> imageURL
         ]);
     }
 }

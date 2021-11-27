@@ -31,6 +31,7 @@ export function toJSON(response: Response): BackendAction<JSONObject> {
 
             msg += "Failed to parse JSON for backend response. Expected valid JSON got: \n"
             msg += JSON.stringify(json)
+            console.log(response)
             logger.error(new BackendError(msg))
             rej(new BackendError(msg))
             throw new BackendError(msg)

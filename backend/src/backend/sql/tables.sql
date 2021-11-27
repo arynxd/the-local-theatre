@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS `user` (
   `id` char(36) PRIMARY KEY,
-  `firstName` varchar(255) NOT NULL,
-  `lastName` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
+  `firstName` mediumtext NOT NULL,
+  `lastName` mediumtext NOT NULL,
+  `username` mediumtext NOT NULL,
   `dob` bigint NOT NULL,
   `joinDate` bigint NOT NULL,
   `permissions` int NOT NULL
@@ -11,16 +11,17 @@ CREATE TABLE IF NOT EXISTS `user` (
 CREATE TABLE IF NOT EXISTS `moderation_action` (
   `id` char(36) PRIMARY KEY,
   `moderator` char(36),
-  `type` varchar(255)
+  `type` varchar(50)
 );
 
 CREATE TABLE IF NOT EXISTS `moderation_type` (
-  `type` varchar(255) PRIMARY KEY
+  `type` varchar(50) PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS `post` (
   `id` char(36) PRIMARY KEY,
-  `content` varchar(255) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `title` mediumtext NOT NULL,
   `authorId` char(36),
   `createdAt` bigint NOT NULL,
   `editedAt` bigint DEFAULT null
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS `post` (
 
 CREATE TABLE IF NOT EXISTS `credential` (
   `userId` char(36) PRIMARY KEY,
-  `email` varchar(64) NOT NULL UNIQUE,
-  `password` varchar(124) NOT NULL,
+  `email` mediumtext NOT NULL UNIQUE,
+  `password` mediumtext NOT NULL,
   `token` char(64)
 );
 
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `id` char(36) PRIMARY KEY,
   `authorId` char(36),
   `postId` char(36),
-  `content` varchar(255) NOT NULL,
+  `content` mediumtext NOT NULL,
   `createdAt` bigint NOT NULL,
   `editedAt` bigint DEFAULT null
 );

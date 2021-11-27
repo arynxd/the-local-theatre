@@ -33,6 +33,20 @@ interface ActivityProps {
     backend: ManagerController
     linkTo: string
 }
+function PostPlaceholders() {
+    return createPlaceholders((i) =>
+            <div key={i}
+                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+
+                <div className='w-full h-full animate-pulse'>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                </div>
+            </div>
+        )
+}
+
 
 function Activity(props: ActivityProps) {
     const activityElementStyles = `
@@ -77,19 +91,6 @@ function LatestShows() {
     const backend = getBackend()
     const shows = useAPI(() => backend.http.loadShows())
 
-    const PostPlaceholders = () =>
-        createPlaceholders((i) =>
-            <div key={i}
-                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-
-                <div className='w-full h-full animate-pulse'>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                </div>
-            </div>
-        )
-
     const ShowElement = (showProps: { model: Show }) => {
         const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))
 
@@ -97,7 +98,7 @@ function LatestShows() {
             <div
                 className='w-auto h-auto bg-gray-200 dark:bg-gray-500 m-2 p-4 shadow-xl rounded-xl flex flex-col place-items-center
                 transition duration-300 ease-in-out transform  hover:scale-105'>
-                <img className='h-2/3 w-full pb-4' src={img}
+                <img className='h-2/3 w-1/3 pb-4' src={img}
                      alt={`Advertisement of ${showProps.model.title}`}/>
                 <Separator className='pt-4 w-2/3'/>
                 <h1 className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</h1>
@@ -118,8 +119,16 @@ function RecentActivity() {
     const posts = useAPI(() => getPost(backend))
 
     if (!posts) {
-        return <></>
+        return <>{PostPlaceholders()}</>
     }
+
+    if (!posts.length) {
+        //TODO make this gooder
+        return (
+            <p>No posties :(</p>
+        )
+    }
+
 
     const earliestFirst = [...posts]
         .sort((a, b) =>
@@ -127,8 +136,9 @@ function RecentActivity() {
         )
 
     return (
-        <>{earliestFirst.map(post =>
+        <>{earliestFirst.map((post, idx) =>
             <Activity
+                key={idx}
                 backend={backend}
                 author={post.author}
                 linkTo={`/~20006203/post/${post.id}`}

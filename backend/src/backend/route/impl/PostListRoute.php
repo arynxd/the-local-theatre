@@ -18,11 +18,29 @@ class PostListRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $user = new UserModel(createIdentifier(), 'john', 'doe', 0, 1, 1, 'jdoe', Constants ::AVATAR_URL_PREFIX());
+        $query = "SELECT * FROM post p LEFT JOIN user u on p.authorId = u.id;";
+        $st = $sess -> database -> query($query);
+
+        $dbData = $st -> fetchAll(PDO::FETCH_NAMED);
         $posts = new Map();
 
-        for ($i = 1; $i < 11; $i ++) {
-            $model = new PostModel(createIdentifier(), $user, str_repeat("Lorem ipsum sit amet ", $i), 'Post title goes here', 1635762292 + ($i * 987));
+        foreach ($dbData as $item) {
+            print_r($item);
+            $model = new PostModel(
+                $item['id'][0],
+                new UserModel(
+                    $item['id'][1],
+                    $item['firstName'],
+                    $item['lastName'],
+                    $item['permissions'],
+                    $item['dob'],
+                    $item['joinDate'],
+                    $item['username']
+                ),
+                $item['content'],
+                $item['title'],
+                $item['createdAt']
+            );
             $posts -> push($model -> toMap());
         }
 

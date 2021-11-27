@@ -16,10 +16,19 @@ class AvatarRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        readData("avatar.png", ContentType::PNG, CORS::ALL, StatusCode::OK);
+        $id = $sess -> queryParams()['id'];
+
+        if (!isset($id)) {
+            throw new UnexpectedValueException("ID was not set.");
+        }
+
+        readDataOrDefault("avatars/$id.png", "avatars/avatar.png", ContentType::PNG, CORS::ALL, StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {
+        if (!isset($sess -> queryParams()['id'])) {
+            return BadRequest("No ID provided.");
+        }
         return Ok();
     }
 }

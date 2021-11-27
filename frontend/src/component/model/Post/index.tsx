@@ -20,7 +20,7 @@ interface AddCommentProps {
 }
 
 function CommentView(props: PostProps) {
-    const comments = useAPI(() => getBackend().http.fetchComments(props.post.id))
+    const apiRes = useAPI(() => getBackend().http.fetchComments(props.post.id))
 
     const LoadingComments = () =>
         createPlaceholders(() =>
@@ -32,17 +32,22 @@ function CommentView(props: PostProps) {
             </div>
         )
     
-    if (!comments) {
+    if (!apiRes) {
         return (
             <>{
                 LoadingComments()
             }</>
         )
+
     }
 
+    //TODO add comment count using second value here
+    const [comments, ] = apiRes
+
     return (
-        <>{
-            comments.map(c => <Comment model={c}/>)
+        <>
+            {
+            comments.map((c) => <Comment model={c}/>)
         }</>
     )
 }

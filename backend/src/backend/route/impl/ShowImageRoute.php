@@ -12,10 +12,19 @@ class ShowImageRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        readData("show.jpg", ContentType::JPEG, CORS::ALL, StatusCode::OK);
+        $id = $sess -> queryParams()['id'];
+
+        if (!isset($id)) {
+            throw new UnexpectedValueException("ID was not set.");
+        }
+
+        readDataOrDefault("shows/$id.png", "shows/show.png", ContentType::PNG, CORS::ALL, StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {
+        if (!isset($sess -> queryParams()['id'])) {
+            return BadRequest("No ID provided.");
+        }
         return Ok();
     }
 }

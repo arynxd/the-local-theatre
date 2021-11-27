@@ -16,9 +16,8 @@ class AuthenticationMiddleware extends Middleware {
                   WHERE token = :token";
 
         $selfUser = $sess -> database -> query($query, ['token' => $token]) -> fetch();
-        $selfUser = map($selfUser);
 
-        if ($selfUser -> length() == 0) {
+        if (!$selfUser || ($selfUser = map($selfUser)) -> length() == 0) {
             return Result(StatusCode::FORBIDDEN, "Invalid or expired token provided.");
         }
 
