@@ -30,6 +30,7 @@
 - [ ] 404 Page
 - [ ] Perm checks for restricted pages
 - [ ] Change inline buttons to blue
+- [ ] Change frontend assertions to use TS 'asserts' keyword
 
 ## Feature List 
 - [x] Login
