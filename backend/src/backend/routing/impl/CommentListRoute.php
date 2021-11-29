@@ -8,14 +8,14 @@ namespace TLT\Routing\Impl;
 
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 
-class CommentListRoute extends Route {
+class CommentListRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("comment/list", [RequestMethod::GET]);
     }

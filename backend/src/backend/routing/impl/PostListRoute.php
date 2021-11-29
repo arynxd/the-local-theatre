@@ -9,13 +9,13 @@ namespace TLT\Routing\Impl;
 use PDO;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class PostListRoute extends Route {
+class PostListRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("post/list", [RequestMethod::GET]);
     }

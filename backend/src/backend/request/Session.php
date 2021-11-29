@@ -3,7 +3,7 @@
 namespace TLT\Request;
 
 use Exception;
-use TLT\Middleware\Middleware;
+use TLT\Middleware\BaseMiddleware;
 use TLT\Request\Module\Impl\AuthModule;
 use TLT\Request\Module\Impl\CacheModule;
 use TLT\Request\Module\Impl\ConfigModule;
@@ -146,7 +146,7 @@ class Session {
      *
      * If the middleware fails, the connection is terminated with an error
      *
-     * @param Middleware[] $middlewares The middlewares to apply
+     * @param BaseMiddleware[] $middlewares The middlewares to apply
      */
     public function applyMiddleware(...$middlewares) {
         foreach ($middlewares as $middleware) {

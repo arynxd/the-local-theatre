@@ -7,7 +7,7 @@ namespace TLT\Routing\Impl;
 
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\ModelKeys;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\AuthUtil;
 use TLT\Util\Data\Map;
@@ -16,7 +16,7 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 
-class SignupRoute extends Route {
+class SignupRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("signup", [RequestMethod::POST]);
     }

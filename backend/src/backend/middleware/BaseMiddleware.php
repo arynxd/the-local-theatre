@@ -14,7 +14,7 @@ use TLT\Util\HttpResult;
  *
  * However, if this does occur, the connection will be terminated with a 500 internal error code.
  */
-abstract class Middleware {
+abstract class BaseMiddleware {
     /**
      * Applies this middleware to the given session
      *

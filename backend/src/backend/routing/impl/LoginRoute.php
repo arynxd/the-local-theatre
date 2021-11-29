@@ -6,7 +6,7 @@
 namespace TLT\Routing\Impl;
 
 
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\AuthUtil;
 use TLT\Util\Data\Map;
@@ -15,7 +15,7 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
-class LoginRoute extends Route {
+class LoginRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("login", [RequestMethod::POST]);
     }

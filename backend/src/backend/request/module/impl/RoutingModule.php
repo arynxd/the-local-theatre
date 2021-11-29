@@ -3,7 +3,7 @@
 namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\BaseModule;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Routing\Router;
 use TLT\Util\Enum\StatusCode;
 
@@ -14,7 +14,7 @@ class RoutingModule extends BaseModule {
     public $router;
 
     /**
-     * @var Route $route
+     * @var BaseRoute $route
      */
     public $route;
 

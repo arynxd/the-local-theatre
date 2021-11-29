@@ -6,12 +6,12 @@
 namespace TLT\Routing\Impl;
 
 
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class ModerationRoute extends Route {
+class ModerationRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("moderation", [RequestMethod::POST]);
     }

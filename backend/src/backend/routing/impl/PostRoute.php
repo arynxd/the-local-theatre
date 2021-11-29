@@ -10,13 +10,13 @@ use PDO;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
 use TLT\Request\Session;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class PostRoute extends Route {
+class PostRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("post", [RequestMethod::GET, RequestMethod::POST]);
     }

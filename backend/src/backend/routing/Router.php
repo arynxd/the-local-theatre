@@ -20,7 +20,7 @@ use TLT\Routing\Impl\UserRoute;
 
 /**
  * A router for all the API Routes
- * @see Route
+ * @see BaseRoute
  */
 class Router {
     private $routes;
@@ -49,7 +49,7 @@ class Router {
      * Gets the routing for a given path.
      *
      * @param string[] $parts the path
-     * @return  Route|false       returns false if the routing is not found
+     * @return  BaseRoute|false       returns false if the routing is not found
      */
     public function getRouteForPath($parts) {
         $match = join("/", $parts);

@@ -2,13 +2,13 @@
 
 namespace TLT\Routing\Impl;
 
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class BaseRoute extends Route {
+class BaseRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT]);
     }

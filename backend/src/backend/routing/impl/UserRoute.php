@@ -6,7 +6,7 @@ use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
@@ -14,7 +14,7 @@ use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class UserRoute extends Route {
+class UserRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("user", [RequestMethod::GET, RequestMethod::POST]);
     }

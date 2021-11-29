@@ -2,11 +2,11 @@
 
 namespace TLT\Middleware\Impl;
 
-use TLT\Middleware\Middleware;
+use TLT\Middleware\BaseMiddleware;
 use TLT\Util\Data\Map;
 use TLT\Util\HttpResult;
 
-class ModelValidatorMiddleware extends Middleware {
+class ModelValidatorMiddleware extends BaseMiddleware {
     private $required;
     private $data;
     private $err;

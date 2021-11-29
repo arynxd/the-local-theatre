@@ -4,13 +4,13 @@ namespace TLT\Routing\Impl;
 
 
 use TLT\Model\Impl\ShowModel;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class ShowListRoute extends Route {
+class ShowListRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("show/list", [RequestMethod::GET]);
     }

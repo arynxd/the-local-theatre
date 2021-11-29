@@ -3,14 +3,14 @@
 namespace TLT\Routing\Impl;
 
 use TLT\Model\Impl\UserModel;
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class UserListRoute extends Route {
+class UserListRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("user/list", [RequestMethod::GET]);
     }

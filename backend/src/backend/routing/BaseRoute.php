@@ -12,7 +12,7 @@ use TLT\Util\HttpResult;
  * A routing to be used in a Router.
  * @see Router
  */
-abstract class Route {
+abstract class BaseRoute {
     public $path;
     private $methods;
 

@@ -2,7 +2,7 @@
 
 namespace TLT\Routing\Impl;
 
-use TLT\Routing\Route;
+use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\DataUtil;
 use TLT\Util\Enum\ContentType;
@@ -11,7 +11,7 @@ use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class AvatarRoute extends Route {
+class AvatarRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("avatar", [RequestMethod::GET]);
     }
