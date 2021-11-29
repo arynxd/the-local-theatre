@@ -5,7 +5,7 @@ namespace TLT\Request\Module\Impl;
 use PDO;
 use PDOException;
 use PDOStatement;
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 
 /*
 * This connection will persist through runs of script.
@@ -16,7 +16,7 @@ use TLT\Request\Module\Module;
 *  PDO::ATTR_TIMEOUT => 5
 */
 
-class DatabaseModule extends Module {
+class DatabaseModule extends BaseModule {
     /**
      * @var PDO $dbh
      */

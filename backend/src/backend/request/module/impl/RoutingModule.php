@@ -2,12 +2,12 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 use TLT\Routing\Route;
 use TLT\Routing\Router;
 use TLT\Util\Enum\StatusCode;
 
-class RoutingModule extends Module {
+class RoutingModule extends BaseModule {
     /**
      * @var Router $router
      */

@@ -3,11 +3,11 @@
 namespace TLT\Request\Module\Impl;
 
 use TLT\Model\Impl\UserModel;
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
 
-class CacheModule extends Module {
+class CacheModule extends BaseModule {
     private $user;
 
     /**

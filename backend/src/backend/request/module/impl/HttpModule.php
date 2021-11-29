@@ -2,11 +2,11 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 use TLT\Util\Enum\Constants;
 use TLT\Util\StringUtil;
 
-class HttpModule extends Module {
+class HttpModule extends BaseModule {
     /**
      *
      * @var string $rawUri

@@ -2,11 +2,11 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\Map;
 use UnexpectedValueException;
 
-class DataModule extends Module {
+class DataModule extends BaseModule {
     /**
      * @var Map $headers
      */

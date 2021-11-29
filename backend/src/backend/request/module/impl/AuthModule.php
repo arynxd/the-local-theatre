@@ -2,9 +2,9 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 
-class AuthModule extends Module {
+class AuthModule extends BaseModule {
     /**
      * @var string|null $token
      */

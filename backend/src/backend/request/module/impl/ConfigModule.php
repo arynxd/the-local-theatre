@@ -2,10 +2,10 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Request\Module\Module;
+use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\JSONLoader;
 
-class ConfigModule extends Module {
+class ConfigModule extends BaseModule {
 
     /**
      * Whether the DB is enabled for this session

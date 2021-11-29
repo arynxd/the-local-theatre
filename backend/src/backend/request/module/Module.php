@@ -4,7 +4,7 @@ namespace TLT\Request\Module;
 
 use TLT\Request\Session;
 
-class Module {
+class BaseModule {
     /**
      * @var Session $sess The current session
      */

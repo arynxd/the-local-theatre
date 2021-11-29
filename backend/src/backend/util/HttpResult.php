@@ -11,7 +11,7 @@ use TLT\Util\Enum\StatusCode;
  * @see Ok
  * @see BadRequest
  * @see Unprocessable
- * @see HttpResult
+ * @see from
  */
 class HttpResult {
     public $httpCode;
