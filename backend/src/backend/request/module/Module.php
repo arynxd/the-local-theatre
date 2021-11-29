@@ -13,7 +13,7 @@ class Module {
         $this -> sess = $sess;
     }
 
-    protected function onEnable() {
+    public function onEnable() {
         // By default, this function does nothing
     }
 }

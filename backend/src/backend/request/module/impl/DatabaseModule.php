@@ -18,7 +18,7 @@ use TLT\Request\Module\Module;
 class DatabaseModule extends Module {
     private $dbh;
 
-    protected function onEnable() {
+    public function onEnable() {
         if (!$this -> sess -> cfg -> dbEnabled) {
             $this -> dbh = null;
             return;
@@ -39,7 +39,8 @@ class DatabaseModule extends Module {
         try {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
-        catch (PDOException $e) {
+        catch (PDOException $ex) {
+            echo $ex -> getMessage();
             $this -> sess -> res -> sendInternalError();
         }
 

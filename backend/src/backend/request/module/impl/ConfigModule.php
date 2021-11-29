@@ -37,7 +37,7 @@ class ConfigModule extends Module {
     public $dbPassword;
 
 
-    protected function onEnable() {
+    public function onEnable() {
         $loader = new JSONLoader("./config.json");
         $loader -> load();
         $raw = $loader -> data();

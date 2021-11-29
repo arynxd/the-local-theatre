@@ -9,7 +9,7 @@ use TLT\Request\Module\Impl\ConfigModule;
 use TLT\Request\Module\Impl\DatabaseModule;
 use TLT\Request\Module\Impl\DataModule;
 use TLT\Request\Module\Impl\HttpModule;
-use TLT\Request\Module\RoutingModule;
+use TLT\Request\Module\Impl\RoutingModule;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\ParamSource;
 use UnexpectedValueException;

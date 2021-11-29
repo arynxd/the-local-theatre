@@ -11,7 +11,7 @@ class AuthModule extends Module {
 
     private $isAuthenticated;
 
-    protected function onEnable() {
+    public function onEnable() {
         $this -> token = $this -> sess -> data -> headers['Authorisation'];
     }
 

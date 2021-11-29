@@ -23,7 +23,7 @@ class HttpModule extends Module {
      */
     public $method;
 
-    protected function onEnable() {
+    public function onEnable() {
         $this -> handleCors();
         $this -> method = $_SERVER["REQUEST_METHOD"];
         $this -> rawUri = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";

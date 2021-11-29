@@ -12,7 +12,7 @@ class DataModule extends Module {
      */
     public $headers;
 
-    protected function onEnable() {
+    public function onEnable() {
 
         $this -> headers = $this -> parseHeaders();
     }

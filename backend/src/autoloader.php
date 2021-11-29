@@ -9,8 +9,6 @@ spl_autoload_register(function ($class) {
         throw new UnexpectedValueException("Tried to autoload class $class which was not a part of our namespace");
     }
 
-    echo $class;
-    echo "<br><br>";
     $parts = explode('\\', $class);
     $parts = array_slice($parts, 1);
 
