@@ -1,10 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../util/constant/ContentType.php';
-require_once __DIR__ . '/../util/constant/ErrorStrings.php';
-require_once __DIR__ . '/../util/constant/StatusCode.php';
-require_once __DIR__ . '/../util/constant/CORS.php';
-require_once __DIR__ . '/../util/Map.php';
+namespace TLT\Request;
+
+use TLT\Util\Data\Map;
+use TLT\Util\Data\MapUtil;
+use TLT\Util\Enum\ContentType;
+use TLT\Util\Enum\CORS;
+use TLT\Util\Enum\ErrorStrings;
+use TLT\Util\Enum\StatusCode;
+use UnexpectedValueException;
 
 /**
  * Utility object for sending responses to the client
@@ -25,7 +29,7 @@ class Response {
      * @return void This function never returns
      */
     public function sendJSON($data, ...$headers) {
-        if (is_map($data)) {
+        if (MapUtil::is_map($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
         else if (is_string($data)) {

@@ -1,4 +1,7 @@
 <?php
+namespace TLT\Request\Module;
+
+use TLT\Request\Session;
 
 class Module {
     /**

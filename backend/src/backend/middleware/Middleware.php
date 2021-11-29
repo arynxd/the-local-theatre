@@ -1,9 +1,13 @@
 <?php
+namespace TLT\Middleware;
+
+use TLT\Request\Session;
+use TLT\Util\Result;
 
 /**
  * An abstract class representing a middleware within a connection.
  *
- * Middlewares can be run within a route to perform stateful actions based on the current context.
+ * Middlewares can be run within a routing to perform stateful actions based on the current context.
  *
  * Ideally middlewares should not throw exceptions.
  *

@@ -1,11 +1,11 @@
 <?php
+require_once 'autoloader.php';
 
-require_once 'backend/util/Logger.php';
+use TLT\Request\Session;
+use TLT\Util\Enum\StatusCode;
+use TLT\Util\Logger;
+
 Logger ::enableErrors();
-
-require_once 'backend/util/constant/StatusCode.php';
-require_once 'backend/util/constant/ErrorStrings.php';
-require_once 'backend/request/Session.php';
 
 $sess = new Session();
 

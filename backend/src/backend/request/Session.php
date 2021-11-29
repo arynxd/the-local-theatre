@@ -1,21 +1,18 @@
 <?php
 
-require_once __DIR__ . "/../util/constant/Constants.php";
-require_once __DIR__ . "/../util/constant/ParamSource.php";
-require_once __DIR__ . "/../util/Logger.php";
-require_once __DIR__ . "/../util/Map.php";
-require_once __DIR__ . "/../util/JSONLoader.php";
-require_once __DIR__ . "/../util/string.php";
-require_once __DIR__ . "/../route/Router.php";
-require_once __DIR__ . "/Response.php";
+namespace TLT\Request;
 
-require_once __DIR__ . 'module/AuthModule.php';
-require_once __DIR__ . 'module/CacheModule.php';
-require_once __DIR__ . 'module/ConfigModule.php';
-require_once __DIR__ . 'module/DatabaseModule.php';
-require_once __DIR__ . 'module/DataModule.php';
-require_once __DIR__ . 'module/HttpModule.php';
-require_once __DIR__ . 'module/RoutingModule.php';
+use TLT\Middleware\Middleware;
+use TLT\Request\Module\Impl\AuthModule;
+use TLT\Request\Module\Impl\CacheModule;
+use TLT\Request\Module\Impl\ConfigModule;
+use TLT\Request\Module\Impl\DatabaseModule;
+use TLT\Request\Module\Impl\DataModule;
+use TLT\Request\Module\Impl\HttpModule;
+use TLT\Request\Module\RoutingModule;
+use TLT\Util\Data\Map;
+use TLT\Util\Enum\ParamSource;
+use UnexpectedValueException;
 
 /**
  * Central object representing a single connection, a session.
@@ -26,8 +23,6 @@ require_once __DIR__ . 'module/RoutingModule.php';
  */
 class Session {
     public $res;
-    public $logger;
-
 
     /**
      * The HTTP module for this session
@@ -83,7 +78,6 @@ class Session {
 
     public function __construct() {
         $this -> res = new Response();
-        $this -> logger = new Logger($this);
 
         // init modules
         $this -> cfg = new ConfigModule($this);
@@ -113,19 +107,19 @@ class Session {
 
     private function parseParams($source) {
         if ($source == ParamSource::QUERY) {
-            return new Map($_GET);
+            return Map::from($_GET);
         }
         else if ($source == ParamSource::JSON) {
             $result = json_decode(file_get_contents('php://input'), true);
             if (!isset($result)) {
-                return new Map([]);
+                return Map::none();
             }
 
-            $result = new Map($result);
+            $result = Map::from($result);
 
             return $result -> mapRecursive(function ($_, $value) {
                 if (is_array($value)) {
-                    return new Map($value);
+                    return Map::from($value);
                 }
                 return $value;
             });

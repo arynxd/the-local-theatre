@@ -1,5 +1,9 @@
 <?php
 
+namespace TLT\Model;
+
+use TLT\Util\Data\Map;
+
 /**
  * A model is a class to hold information about an entity
  *
