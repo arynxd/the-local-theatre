@@ -14,12 +14,12 @@ class BaseRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $res -> sendJSON(Map::from([
+        $res -> sendJSON(Map ::from([
             "ok" => true
         ]), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

@@ -45,16 +45,16 @@ class LoginRoute extends Route {
             $res -> sendError($ERR, StatusCode::UNAUTHORIZED);
         }
 
-        $accountDetails = Map::from($accountDetails);
+        $accountDetails = Map ::from($accountDetails);
         if ($accountDetails -> length() == 0) {
             $res -> sendError($ERR, StatusCode::UNAUTHORIZED);
         }
 
-        if (!AuthUtil::verifyPassword($password, $accountDetails['password'])) {
+        if (!AuthUtil ::verifyPassword($password, $accountDetails['password'])) {
             $res -> sendError($ERR, StatusCode::UNAUTHORIZED);
         }
 
-        $res -> sendJSON(Map::from([
+        $res -> sendJSON(Map ::from([
             "token" => $accountDetails['token']
         ]), StatusCode::OK);
     }
@@ -63,20 +63,20 @@ class LoginRoute extends Route {
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {
-            return Result::Unprocessable("No data was passed.");
+            return Result ::Unprocessable("No data was passed.");
         }
 
         $email = $data['email'];
         $pwd = $data['password'];
 
         if (!isset($email)) {
-            return Result::Unprocessable("No email was passed");
+            return Result ::Unprocessable("No email was passed");
         }
 
         if (!isset($pwd)) {
-            return Result::Unprocessable("No password was passed");
+            return Result ::Unprocessable("No password was passed");
         }
 
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

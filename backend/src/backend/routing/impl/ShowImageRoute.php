@@ -24,7 +24,7 @@ class ShowImageRoute extends Route {
             throw new UnexpectedValueException("ID was not set.");
         }
 
-        DataUtil::readOrDefault(
+        DataUtil ::readOrDefault(
             "shows/$id.png",
             "shows/show.png",
             ContentType::PNG, CORS::ALL, StatusCode::OK
@@ -33,8 +33,8 @@ class ShowImageRoute extends Route {
 
     public function validateRequest($sess, $res) {
         if (!isset($sess -> queryParams()['id'])) {
-            return Result::BadRequest("No ID provided.");
+            return Result ::BadRequest("No ID provided.");
         }
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

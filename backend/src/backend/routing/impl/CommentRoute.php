@@ -17,7 +17,7 @@ class CommentRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $res -> sendJSON(Map::from([
+        $res -> sendJSON(Map ::from([
             "id" => "0",
             "user_id" => "1",
             "reason" => "hello world"
@@ -25,6 +25,6 @@ class CommentRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

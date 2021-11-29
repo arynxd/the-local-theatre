@@ -107,19 +107,19 @@ class Session {
 
     private function parseParams($source) {
         if ($source == ParamSource::QUERY) {
-            return Map::from($_GET);
+            return Map ::from($_GET);
         }
         else if ($source == ParamSource::JSON) {
             $result = json_decode(file_get_contents('php://input'), true);
             if (!isset($result)) {
-                return Map::none();
+                return Map ::none();
             }
 
-            $result = Map::from($result);
+            $result = Map ::from($result);
 
             return $result -> mapRecursive(function ($_, $value) {
                 if (is_array($value)) {
-                    return Map::from($value);
+                    return Map ::from($value);
                 }
                 return $value;
             });

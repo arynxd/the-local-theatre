@@ -23,7 +23,7 @@ class ArrayUtil {
         $newArray = array();
         foreach ($arr as $key => $value) {
             if (is_array($value)) {
-                $newArray[$key] = self::array_copy($value);
+                $newArray[$key] = self ::array_copy($value);
             }
             else if (is_object($value)) {
                 $newArray[$key] = clone $value;

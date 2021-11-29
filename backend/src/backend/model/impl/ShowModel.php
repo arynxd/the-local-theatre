@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Model\Impl;
 
 use TLT\Model\Model;
@@ -16,7 +17,7 @@ class ShowModel extends Model {
     }
 
     public function toMap() {
-        Map::from([
+        Map ::from([
             'id' => $this -> id,
             'title' => $this -> title,
             'showDate' => $this -> showDate,

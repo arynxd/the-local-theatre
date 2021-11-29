@@ -1,5 +1,7 @@
 <?php
+
 namespace TLT\Util\Data;
+
 use UnexpectedValueException;
 
 class JSONLoader {
@@ -16,7 +18,7 @@ class JSONLoader {
         if (!isset($json)) {
             throw new UnexpectedValueException("Data at " . $this -> path . " was invalid.");
         }
-        $this -> data = Map::from($json) -> toMapRecursive();
+        $this -> data = Map ::from($json) -> toMapRecursive();
     }
 
     public function data() {

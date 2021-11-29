@@ -26,9 +26,9 @@ class ModelValidatorMiddleware extends Middleware {
     public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {
-                return Result::BadRequest($this -> err);
+                return Result ::BadRequest($this -> err);
             }
         }
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

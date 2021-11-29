@@ -25,7 +25,7 @@ class PostListRoute extends Route {
         $st = $sess -> db -> query($query);
 
         $dbData = $st -> fetchAll(PDO::FETCH_NAMED);
-        $posts = Map::none();
+        $posts = Map ::none();
 
         foreach ($dbData as $item) {
             print_r($item);
@@ -51,6 +51,6 @@ class PostListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

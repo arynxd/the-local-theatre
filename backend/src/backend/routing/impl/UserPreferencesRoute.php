@@ -29,13 +29,13 @@ class UserPreferencesRoute extends Route {
         $prefs = $sess -> db -> query($query, ['token' => $token]) -> fetch();
 
         if (!$prefs) {
-            $res -> sendJSON(Map::from([
+            $res -> sendJSON(Map ::from([
                 'id' => $sess -> cache -> user() -> id,
                 'theme' => 'dark'
             ]));
         }
 
-        $res -> sendJSON(Map::from([
+        $res -> sendJSON(Map ::from([
             'id' => $prefs['userId'],
             'theme' => $prefs['theme']
         ]));
@@ -43,6 +43,6 @@ class UserPreferencesRoute extends Route {
 
     public function validateRequest($sess, $res) {
         $sess -> applyMiddleware(new AuthenticationMiddleware());
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

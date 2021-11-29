@@ -66,13 +66,13 @@ class UserRoute extends Route {
             'id' => $id
         ]);
 
-        $dbRes = Map::from($st -> fetchAll());
+        $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
             $res -> sendError("User not found", StatusCode::NOT_FOUND);
         }
 
-        $dbRes = Map::from($dbRes -> first()); // we get arrays back from the db, convert it to a map
+        $dbRes = Map ::from($dbRes -> first()); // we get arrays back from the db, convert it to a map
         $dbRes['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $dbRes['id'];
 
         return UserModel ::fromJSON($dbRes);
@@ -98,14 +98,14 @@ class UserRoute extends Route {
 
     public function validateRequest($sess, $res) {
         if ($sess -> http -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
-            return Result::BadRequest("No ID provided");
+            return Result ::BadRequest("No ID provided");
         }
 
         if ($sess -> http -> method == RequestMethod::POST) {
             $data = $sess -> jsonParams()['data'];
 
             if (!isset($data)) {
-                return Result::BadRequest("No data provided");
+                return Result ::BadRequest("No data provided");
             }
 
             $sess -> applyMiddleware(new AuthenticationMiddleware());
@@ -114,6 +114,6 @@ class UserRoute extends Route {
             $sess -> applyMiddleware($validator);
         }
 
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

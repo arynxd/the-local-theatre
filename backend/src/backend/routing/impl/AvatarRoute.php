@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Routing\Impl;
 
 use TLT\Routing\Route;
@@ -22,7 +23,7 @@ class AvatarRoute extends Route {
             throw new UnexpectedValueException("ID was not set.");
         }
 
-        DataUtil::readOrDefault(
+        DataUtil ::readOrDefault(
             "avatars/$id.png",
             "avatars/avatar.png",
             ContentType::PNG, CORS::ALL, StatusCode::OK
@@ -31,8 +32,8 @@ class AvatarRoute extends Route {
 
     public function validateRequest($sess, $res) {
         if (!isset($sess -> queryParams()['id'])) {
-            return Result::BadRequest("No ID provided.");
+            return Result ::BadRequest("No ID provided.");
         }
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

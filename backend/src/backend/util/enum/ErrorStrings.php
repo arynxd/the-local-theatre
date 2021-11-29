@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Util\Enum;
 
 class ErrorStrings {

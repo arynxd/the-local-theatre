@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Model\Impl;
 
 use TLT\Model\Model;
@@ -27,7 +28,7 @@ class SignupUser extends Model {
     }
 
     public function toMap() {
-        return Map::from(
+        return Map ::from(
             [
                 'name' => $this -> name,
                 'password' => $this -> password,

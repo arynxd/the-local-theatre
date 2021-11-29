@@ -2,8 +2,8 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Util\Data\JSONLoader;
 use TLT\Request\Module\Module;
+use TLT\Util\Data\JSONLoader;
 
 class ConfigModule extends Module {
 
@@ -42,9 +42,9 @@ class ConfigModule extends Module {
         $loader -> load();
         $raw = $loader -> data();
 
-        $this -> dbEnabled = (boolean) $raw['db_enabled'];
-        $this -> dbURL = (string) $raw['db_url'];
-        $this -> dbUsername = (string) $raw['db_username'];
-        $this -> dbPassword = (string) $raw['db_password'];
+        $this -> dbEnabled = (boolean)$raw['db_enabled'];
+        $this -> dbURL = (string)$raw['db_url'];
+        $this -> dbUsername = (string)$raw['db_username'];
+        $this -> dbPassword = (string)$raw['db_password'];
     }
 }

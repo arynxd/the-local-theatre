@@ -21,9 +21,36 @@ class SignupRoute extends Route {
         parent ::__construct("signup", [RequestMethod::POST]);
     }
 
+    public function handle($sess, $res) {
+        $data = $sess -> jsonParams()['data'];
+
+        if (!isset($data)) {
+            throw new UnexpectedValueException("Data did not exist? Initial validation failed.");
+        }
+
+        foreach (ModelKeys::SIGNUP_MODEL as $key) {
+            if (!isset($data[$key])) {
+                throw new UnexpectedValueException("Data key $key did not exist? Initial validation failed.");
+            }
+        }
+
+        $userHasAccount = $this -> userHasAccount($sess, $data['email']);
+
+        if ($userHasAccount) {
+            $res -> sendError("Account already exists", StatusCode::CONFLICT);
+        }
+        else {
+            $newToken = $this -> createAccount($sess, $data);
+
+            $res -> sendJSON(Map ::from([
+                'token' => $newToken
+            ]));
+        }
+    }
+
     private function userHasAccount($sess, $email) {
         $query = "SELECT COUNT(*) FROM credential WHERE email = :email";
-        $res = $sess -> db -> query($query,[
+        $res = $sess -> db -> query($query, [
             'email' => $email
         ]);
 
@@ -47,8 +74,8 @@ class SignupRoute extends Route {
 
         $db = $sess -> db;
 
-        $id = StringUtil::newID();
-        $tok = AuthUtil::generateToken();
+        $id = StringUtil ::newID();
+        $tok = AuthUtil ::generateToken();
 
         $db -> query($insertIntoUsers, [
             'id' => $id,
@@ -63,51 +90,24 @@ class SignupRoute extends Route {
         $db -> query($insertIntoCreds, [
             'id' => $id,
             'email' => $data['email'],
-            'password' => AuthUtil::hashPassword($data['password']),
+            'password' => AuthUtil ::hashPassword($data['password']),
             'token' => $tok
         ]);
 
         return $tok;
     }
 
-    public function handle($sess, $res) {
-        $data = $sess -> jsonParams()['data'];
-
-        if (!isset($data)) {
-            throw new UnexpectedValueException("Data did not exist? Initial validation failed.");
-        }
-
-        foreach (ModelKeys::SIGNUP_MODEL as $key) {
-            if (!isset($data[$key])) {
-                throw new UnexpectedValueException("Data key $key did not exist? Initial validation failed.");
-            }
-        }
-
-        $userHasAccount = $this -> userHasAccount($sess, $data['email']);
-
-        if ($userHasAccount) {
-            $res -> sendError("Account already exists", StatusCode::CONFLICT);
-        }
-        else {
-            $newToken = $this -> createAccount($sess, $data);
-
-            $res -> sendJSON(Map::from([
-                'token' => $newToken
-            ]));
-        }
-    }
-
     public function validateRequest($sess, $res) {
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {
-            return Result::BadRequest("No data provided");
+            return Result ::BadRequest("No data provided");
         }
 
-        $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL, Map::from($data), "Invalid data provided");
+        $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL, Map ::from($data), "Invalid data provided");
         $sess -> applyMiddleware($validator);
 
-        return Result::Ok();
+        return Result ::Ok();
     }
 }
 

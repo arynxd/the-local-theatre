@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\Module;
@@ -30,6 +31,17 @@ class HttpModule extends Module {
         $this -> uri = $this -> parseURI();
     }
 
+    /**
+     * Handle CORS OPTIONS request and respond appropriately
+     */
+    private function handleCors() {
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            header("Access-Control-Allow-Methods: *");
+            header("Access-Control-Allow-Headers: *");
+            header("Access-Control-Allow-Origin: *");
+            exit(0);
+        }
+    }
 
     /**
      * Parses the raw uri into its components
@@ -51,17 +63,5 @@ class HttpModule extends Module {
         }
 
         return $map;
-    }
-
-     /**
-     * Handle CORS OPTIONS request and respond appropriately
-     */
-    private function handleCors() {
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Access-Control-Allow-Origin: *");
-            exit(0);
-        }
     }
 }

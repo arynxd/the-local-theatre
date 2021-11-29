@@ -1,6 +1,7 @@
 <?php
 
 namespace TLT\Util\Data;
+
 use ArrayAccess;
 use JsonSerializable;
 use TLT\Util\ArrayUtil;
@@ -19,12 +20,20 @@ class Map implements ArrayAccess, JsonSerializable {
         $this -> frozen = false;
     }
 
+    public static function from($arr) {
+        return new Map($arr);
+    }
+
+    public static function none() {
+        return new Map([]);
+    }
+
     public function values() {
         return array_values($this -> raw());
     }
 
     public function raw() {
-        return ArrayUtil::array_copy($this -> arr);
+        return ArrayUtil ::array_copy($this -> arr);
     }
 
     function toAssocRecursive() {
@@ -34,15 +43,6 @@ class Map implements ArrayAccess, JsonSerializable {
             }
             return $item;
         }) -> raw();
-    }
-
-    function toMapRecursive() {
-        return $this -> mapValuesRecursive(function ($item) {
-            if (is_array($item)) {
-                return new Map($item);
-            }
-            return $item;
-        });
     }
 
     function mapValuesRecursive($mapper) {
@@ -58,18 +58,26 @@ class Map implements ArrayAccess, JsonSerializable {
             $r = call_user_func($mapper, $key, $value);
 
             if ($r instanceof Map) {
-                return new Map(ArrayUtil::array_map_assoc($func, $r -> raw()));
+                return new Map(ArrayUtil ::array_map_assoc($func, $r -> raw()));
             }
             else if (is_array($r)) {
-                return ArrayUtil::array_map_assoc($func, $r);
+                return ArrayUtil ::array_map_assoc($func, $r);
             }
 
             return $r;
         };
 
-        return new Map(ArrayUtil::array_map_assoc($func, $this -> arr));
+        return new Map(ArrayUtil ::array_map_assoc($func, $this -> arr));
     }
 
+    function toMapRecursive() {
+        return $this -> mapValuesRecursive(function ($item) {
+            if (is_array($item)) {
+                return new Map($item);
+            }
+            return $item;
+        });
+    }
 
     function mapValues($mapper) {
         $func = function ($_, $value) use ($mapper) {
@@ -182,13 +190,5 @@ class Map implements ArrayAccess, JsonSerializable {
 
     public function jsonSerialize() {
         return $this -> raw();
-    }
-
-    public static function from($arr) {
-        return new Map($arr);
-    }
-
-    public static function none() {
-        return new Map([]);
     }
 }

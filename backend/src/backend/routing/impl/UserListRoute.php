@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Routing\Impl;
 
 use TLT\Model\Impl\UserModel;
@@ -15,11 +16,11 @@ class UserListRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $out = Map::from([]);
+        $out = Map ::from([]);
 
         $st = $sess -> db -> query("SELECT * FROM user");
 
-        $dbRes = Map::from($st -> fetchAll());
+        $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
             $res -> sendError("No users present", StatusCode::NOT_FOUND);
@@ -27,9 +28,9 @@ class UserListRoute extends Route {
 
 
         foreach ($dbRes -> raw() as $arr) {
-            $map = Map::from($arr);
-            $map['avatar'] = Constants::AVATAR_URL_PREFIX() . "?id=" . $arr['id'];
-            $m = UserModel::fromJSON($map);
+            $map = Map ::from($arr);
+            $map['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $arr['id'];
+            $m = UserModel ::fromJSON($map);
             $out -> push($m -> toMap());
         }
 
@@ -37,6 +38,6 @@ class UserListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

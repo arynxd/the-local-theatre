@@ -22,7 +22,7 @@ class PostModel extends Model {
 
 
     public function toMap() {
-        return Map::from([
+        return Map ::from([
             'id' => $this -> id,
             'author' => $this -> author -> toMap(),
             'content' => $this -> content,

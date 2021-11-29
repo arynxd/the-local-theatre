@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Util\Enum;
 
 
@@ -10,6 +11,6 @@ class ContentType {
     const JPEG = 'Content-Type: image/jpeg';
 
     public static function ALL() {
-        return Map::from([self::JSON, self::PNG]) -> freeze();
+        return Map ::from([self::JSON, self::PNG]) -> freeze();
     }
 }

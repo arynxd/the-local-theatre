@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\Module;
@@ -26,7 +27,7 @@ class AuthModule extends Module {
         }
 
         $query = "SELECT COUNT(*) FROM credential WHERE token = :token";
-        $dbRes = $this -> sess -> db -> query($query,[
+        $dbRes = $this -> sess -> db -> query($query, [
             'token' => $this -> token
         ]) -> rowCount();
 

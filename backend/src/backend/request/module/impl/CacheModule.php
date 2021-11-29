@@ -32,7 +32,7 @@ class CacheModule extends Module {
                   WHERE token = :token";
 
         $selfUser = $this -> sess -> db -> query($query, ['token' => $auth -> token]) -> fetch();
-        $selfUser = Map::from($selfUser);
+        $selfUser = Map ::from($selfUser);
 
         $selfUser['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $selfUser['id'];
         $model = UserModel ::fromJSON($selfUser);

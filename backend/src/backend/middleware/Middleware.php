@@ -1,4 +1,5 @@
 <?php
+
 namespace TLT\Middleware;
 
 use TLT\Request\Session;

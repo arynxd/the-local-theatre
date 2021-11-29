@@ -16,7 +16,7 @@ class ShowListRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $maps = Map::none();
+        $maps = Map ::none();
 
 
         $maps -> push(new ShowModel("8072d705-b547-4388-9358-59cf8e4192e2", "Grease", 0));
@@ -29,6 +29,6 @@ class ShowListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result::Ok();
+        return Result ::Ok();
     }
 }

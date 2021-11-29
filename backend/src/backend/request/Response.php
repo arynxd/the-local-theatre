@@ -29,7 +29,7 @@ class Response {
      * @return void This function never returns
      */
     public function sendJSON($data, ...$headers) {
-        if (MapUtil::is_map($data)) {
+        if (MapUtil ::is_map($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
         else if (is_string($data)) {
@@ -65,6 +65,19 @@ class Response {
     }
 
     /**
+     * Sends a generic internal error response
+     *
+     * This function will kill the program, stopping execution
+     *
+     * @return void This function never returns
+     */
+    public function sendInternalError() {
+        //TODO log exceptions to stderr when we get them
+        $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
+        exit(1);
+    }
+
+    /**
      * Sends an error message to the client
      *
      * This function will kill the program, stopping execution
@@ -81,18 +94,5 @@ class Response {
             "message" => $message
         ]), ContentType::JSON, CORS::ALL, ...$headers);
         exit(0);
-    }
-
-    /**
-     * Sends a generic internal error response
-     *
-     * This function will kill the program, stopping execution
-     *
-     * @return void This function never returns
-     */
-    public function sendInternalError() {
-        //TODO log exceptions to stderr when we get them
-        $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
-        exit(1);
     }
 }

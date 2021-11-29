@@ -21,6 +21,6 @@ class DataModule extends Module {
         if (!function_exists('getallheaders')) {
             throw new UnexpectedValueException("getallheaders function did not exist? are we actually running under apache??");
         }
-        return Map::from(getallheaders());
+        return Map ::from(getallheaders());
     }
 }

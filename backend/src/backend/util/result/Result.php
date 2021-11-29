@@ -31,16 +31,6 @@ class Result {
         $this -> headers = $headers;
     }
 
-    /**
-     * Determines if this result is erroneous
-     *
-     * @return bool true if this result is an error, false otherwise
-     */
-    function isError() {
-        return isset($this -> error);
-    }
-
-
     public static function Ok(...$headers) {
         return new Result(StatusCode::OK, null, $headers);
     }
@@ -55,5 +45,14 @@ class Result {
 
     public static function from($code, $error, ...$headers) {
         return new Result($code, $error, $headers);
+    }
+
+    /**
+     * Determines if this result is erroneous
+     *
+     * @return bool true if this result is an error, false otherwise
+     */
+    function isError() {
+        return isset($this -> error);
     }
 }
