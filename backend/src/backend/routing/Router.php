@@ -3,9 +3,9 @@
 namespace TLT\Routing;
 
 use TLT\Routing\Impl\AvatarRoute;
-use TLT\Routing\Impl\BaseRoute;
 use TLT\Routing\Impl\CommentListRoute;
 use TLT\Routing\Impl\CommentRoute;
+use TLT\Routing\Impl\DefaultRoute;
 use TLT\Routing\Impl\LoginRoute;
 use TLT\Routing\Impl\ModerationRoute;
 use TLT\Routing\Impl\PostListRoute;
@@ -28,7 +28,7 @@ class Router {
     public function __construct() {
         $this -> routes = [
             new AvatarRoute(),
-            new BaseRoute(),
+            new DefaultRoute(),
             new CommentListRoute(),
             new CommentRoute(),
             new LoginRoute(),

@@ -9,7 +9,7 @@ use TLT\Util\Enum\RequestMethod;
 use TLT\Util\HttpResult;
 
 /**
- * A routing to be used in a Router.
+ * A route to be used in a Router.
  * @see Router
  */
 abstract class BaseRoute {

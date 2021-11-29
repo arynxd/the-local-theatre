@@ -27,7 +27,7 @@ class Response {
      * @param Map|string $data a Map, or string, representing the JSON to send in the response
      * @param string[] $headers the headers to include in the response
      *
-     * @return void This function never returns
+     * @return never-return This function never returns
      */
     public function sendJSON($data, ...$headers) {
         if (MapUtil ::is_map($data)) {
@@ -42,7 +42,6 @@ class Response {
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
         }
-        die(0);
     }
 
     /**
@@ -54,7 +53,7 @@ class Response {
      * @param mixed $data the data to send in the response
      * @param string[] $headers the headers to send in the response
      *
-     * @return void This function never returns
+     * @return never-return This function never returns
      */
     public function send($data, ...$headers) {
         foreach ($headers as $header) {
@@ -71,7 +70,7 @@ class Response {
      * This function will kill the program, stopping execution
      *
      * @param Exception|string|null $msg The message / exception to print
-     * @return void This function never returns
+     * @return never-return This function never returns
      */
     public function sendInternalError($msg = null) {
         if (is_a('Exception', $msg)) {
@@ -80,7 +79,6 @@ class Response {
 
         error_log(ErrorStrings::INTERNAL_ERROR . PHP_EOL . PHP_EOL . $msg);
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
-        exit(1);
     }
 
     /**
@@ -91,13 +89,12 @@ class Response {
      * @param string $message the message to send in the response, must be JSON serializable
      * @param string[] $headers the headers to send in the response
      *
-     * @return void This function never returns
+     * @return never-return This function never returns
      */
     public function sendError($message, ...$headers) {
         $this -> send(json_encode([
             "error" => true,
             "message" => $message
         ]), ContentType::JSON, CORS::ALL, ...$headers);
-        exit(0);
     }
 }

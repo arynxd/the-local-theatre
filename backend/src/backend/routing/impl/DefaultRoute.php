@@ -8,7 +8,7 @@ use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
-class BaseRoute extends BaseRoute {
+class DefaultRoute extends BaseRoute {
     public function __construct() {
         parent ::__construct("", [RequestMethod::GET, RequestMethod::POST, RequestMethod::PATCH, RequestMethod::PUT]);
     }

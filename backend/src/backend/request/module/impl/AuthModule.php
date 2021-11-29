@@ -10,6 +10,9 @@ class AuthModule extends BaseModule {
      */
     public $token;
 
+    /**
+     * @var boolean $isAuthenticated
+     */
     private $isAuthenticated;
 
     public function onEnable() {

@@ -15,7 +15,7 @@ class CacheModule extends BaseModule {
      *
      * If the token is not set, or the user is not found, this method returns null
      *
-     * @return UserModel|null The model
+     * @return UserModel|null
      */
     public function user() {
         if (isset($this -> user)) {
