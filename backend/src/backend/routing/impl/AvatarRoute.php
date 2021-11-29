@@ -10,7 +10,6 @@ use TLT\Util\Enum\CORS;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
-use UnexpectedValueException;
 
 class AvatarRoute extends Route {
     public function __construct() {
@@ -20,7 +19,7 @@ class AvatarRoute extends Route {
     public function handle($sess, $res) {
         $id = $sess -> queryParams()['id'];
 
-        Assertions::assertSet($id);
+        Assertions ::assertSet($id);
 
         DataUtil ::readOrDefault(
             "avatars/$id.png",

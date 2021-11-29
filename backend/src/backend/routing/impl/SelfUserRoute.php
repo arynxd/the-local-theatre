@@ -9,7 +9,6 @@ use TLT\Util\Assert\Assertions;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
-use UnexpectedValueException;
 
 class SelfUserRoute extends Route {
     public function __construct() {
@@ -19,7 +18,7 @@ class SelfUserRoute extends Route {
     public function handle($sess, $res) {
         $selfUser = $sess -> cache -> user();
 
-        Assertions::assertSet($selfUser);
+        Assertions ::assertSet($selfUser);
 
         $selfUser = $selfUser -> toMap();
 

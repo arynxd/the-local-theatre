@@ -16,16 +16,14 @@ class UserListRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $out = Map ::from([]);
+        $out = Map ::none();
 
         $st = $sess -> db -> query("SELECT * FROM user");
-
         $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
             $res -> sendError("No users present", StatusCode::NOT_FOUND);
         }
-
 
         foreach ($dbRes -> raw() as $arr) {
             $map = Map ::from($arr);

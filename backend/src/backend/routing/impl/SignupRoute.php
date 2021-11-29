@@ -8,14 +8,13 @@ namespace TLT\Routing\Impl;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\ModelKeys;
 use TLT\Routing\Route;
-use TLT\Util\AuthUtil;
 use TLT\Util\Assert\Assertions;
+use TLT\Util\AuthUtil;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
-use UnexpectedValueException;
 
 class SignupRoute extends Route {
     public function __construct() {
@@ -25,10 +24,10 @@ class SignupRoute extends Route {
     public function handle($sess, $res) {
         $data = $sess -> jsonParams()['data'];
 
-        Assertions::assertSet($data);
+        Assertions ::assertSet($data);
 
         foreach (ModelKeys::SIGNUP_MODEL as $key) {
-            Assertions::assertSet($data[$key]);
+            Assertions ::assertSet($data[$key]);
         }
 
         $userHasAccount = $this -> userHasAccount($sess, $data['email']);
@@ -53,7 +52,7 @@ class SignupRoute extends Route {
 
         $res = $res -> fetchColumn(0);
 
-        Assertions::assertSet($res);
+        Assertions ::assertSet($res);
 
         return $res > 0;
     }

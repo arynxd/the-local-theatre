@@ -9,7 +9,6 @@ use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\HttpResult;
-use UnexpectedValueException;
 
 class UserPreferencesRoute extends Route {
     public function __construct() {
@@ -18,18 +17,18 @@ class UserPreferencesRoute extends Route {
 
     public function handle($sess, $res) {
         $token = $sess -> auth -> token;
+        $selfUser = $sess -> cache -> user();
 
-        Assertions::assertSet($token);
+        Assertions ::assertSet($token);
+        Assertions ::assertSet($selfUser);
 
-        $query = "SELECT u.* FROM credential c
-            LEFT JOIN user_prefs u on u.userId = c.userId
-        WHERE c.token = :token";
+        $query = "SELECT * FROM user_prefs WHERE userId = :userId";
 
-        $prefs = $sess -> db -> query($query, ['token' => $token]) -> fetch();
+        $prefs = $sess -> db -> query($query, ['userId' => $selfUser -> id]) -> fetch();
 
         if (!$prefs) {
             $res -> sendJSON(Map ::from([
-                'id' => $sess -> cache -> user() -> id,
+                'id' => $selfUser -> id,
                 'theme' => 'dark'
             ]));
         }

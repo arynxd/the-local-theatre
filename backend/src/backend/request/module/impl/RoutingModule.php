@@ -3,11 +3,19 @@
 namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\Module;
+use TLT\Routing\Route;
 use TLT\Routing\Router;
 use TLT\Util\Enum\StatusCode;
 
 class RoutingModule extends Module {
+    /**
+     * @var Router $router
+     */
     public $router;
+
+    /**
+     * @var Route $route
+     */
     public $route;
 
     public function onEnable() {

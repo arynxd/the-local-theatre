@@ -57,7 +57,7 @@ class DatabaseModule extends Module {
     }
 
     private function initTable($fileName) {
-        $sql = file_get_contents(__DIR__ . "/../../../sql/" . $fileName );
+        $sql = file_get_contents(__DIR__ . "/../../../sql/" . $fileName);
         $this -> query($sql, []);
     }
 

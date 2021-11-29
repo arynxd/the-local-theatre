@@ -18,8 +18,8 @@ abstract class Route {
 
     /**
      * A subclass constructor for the Route
-     * @param string $path the path for the routing (eg; 'user/list')
-     * @param RequestMethod[] $methods the request methods this routing accepts
+     * @param string $path the path for the route (eg; 'user/list')
+     * @param RequestMethod[] $methods the request methods this route accepts
      */
     protected function __construct($path, $methods) {
         $this -> path = $path;
@@ -49,9 +49,9 @@ abstract class Route {
     public abstract function validateRequest($sess, $res);
 
     /**
-     * Validates this routing based on an incoming request's methods.
+     * Validates this route based on an incoming request's methods.
      *
-     * @param Session $sess the current connection
+     * @param Session $sess the current session
      * @return  boolean     true, if the validation passed, false otherwise
      */
     public function validateMethod($sess) {

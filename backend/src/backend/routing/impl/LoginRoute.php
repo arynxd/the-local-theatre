@@ -7,8 +7,8 @@ namespace TLT\Routing\Impl;
 
 
 use TLT\Routing\Route;
-use TLT\Util\AuthUtil;
 use TLT\Util\Assert\Assertions;
+use TLT\Util\AuthUtil;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
@@ -25,7 +25,7 @@ class LoginRoute extends Route {
 
         $data = $sess -> jsonParams()['data'];
 
-        Assertions::assertSet($data);
+        Assertions ::assertSet($data);
 
         $email = $data['email'];
         $password = $data['password'];

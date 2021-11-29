@@ -18,17 +18,17 @@ if (!$route -> validateMethod($sess)) {
 
 $routeResult = $route -> validateRequest($sess, $sess -> res);
 
-if (!$routeResult -> isError()) {
+if ($routeResult -> isError()) {
+    $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
+}
+else {
     try {
         $route -> handle($sess, $sess -> res);
+        $sess -> res -> sendInternalError("No output received from the route");
     }
     catch (Exception $ex) {
         $sess -> res -> sendInternalError($ex);
     }
-}
-else {
-    $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
-    exit;
 }
 
 

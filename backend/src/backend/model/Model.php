@@ -4,6 +4,9 @@ namespace TLT\Model;
 
 use TLT\Util\Data\Map;
 
+
+//TODO document fields in modules for better type information
+
 /**
  * A model is a class to hold information about an entity
  *

@@ -20,7 +20,7 @@ class ArrayUtil {
     }
 
     public static function array_copy($arr) {
-        $newArray = array();
+        $newArray = [];
         foreach ($arr as $key => $value) {
             if (is_array($value)) {
                 $newArray[$key] = self ::array_copy($value);

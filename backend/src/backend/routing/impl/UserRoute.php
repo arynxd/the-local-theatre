@@ -13,7 +13,6 @@ use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
-use UnexpectedValueException;
 
 class UserRoute extends Route {
     public function __construct() {
@@ -32,7 +31,7 @@ class UserRoute extends Route {
 
             $selfUser = $sess -> cache -> user();
 
-            Assertions::assertSet($selfUser);
+            Assertions ::assertSet($selfUser);
 
             $isModifyingSelf = $selfUser -> id == $data['id'];
             $isSelfAdmin = $selfUser -> permissions == 2;
@@ -84,6 +83,7 @@ class UserRoute extends Route {
                     username = :username,
                     dob = :dob,
                     permissions = :permissions
+                WHERE id = :id
         ";
 
         $sess -> db -> query($query, [
@@ -91,7 +91,8 @@ class UserRoute extends Route {
             'lastName' => $data['lastName'],
             'username' => $data['username'],
             'dob' => $data['dob'],
-            'permissions' => $data['permissions']
+            'permissions' => $data['permissions'],
+            'id' => $data['id']
         ]);
     }
 

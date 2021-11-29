@@ -12,15 +12,26 @@ use TLT\Model\Impl\UserModel;
 use TLT\Request\Session;
 use TLT\Routing\Route;
 use TLT\Util\Assert\Assertions;
-use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
-use TLT\Util\StringUtil;
 
 class PostRoute extends Route {
     public function __construct() {
         parent ::__construct("post", [RequestMethod::GET, RequestMethod::POST]);
+    }
+
+    public function handle($sess, $res) {
+        $id = $sess -> queryParams()['id'];
+
+        Assertions ::assertSet($id);
+
+        $model = $this -> getById($sess, $id);
+
+        if (!isset($model)) {
+            $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+        }
+        $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
     /**
@@ -39,6 +50,7 @@ class PostRoute extends Route {
             'id' => $id
         ]);
 
+        //TODO investigate a better way to handle dupe col names through PDO
         $dbData = $st -> fetch(PDO::FETCH_NAMED);
 
         if (!$dbData) {
@@ -60,19 +72,6 @@ class PostRoute extends Route {
             $dbData['title'],
             $dbData['createdAt']
         );
-    }
-
-    public function handle($sess, $res) {
-        $id = $sess -> queryParams()['id'];
-
-        Assertions::assertSet($id);
-
-        $model =  $this -> getById($sess, $id);
-
-        if (!isset($model)) {
-            $res -> sendError("Post not found", StatusCode::NOT_FOUND);
-        }
-        $res -> sendJSON($model -> toMap(), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {

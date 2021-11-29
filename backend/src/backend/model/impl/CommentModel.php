@@ -35,13 +35,13 @@ class CommentModel extends Model {
      * @inheritDoc
      */
     public function toMap() {
-        return Map::from([
+        return Map ::from([
             'id' => $this -> id,
             'authorId' => $this -> authorId,
             'postId' => $this -> postId,
             'content' => $this -> content,
             'createdAt' => $this -> createdAt,
-            'editedAt'=>  $this -> editedAt
+            'editedAt' => $this -> editedAt
         ]);
     }
 }

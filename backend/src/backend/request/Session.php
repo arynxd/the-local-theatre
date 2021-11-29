@@ -2,6 +2,7 @@
 
 namespace TLT\Request;
 
+use Exception;
 use TLT\Middleware\Middleware;
 use TLT\Request\Module\Impl\AuthModule;
 use TLT\Request\Module\Impl\CacheModule;
@@ -99,7 +100,12 @@ class Session {
         ];
 
         foreach ($all as $mod) {
-            $mod -> onEnable();
+            try {
+                $mod -> onEnable();
+            }
+            catch (Exception $ex) {
+                $this -> res -> sendInternalError($ex);
+            }
         }
     }
 
@@ -140,12 +146,22 @@ class Session {
      *
      * If the middleware fails, the connection is terminated with an error
      *
-     * @param Middleware $middleware The middleware to apply
+     * @param Middleware[] $middlewares The middlewares to apply
      */
-    public function applyMiddleware($middleware) {
-        $wareResult = $middleware -> apply($this);
-        if ($wareResult -> isError()) {
-            $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
+    public function applyMiddleware(...$middlewares) {
+        foreach ($middlewares as $middleware) {
+            $wareResult = null;
+
+            try {
+                $wareResult = $middleware -> apply($this);
+            }
+            catch (Exception $ex) {
+                $this -> res -> sendInternalError($ex);
+            }
+
+            if ($wareResult -> isError()) {
+                $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
+            }
         }
     }
 }

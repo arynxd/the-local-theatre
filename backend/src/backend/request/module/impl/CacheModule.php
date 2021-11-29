@@ -23,6 +23,7 @@ class CacheModule extends Module {
         }
 
         $auth = $this -> sess -> auth;
+
         if (!$auth -> isAuthenticated()) {
             return null;
         }

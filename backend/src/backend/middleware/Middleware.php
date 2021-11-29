@@ -12,15 +12,15 @@ use TLT\Util\HttpResult;
  *
  * Ideally middlewares should not throw exceptions.
  *
- *  However, if this does occur, the connection will be terminated with a 500 internal error code.
+ * However, if this does occur, the connection will be terminated with a 500 internal error code.
  */
 abstract class Middleware {
     /**
-     * Applies this middleware to the given connection
+     * Applies this middleware to the given session
      *
      * If the middleware throws an error, the request will fail.
      *
-     * @param Session $sess the current connection
+     * @param Session $sess the current session
      * @return HttpResult  the result of this middleware
      */
     public abstract function apply($sess);
