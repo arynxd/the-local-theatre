@@ -31,6 +31,7 @@
 - [ ] Perm checks for restricted pages
 - [ ] Change inline buttons to blue
 - [ ] Change frontend assertions to use TS 'asserts' keyword
+- [ ] .editorconfig
 
 ## Feature List 
 - [x] Login
