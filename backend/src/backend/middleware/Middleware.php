@@ -3,7 +3,7 @@
 namespace TLT\Middleware;
 
 use TLT\Request\Session;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 /**
  * An abstract class representing a middleware within a connection.
@@ -21,7 +21,7 @@ abstract class Middleware {
      * If the middleware throws an error, the request will fail.
      *
      * @param Session $sess the current connection
-     * @return Result  the result of this middleware
+     * @return HttpResult  the result of this middleware
      */
     public abstract function apply($sess);
 }

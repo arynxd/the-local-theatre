@@ -1,6 +1,6 @@
 <?php
 
-namespace TLT\Util\Auth;
+namespace TLT\Util;
 
 class AuthUtil {
     const TOKEN_LENGTH = 32;

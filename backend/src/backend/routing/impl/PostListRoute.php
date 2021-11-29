@@ -13,7 +13,7 @@ use TLT\Routing\Route;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class PostListRoute extends Route {
     public function __construct() {
@@ -28,7 +28,6 @@ class PostListRoute extends Route {
         $posts = Map ::none();
 
         foreach ($dbData as $item) {
-            print_r($item);
             $model = new PostModel(
                 $item['id'][0],
                 new UserModel(
@@ -51,6 +50,6 @@ class PostListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

@@ -5,9 +5,10 @@ namespace TLT\Routing\Impl;
 
 use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Routing\Route;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
 class UserPreferencesRoute extends Route {
@@ -18,9 +19,7 @@ class UserPreferencesRoute extends Route {
     public function handle($sess, $res) {
         $token = $sess -> auth -> token;
 
-        if (!$token) {
-            throw new UnexpectedValueException("Token was not set? The validation middleware must have failed..");
-        }
+        Assertions::assertSet($token);
 
         $query = "SELECT u.* FROM credential c
             LEFT JOIN user_prefs u on u.userId = c.userId
@@ -43,6 +42,6 @@ class UserPreferencesRoute extends Route {
 
     public function validateRequest($sess, $res) {
         $sess -> applyMiddleware(new AuthenticationMiddleware());
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

@@ -4,12 +4,13 @@ namespace TLT\Routing\Impl;
 
 
 use TLT\Routing\Route;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\DataUtil;
 use TLT\Util\Enum\ContentType;
 use TLT\Util\Enum\CORS;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
 class ShowImageRoute extends Route {
@@ -20,9 +21,7 @@ class ShowImageRoute extends Route {
     public function handle($sess, $res) {
         $id = $sess -> queryParams()['id'];
 
-        if (!isset($id)) {
-            throw new UnexpectedValueException("ID was not set.");
-        }
+        Assertions::assertSet($id);
 
         DataUtil ::readOrDefault(
             "shows/$id.png",
@@ -33,8 +32,8 @@ class ShowImageRoute extends Route {
 
     public function validateRequest($sess, $res) {
         if (!isset($sess -> queryParams()['id'])) {
-            return Result ::BadRequest("No ID provided.");
+            return HttpResult ::BadRequest("No ID provided.");
         }
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

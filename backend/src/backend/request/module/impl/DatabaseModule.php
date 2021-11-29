@@ -17,6 +17,9 @@ use TLT\Request\Module\Module;
 */
 
 class DatabaseModule extends Module {
+    /**
+     * @var PDO $dbh
+     */
     private $dbh;
 
     public function onEnable() {
@@ -41,8 +44,7 @@ class DatabaseModule extends Module {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
         catch (PDOException $ex) {
-            echo $ex -> getMessage();
-            $this -> sess -> res -> sendInternalError();
+            $this -> sess -> res -> sendInternalError($ex);
         }
 
         if ($this -> sess -> cfg -> env !== "PRODUCTION") {
@@ -55,7 +57,7 @@ class DatabaseModule extends Module {
     }
 
     private function initTable($fileName) {
-        $sql = file_get_contents(__DIR__ . "/../sql/" . $fileName);
+        $sql = file_get_contents(__DIR__ . "/../../../sql/" . $fileName );
         $this -> query($sql, []);
     }
 
@@ -84,5 +86,9 @@ class DatabaseModule extends Module {
         }
 
         return $stmt;
+    }
+
+    public function errorInfo() {
+        return $this -> dbh -> errorInfo();
     }
 }

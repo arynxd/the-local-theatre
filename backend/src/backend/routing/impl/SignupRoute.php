@@ -8,11 +8,12 @@ namespace TLT\Routing\Impl;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\ModelKeys;
 use TLT\Routing\Route;
-use TLT\Util\Auth\AuthUtil;
+use TLT\Util\AuthUtil;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 use UnexpectedValueException;
 
@@ -24,14 +25,10 @@ class SignupRoute extends Route {
     public function handle($sess, $res) {
         $data = $sess -> jsonParams()['data'];
 
-        if (!isset($data)) {
-            throw new UnexpectedValueException("Data did not exist? Initial validation failed.");
-        }
+        Assertions::assertSet($data);
 
         foreach (ModelKeys::SIGNUP_MODEL as $key) {
-            if (!isset($data[$key])) {
-                throw new UnexpectedValueException("Data key $key did not exist? Initial validation failed.");
-            }
+            Assertions::assertSet($data[$key]);
         }
 
         $userHasAccount = $this -> userHasAccount($sess, $data['email']);
@@ -56,9 +53,7 @@ class SignupRoute extends Route {
 
         $res = $res -> fetchColumn(0);
 
-        if (!isset($res)) {
-            throw new UnexpectedValueException("Count did not exist");
-        }
+        Assertions::assertSet($res);
 
         return $res > 0;
     }
@@ -101,13 +96,13 @@ class SignupRoute extends Route {
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {
-            return Result ::BadRequest("No data provided");
+            return HttpResult ::BadRequest("No data provided");
         }
 
         $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL, Map ::from($data), "Invalid data provided");
         $sess -> applyMiddleware($validator);
 
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }
 

@@ -85,6 +85,7 @@ class Session {
         $this -> routing = new RoutingModule($this);
         $this -> data = new DataModule($this);
         $this -> cache = new CacheModule($this);
+        $this -> auth = new AuthModule($this);
         $this -> db = new DatabaseModule($this);
 
         $all = [
@@ -93,6 +94,7 @@ class Session {
             $this -> routing,
             $this -> data,
             $this -> cache,
+            $this -> auth,
             $this -> db
         ];
 

@@ -2,6 +2,7 @@
 
 namespace TLT\Request;
 
+use Exception;
 use TLT\Util\Data\Map;
 use TLT\Util\Data\MapUtil;
 use TLT\Util\Enum\ContentType;
@@ -69,10 +70,15 @@ class Response {
      *
      * This function will kill the program, stopping execution
      *
+     * @param Exception|string|null $msg The message / exception to print
      * @return void This function never returns
      */
-    public function sendInternalError() {
-        //TODO log exceptions to stderr when we get them
+    public function sendInternalError($msg = null) {
+        if (is_a('Exception', $msg)) {
+            $msg = $msg -> getMessage();
+        }
+
+        error_log(ErrorStrings::INTERNAL_ERROR . PHP_EOL . PHP_EOL . $msg);
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
         exit(1);
     }
@@ -88,7 +94,6 @@ class Response {
      * @return void This function never returns
      */
     public function sendError($message, ...$headers) {
-        //TODO log exceptions to stderr when we get them
         $this -> send(json_encode([
             "error" => true,
             "message" => $message

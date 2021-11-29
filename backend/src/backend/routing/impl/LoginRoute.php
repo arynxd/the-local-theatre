@@ -7,11 +7,12 @@ namespace TLT\Routing\Impl;
 
 
 use TLT\Routing\Route;
-use TLT\Util\Auth\AuthUtil;
+use TLT\Util\AuthUtil;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
 class LoginRoute extends Route {
@@ -24,9 +25,7 @@ class LoginRoute extends Route {
 
         $data = $sess -> jsonParams()['data'];
 
-        if (!isset($data)) {
-            throw new UnexpectedValueException("Data did not exist, validation must have failed");
-        }
+        Assertions::assertSet($data);
 
         $email = $data['email'];
         $password = $data['password'];
@@ -63,20 +62,20 @@ class LoginRoute extends Route {
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {
-            return Result ::Unprocessable("No data was passed.");
+            return HttpResult ::Unprocessable("No data was passed.");
         }
 
         $email = $data['email'];
         $pwd = $data['password'];
 
         if (!isset($email)) {
-            return Result ::Unprocessable("No email was passed");
+            return HttpResult ::Unprocessable("No email was passed");
         }
 
         if (!isset($pwd)) {
-            return Result ::Unprocessable("No password was passed");
+            return HttpResult ::Unprocessable("No password was passed");
         }
 
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

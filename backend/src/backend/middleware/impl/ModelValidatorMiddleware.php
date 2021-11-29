@@ -4,7 +4,7 @@ namespace TLT\Middleware\Impl;
 
 use TLT\Middleware\Middleware;
 use TLT\Util\Data\Map;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class ModelValidatorMiddleware extends Middleware {
     private $required;
@@ -26,9 +26,9 @@ class ModelValidatorMiddleware extends Middleware {
     public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {
-                return Result ::BadRequest($this -> err);
+                return HttpResult ::BadRequest($this -> err);
             }
         }
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

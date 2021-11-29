@@ -8,7 +8,7 @@ use TLT\Routing\Route;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class ShowListRoute extends Route {
     public function __construct() {
@@ -29,6 +29,6 @@ class ShowListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

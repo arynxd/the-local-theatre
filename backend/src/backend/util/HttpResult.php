@@ -11,9 +11,9 @@ use TLT\Util\Enum\StatusCode;
  * @see Ok
  * @see BadRequest
  * @see Unprocessable
- * @see Result
+ * @see HttpResult
  */
-class Result {
+class HttpResult {
     public $httpCode;
     public $error;
     public $headers;
@@ -32,19 +32,19 @@ class Result {
     }
 
     public static function Ok(...$headers) {
-        return new Result(StatusCode::OK, null, $headers);
+        return new HttpResult(StatusCode::OK, null, $headers);
     }
 
     public static function BadRequest($error, ...$headers) {
-        return new Result(StatusCode::BAD_REQUEST, $error, $headers);
+        return new HttpResult(StatusCode::BAD_REQUEST, $error, $headers);
     }
 
     public static function Unprocessable($error, ...$headers) {
-        return new Result(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
+        return new HttpResult(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
     }
 
     public static function from($code, $error, ...$headers) {
-        return new Result($code, $error, $headers);
+        return new HttpResult($code, $error, $headers);
     }
 
     /**

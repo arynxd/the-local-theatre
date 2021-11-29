@@ -6,10 +6,11 @@
 namespace TLT\Routing\Impl;
 
 use TLT\Routing\Route;
+use TLT\Util\Assert\AssertionException;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class CommentRoute extends Route {
     public function __construct() {
@@ -25,6 +26,24 @@ class CommentRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        $method = $sess -> http -> method;
+        $query = $sess -> queryParams();
+        $body = $sess -> queryParams();
+
+        if ($method === RequestMethod::GET) {
+            if (!isset($query['id'])) {
+                return HttpResult ::BadRequest("No ID provided");
+            }
+        }
+        else if ($method === RequestMethod::POST) {
+            $res -> sendError("Unimplemented method " . $method);
+        }
+        else if ($method === RequestMethod::DELETE) {
+            $res -> sendError("Unimplemented method " . $method);
+        }
+        else {
+            throw new AssertionException("Unknown method " . $method);
+        }
+        return HttpResult ::Ok();
     }
 }

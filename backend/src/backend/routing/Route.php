@@ -6,7 +6,7 @@ namespace TLT\Routing;
 use TLT\Request\Response;
 use TLT\Request\Session;
 use TLT\Util\Enum\RequestMethod;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 /**
  * A routing to be used in a Router.
@@ -44,7 +44,7 @@ abstract class Route {
      *
      * @param Session $sess the current connection
      * @param Response $res the response to send data to
-     * @return  Result  the result of the validation
+     * @return  HttpResult  the result of the validation
      */
     public abstract function validateRequest($sess, $res);
 

@@ -12,7 +12,7 @@ use TLT\Routing\Route;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 
 class CommentListRoute extends Route {
@@ -34,6 +34,6 @@ class CommentListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

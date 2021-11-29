@@ -5,9 +5,10 @@ namespace TLT\Routing\Impl;
 
 use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Routing\Route;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
 class SelfUserRoute extends Route {
@@ -18,9 +19,7 @@ class SelfUserRoute extends Route {
     public function handle($sess, $res) {
         $selfUser = $sess -> cache -> user();
 
-        if (!$selfUser) {
-            throw new UnexpectedValueException("Self user was not set? The validation middleware must have failed..");
-        }
+        Assertions::assertSet($selfUser);
 
         $selfUser = $selfUser -> toMap();
 
@@ -34,6 +33,6 @@ class SelfUserRoute extends Route {
 
     public function validateRequest($sess, $res) {
         $sess -> applyMiddleware(new AuthenticationMiddleware());
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

@@ -23,7 +23,7 @@ if (!$routeResult -> isError()) {
         $route -> handle($sess, $sess -> res);
     }
     catch (Exception $ex) {
-        $sess -> res -> sendInternalError();
+        $sess -> res -> sendInternalError($ex);
     }
 }
 else {

@@ -4,6 +4,7 @@ namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\Module;
 use TLT\Util\Enum\Constants;
+use TLT\Util\StringUtil;
 
 class HttpModule extends Module {
     /**
@@ -54,11 +55,11 @@ class HttpModule extends Module {
         $map = explode('/', $map); // split it into an array
         $map = array_slice($map, 1); // remove weird empty argument at the start
 
-        if (isset($map[0]) && strStartsWith($map[0], Constants::URI_PREFIX)) {
+        if (isset($map[0]) && StringUtil::startsWith($map[0], Constants::URI_PREFIX)) {
             $map = array_slice($map, 1);
         }
 
-        if (isset($map[0]) && strStartsWith($map[0], Constants::API_PREFIX)) {
+        if (isset($map[0]) && StringUtil::startsWith($map[0], Constants::API_PREFIX)) {
             $map = array_slice($map, 1);
         }
 

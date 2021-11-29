@@ -7,11 +7,12 @@ use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
 use TLT\Routing\Route;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 use UnexpectedValueException;
 
 class UserRoute extends Route {
@@ -31,9 +32,7 @@ class UserRoute extends Route {
 
             $selfUser = $sess -> cache -> user();
 
-            if (!isset($selfUser)) {
-                throw new UnexpectedValueException("Self user was not set");
-            }
+            Assertions::assertSet($selfUser);
 
             $isModifyingSelf = $selfUser -> id == $data['id'];
             $isSelfAdmin = $selfUser -> permissions == 2;
@@ -51,7 +50,7 @@ class UserRoute extends Route {
 
             $selfUser = $selfUser -> toMap();
 
-            foreach ($data as $k => $v) {
+            foreach ($data -> raw() as $k => $v) {
                 $selfUser[$k] = $v;
             }
 
@@ -62,7 +61,7 @@ class UserRoute extends Route {
     private function getUserById($sess, $res, $id) {
         $query = "SELECT * FROM user WHERE id = :id";
 
-        $st = $sess -> database -> query($query, [
+        $st = $sess -> db -> query($query, [
             'id' => $id
         ]);
 
@@ -87,7 +86,7 @@ class UserRoute extends Route {
                     permissions = :permissions
         ";
 
-        $sess -> database -> query($query, [
+        $sess -> db -> query($query, [
             'firstName' => $data['firstName'],
             'lastName' => $data['lastName'],
             'username' => $data['username'],
@@ -98,14 +97,14 @@ class UserRoute extends Route {
 
     public function validateRequest($sess, $res) {
         if ($sess -> http -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
-            return Result ::BadRequest("No ID provided");
+            return HttpResult ::BadRequest("No ID provided");
         }
 
         if ($sess -> http -> method == RequestMethod::POST) {
             $data = $sess -> jsonParams()['data'];
 
             if (!isset($data)) {
-                return Result ::BadRequest("No data provided");
+                return HttpResult ::BadRequest("No data provided");
             }
 
             $sess -> applyMiddleware(new AuthenticationMiddleware());
@@ -114,6 +113,6 @@ class UserRoute extends Route {
             $sess -> applyMiddleware($validator);
         }
 
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

@@ -10,7 +10,7 @@ use TLT\Routing\Route;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class ModerationRoute extends Route {
     public function __construct() {
@@ -18,14 +18,10 @@ class ModerationRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $res -> sendJSON(Map ::from([
-            "id" => "0",
-            "user_id" => "1",
-            "reason" => "hello world"
-        ]), StatusCode::OK);
+        $res -> sendError("Not implemented", StatusCode::BAD_REQUEST);
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

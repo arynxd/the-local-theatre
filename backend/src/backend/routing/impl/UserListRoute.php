@@ -8,7 +8,7 @@ use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\Result;
+use TLT\Util\HttpResult;
 
 class UserListRoute extends Route {
     public function __construct() {
@@ -38,6 +38,6 @@ class UserListRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        return Result ::Ok();
+        return HttpResult ::Ok();
     }
 }

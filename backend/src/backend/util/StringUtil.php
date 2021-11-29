@@ -30,4 +30,9 @@ class StringUtil {
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
+
+    public static function startsWith($haystack, $needle) {
+        $length = strlen($needle);
+        return substr($haystack, 0, $length) === $needle;
+    }
 }
