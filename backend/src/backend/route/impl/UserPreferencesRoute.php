@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/Map.php';
 require_once __DIR__ . '/../../middleware/impl/AuthenticationMiddleware.php';
@@ -12,7 +12,7 @@ class UserPreferencesRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $token = $sess -> headers['Authorisation'];
+        $token = $sess -> auth -> token;
 
         if (!$token) {
             throw new UnexpectedValueException("Token was not set? The validation middleware must have failed..");
@@ -22,10 +22,13 @@ class UserPreferencesRoute extends Route {
             LEFT JOIN user_prefs u on u.userId = c.userId
         WHERE c.token = :token";
 
-        $prefs = $sess -> database -> query($query, ['token' => $token]) -> fetch();
+        $prefs = $sess -> db -> query($query, ['token' => $token]) -> fetch();
 
         if (!$prefs) {
-            throw new UnexpectedValueException("User prefs did not exist? The validation middleware must have failed");
+            $res -> sendJSON(map([
+                'id' => $sess -> cache -> user() -> id,
+                'theme' => 'dark'
+            ]));
         }
 
         $res -> sendJSON(map([

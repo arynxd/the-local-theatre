@@ -32,6 +32,15 @@ class Map implements ArrayAccess, JsonSerializable {
         }) -> raw();
     }
 
+    function toMapRecursive() {
+        return $this -> mapValuesRecursive(function ($item) {
+            if (is_array($item)) {
+                return new Map($item);
+            }
+            return $item;
+        });
+    }
+
     function mapValuesRecursive($mapper) {
         $func = function ($_, $value) use ($mapper) {
             return call_user_func($mapper, $value);

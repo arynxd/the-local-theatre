@@ -8,8 +8,8 @@ require_once __DIR__ . '/../util/Map.php';
 
 /**
  * Utility object for sending responses to the client
- * This can be freely constructed wherever needed however the Connection
- * always holds an instance (Connection::$res)
+ * This can be freely constructed wherever needed however the Session
+ * always holds an instance (Session::$res)
  *
  * @see Session
  */

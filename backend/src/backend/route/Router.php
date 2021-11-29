@@ -59,16 +59,4 @@ class Router {
         }
         return false;
     }
-
-    /**
-     * Handle CORS OPTIONS request and respond appropriately
-     */
-    function handleCors() {
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Access-Control-Allow-Origin: *");
-            exit(0);
-        }
-    }
 }

@@ -6,111 +6,105 @@ require_once __DIR__ . "/../util/Logger.php";
 require_once __DIR__ . "/../util/Map.php";
 require_once __DIR__ . "/../util/JSONLoader.php";
 require_once __DIR__ . "/../util/string.php";
-require_once __DIR__ . "/../db/Database.php";
 require_once __DIR__ . "/../route/Router.php";
 require_once __DIR__ . "/Response.php";
 
+require_once __DIR__ . 'module/AuthModule.php';
+require_once __DIR__ . 'module/CacheModule.php';
+require_once __DIR__ . 'module/ConfigModule.php';
+require_once __DIR__ . 'module/DatabaseModule.php';
+require_once __DIR__ . 'module/DataModule.php';
+require_once __DIR__ . 'module/HttpModule.php';
+require_once __DIR__ . 'module/RoutingModule.php';
+
+/**
+ * Central object representing a single connection, a session.
+ *
+ * Holds various modules to interact with all aspects of the application
+ *
+ * This class should only be constructed once.
+ */
 class Session {
     public $res;
-    public $config;
-    public $database;
-    public $rawUri;
-    public $uri;
-    public $router;
-    public $route;
-    public $method;
     public $logger;
-    public $headers;
-    public $selfUser;
+
+
+    /**
+     * The HTTP module for this session
+     *
+     * @var HttpModule $http
+     */
+    public $http;
+
+    /**
+     * The routing module for this session
+     *
+     * @var RoutingModule $routing
+     */
+    public $routing;
+
+    /**
+     * The data module for this session
+     *
+     * @var DataModule $data
+     */
+    public $data;
+
+    /**
+     * The cache module for this session
+     *
+     * @var CacheModule $cache
+     */
+    public $cache;
+
+
+    /**
+     * The config module for this session
+     *
+     * @var ConfigModule $cfg
+     */
+    public $cfg;
+
+    /**
+     * The auth module for this session
+     *
+     * @var AuthModule $auth
+     */
+    public $auth;
+
+    /**
+     * The database module for this session
+     *
+     *
+     * @var DatabaseModule $db
+     */
+    public $db;
+
 
     public function __construct() {
-        $this -> res = $this -> generateResponse();
-        $this -> config = $this -> loadConfig();
-        $this -> database = $this -> loadDatabase();
-        $this -> router = $this -> loadRouter();
-        $this -> rawUri = $this -> parseRawURI();
-        $this -> uri = $this -> parseURI();
-        $this -> router = $this -> loadRouter();
-        $this -> route = $this -> parseRoute();
-        $this -> method = $this -> parseMethod();
-        $this -> logger = $this -> loadLogger();
-        $this -> headers = $this -> parseHeaders();
+        $this -> res = new Response();
+        $this -> logger = new Logger($this);
 
-        $this -> router -> handleCors();
-    }
+        // init modules
+        $this -> cfg = new ConfigModule($this);
+        $this -> http = new HttpModule($this);
+        $this -> routing = new RoutingModule($this);
+        $this -> data = new DataModule($this);
+        $this -> cache = new CacheModule($this);
+        $this -> db = new DatabaseModule($this);
 
-    private function generateResponse() {
-        return new Response();
-    }
+        $all = [
+            $this -> cfg,
+            $this -> http,
+            $this -> routing,
+            $this -> data,
+            $this -> cache,
+            $this -> db
+        ];
 
-    private function loadConfig() {
-        $loader = new JSONLoader("./config.json");
-        $loader -> load();
-        return $loader -> data();
-    }
-
-    private function loadDatabase() {
-        $cfg = $this -> config;
-
-        if (!isset($cfg)) {
-            throw new UnexpectedValueException("Config was not initialised before loading database.");
+        foreach ($all as $mod) {
+            $mod -> onEnable();
         }
-
-        if (!$cfg['db_enabled']) {
-            return null;
-        }
-
-        return new Database($cfg['db_url'], $cfg['db_username'], $cfg['db_password'], $this);
-    }
-
-    private function loadRouter() {
-        $db = $this -> database;
-
-        if (!isset($db) && $this -> config['db_enabled']) {
-            throw new UnexpectedValueException("Database was not initialised before loading router.");
-        }
-
-        return new Router();
-    }
-
-    private function parseRawURI() {
-        return "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    }
-
-    private function parseURI() {
-        $map = parse_url($this -> rawUri, PHP_URL_PATH); // get the URI from the request
-        $map = explode('/', $map); // split it into an array
-        $map = array_slice($map, 1); // remove weird empty argument at the start
-
-        if (isset($map[0]) && strStartsWith($map[0], Constants::URI_PREFIX)) {
-            $map = array_slice($map, 1);
-        }
-
-        if (isset($map[0]) && strStartsWith($map[0], Constants::API_PREFIX)) {
-            $map = array_slice($map, 1);
-        }
-
-        return $map;
-    }
-
-    private function parseRoute() {
-
-        $result = $this -> router -> getRouteForPath($this -> uri);
-
-        if (!$result) {
-            $this -> res -> sendError("Route " . $this -> rawUri . " not found", StatusCode::NOT_FOUND);
-            exit;
-        }
-
-        return $result;
-    }
-
-    private function parseMethod() {
-        return $_SERVER["REQUEST_METHOD"];
-    }
-
-    private function loadLogger() {
-        return new Logger($this);
     }
 
     public function jsonParams() {
@@ -145,17 +139,17 @@ class Session {
         return $this -> parseParams(ParamSource::QUERY);
     }
 
+    /**
+     * Applies a middleware to the session
+     *
+     * If the middleware fails, the connection is terminated with an error
+     *
+     * @param Middleware $middleware The middleware to apply
+     */
     public function applyMiddleware($middleware) {
         $wareResult = $middleware -> apply($this);
         if ($wareResult -> isError()) {
             $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
         }
-    }
-
-    private function parseHeaders() {
-        if (!function_exists('getallheaders')) {
-            throw new UnexpectedValueException("getallheaders function did not exist? are we actually running under apache??");
-        }
-        return map(getallheaders());
     }
 }

@@ -11,13 +11,13 @@ class JSONLoader {
 
     public function load() {
         $json = json_decode(file_get_contents($this -> path), true);
-        $this -> data = $json;
+        if (!isset($json)) {
+            throw new UnexpectedValueException("Data at " . $this -> path . " was invalid.");
+        }
+        $this -> data = map($json) -> toMapRecursive();
     }
 
     public function data() {
-        if (!isset($this -> data)) {
-            throw new UnexpectedValueException("Data was null. Did you forget to call load()?");
-        }
         return $this -> data;
     }
 }

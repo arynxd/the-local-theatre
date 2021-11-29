@@ -16,7 +16,7 @@ abstract class Middleware {
      * If the middleware throws an error, the request will fail.
      *
      * @param Session $sess the current connection
-     * @return RouteValidationResult  the result of this middleware
+     * @return Result  the result of this middleware
      */
     public abstract function apply($sess);
 }

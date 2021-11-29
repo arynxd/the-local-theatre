@@ -1,39 +1,45 @@
 <?php
-require_once __DIR__ . '/../util/constant/ErrorStrings.php';
-require_once __DIR__ . '/../util/constant/StatusCode.php';
+require_once __DIR__ . '/../../util/constant/ErrorStrings.php';
+require_once __DIR__ . '/../../util/constant/StatusCode.php';
 
-class Database {
+/*
+* This connection will persist through runs of script.
+*
+* This class implements the following options for the connection:
+*  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+*  PDO::ATTR_PERSISTENT => true,
+*  PDO::ATTR_TIMEOUT => 5
+*/
+
+class DatabaseModule extends Module {
     private $dbh;
 
-    /**
-     * Constructs a database connection using the provided details.
-     * This connection will persist through runs of script.
-     *
-     * This class implements the following options for the connection:
-     *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-     *  PDO::ATTR_PERSISTENT => true,
-     *  PDO::ATTR_TIMEOUT => 5
-     *
-     * @param  $url       string      The URL to use
-     * @param  $username  string      The username to use
-     * @param  $password  string      The password to use
-     * @param  $conn      Session  The current connection
-     */
-    public function __construct($url, $username, $password, $conn) {
+    protected function onEnable() {
+        if (!$this -> sess -> cfg -> dbEnabled) {
+            $this -> dbh = null;
+            return;
+        }
+
         $opts = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_TIMEOUT => 5,
         ];
 
+        $cfg = $this -> sess -> cfg;
+
+        $url = $cfg -> dbURL;
+        $username = $cfg -> dbUsername;
+        $password = $cfg -> dbPassword;
+
         try {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
         catch (PDOException $e) {
-            $conn -> res -> sendInternalError();
+            $this -> sess -> res -> sendInternalError();
         }
 
-        if ($conn -> config['env'] !== "production") {
+        if ($this -> sess -> cfg -> env !== "PRODUCTION") {
             $this -> initTables();
         }
     }
@@ -72,9 +78,5 @@ class Database {
         }
 
         return $stmt;
-    }
-
-    public function errorInfo() {
-        return $this -> dbh -> errorInfo();
     }
 }

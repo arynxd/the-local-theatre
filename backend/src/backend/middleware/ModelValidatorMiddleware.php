@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../Middleware.php";
+require_once __DIR__ . "Middleware.php";
 
 class ModelValidatorMiddleware extends Middleware {
     private $required;
@@ -18,6 +18,7 @@ class ModelValidatorMiddleware extends Middleware {
         $this -> err = $err;
     }
 
+    //TODO have this take a Map<string, function> and perform extra validation
     public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {

@@ -37,7 +37,7 @@ abstract class Route {
      *
      * @param Session $sess the current connection
      * @param Response $res the response to send data to
-     * @return  RouteValidationResult  the result of the validation
+     * @return  Result  the result of the validation
      */
     public abstract function validateRequest($sess, $res);
 
@@ -45,9 +45,9 @@ abstract class Route {
      * Validates this route based on an incoming request's methods.
      *
      * @param Session $sess the current connection
-     * @return  boolean                   true, if the validation passed, false otherwise
+     * @return  boolean     true, if the validation passed, false otherwise
      */
     public function validateMethod($sess) {
-        return in_array($sess -> method, $this -> methods);
+        return in_array($sess -> http -> method, $this -> methods);
     }
 }

@@ -4,7 +4,7 @@ require_once __DIR__ . "/../Route.php";
 require_once __DIR__ . "/../../util/Map.php";
 require_once __DIR__ . "/../../util/constant/RequestMethod.php";
 require_once __DIR__ . "/../../util/identifier.php";
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../middleware/impl/AuthenticationMiddleware.php';
 
 
@@ -14,7 +14,7 @@ class SelfUserRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $selfUser = $sess -> selfUser;
+        $selfUser = $sess -> cache -> user();
 
         if (!$selfUser) {
             throw new UnexpectedValueException("Self user was not set? The validation middleware must have failed..");

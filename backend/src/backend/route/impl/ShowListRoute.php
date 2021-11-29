@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/constant/StatusCode.php';
 require_once __DIR__ . '/../../util/identifier.php';

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../util/constant/StatusCode.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/constant/ParamSource.php';
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . "/../../util/model.php";
 require_once __DIR__ . "/../../middleware/impl/AuthenticationMiddleware.php";
@@ -55,7 +55,7 @@ class UserRoute extends Route {
     }
 
     public function handle($sess, $res) {
-        $method = $sess -> method;
+        $method = $sess -> http -> method;
 
         if ($method == RequestMethod::GET) {
             $res -> sendJSON($this -> getUserById($sess, $res, $sess -> queryParams()['id']) -> toMap());
@@ -64,7 +64,7 @@ class UserRoute extends Route {
         if ($method == RequestMethod::POST) {
             $data = $sess -> jsonParams()['data'];
 
-            $selfUser = $sess -> selfUser;
+            $selfUser = $sess -> cache -> user();
 
             if (!isset($selfUser)) {
                 throw new UnexpectedValueException("Self user was not set");
@@ -95,11 +95,11 @@ class UserRoute extends Route {
     }
 
     public function validateRequest($sess, $res) {
-        if ($sess -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
+        if ($sess -> http -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
             return BadRequest("No ID provided");
         }
 
-        if ($sess -> method == RequestMethod::POST) {
+        if ($sess -> http -> method == RequestMethod::POST) {
             $data = $sess -> jsonParams()['data'];
 
             if (!isset($data)) {

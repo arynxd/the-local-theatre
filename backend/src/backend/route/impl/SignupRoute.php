@@ -4,7 +4,7 @@
 // POST
 
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../model/SignupUser.php';
 require_once __DIR__ . '/../../util/Map.php';
 
@@ -15,7 +15,7 @@ class SignupRoute extends Route {
 
     private function userHasAccount($sess, $email) {
         $query = "SELECT COUNT(*) FROM credential WHERE email = :email";
-        $res = $sess -> database -> query($query,[
+        $res = $sess -> db -> query($query,[
             'email' => $email
         ]);
 
@@ -37,7 +37,7 @@ class SignupRoute extends Route {
             (userId, email, password, token) VALUES
             (:id, :email, :password, :token);";
 
-        $db = $sess -> database;
+        $db = $sess -> db;
 
         $id = createIdentifier();
         $tok = generateToken();

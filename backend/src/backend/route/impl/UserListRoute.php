@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../util/constant/StatusCode.php';
 require_once __DIR__ . '/../../util/constant/ContentType.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/Map.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../route/Route.php';
 require_once __DIR__ . '/../../util/constant/Constants.php';
 require_once __DIR__ . '/../../util/identifier.php';
@@ -17,7 +17,7 @@ class UserListRoute extends Route {
     public function handle($sess, $res) {
         $out = new Map();
 
-        $st = $sess -> database -> query("SELECT * FROM user");
+        $st = $sess -> db -> query("SELECT * FROM user");
 
         $dbRes = map($st -> fetchAll());
 

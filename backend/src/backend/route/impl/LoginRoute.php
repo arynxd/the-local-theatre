@@ -29,7 +29,7 @@ class LoginRoute extends Route {
             throw new UnexpectedValueException("Email or password did not exist, validation must have failed");
         }
 
-        $accountDetails = $sess -> database -> query("SELECT * FROM credential WHERE email = :email", [
+        $accountDetails = $sess -> db -> query("SELECT * FROM credential WHERE email = :email", [
             'email' => $email
         ]);
 

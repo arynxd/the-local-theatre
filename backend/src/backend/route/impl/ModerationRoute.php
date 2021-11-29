@@ -4,7 +4,7 @@
 // POST
 
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 
 class ModerationRoute extends Route {

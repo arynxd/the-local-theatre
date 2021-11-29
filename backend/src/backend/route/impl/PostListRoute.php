@@ -4,7 +4,7 @@
 // GET
 
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../model/UserModel.php';
 require_once __DIR__ . '/../../model/PostModel.php';
@@ -19,7 +19,7 @@ class PostListRoute extends Route {
 
     public function handle($sess, $res) {
         $query = "SELECT * FROM post p LEFT JOIN user u on p.authorId = u.id;";
-        $st = $sess -> database -> query($query);
+        $st = $sess -> db -> query($query);
 
         $dbData = $st -> fetchAll(PDO::FETCH_NAMED);
         $posts = new Map();

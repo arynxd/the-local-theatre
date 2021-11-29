@@ -3,8 +3,7 @@
 require_once __DIR__ . "/../util/constant/StatusCode.php";
 
 /**
- * The result of a validation within a route
- * @see Route
+ * A generic result class
  *
  * The following factory methods should be used to construct this class
  * @see Ok
@@ -12,7 +11,7 @@ require_once __DIR__ . "/../util/constant/StatusCode.php";
  * @see Unprocessable
  * @see Result
  */
-class RouteValidationResult {
+class Result {
     public $httpCode;
     public $error;
     public $headers;
@@ -41,17 +40,17 @@ class RouteValidationResult {
 }
 
 function Ok(...$headers) {
-    return new RouteValidationResult(StatusCode::OK, null, $headers);
+    return new Result(StatusCode::OK, null, $headers);
 }
 
 function BadRequest($error, ...$headers) {
-    return new RouteValidationResult(StatusCode::BAD_REQUEST, $error, $headers);
+    return new Result(StatusCode::BAD_REQUEST, $error, $headers);
 }
 
 function Unprocessable($error, ...$headers) {
-    return new RouteValidationResult(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
+    return new Result(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
 }
 
 function Result($code, $error, ...$headers) {
-    return new RouteValidationResult($code, $error, $headers);
+    return new Result($code, $error, $headers);
 }

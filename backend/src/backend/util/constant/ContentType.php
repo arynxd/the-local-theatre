@@ -11,5 +11,3 @@ class ContentType {
         return $m -> freeze();
     }
 }
-
-assert(ContentType ::ALL() -> length() == 2, "Missing content types");

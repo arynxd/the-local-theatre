@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../util/constant/CORS.php';
 require_once __DIR__ . '/../../util/constant/RequestMethod.php';
 require_once __DIR__ . '/../../util/data.php';
 require_once __DIR__ . '/../../route/Route.php';
-require_once __DIR__ . '/../../route/RouteValidationResult.php';
+require_once __DIR__ . '/../../route/Result.php';
 
 class ShowImageRoute extends Route {
     public function __construct() {
