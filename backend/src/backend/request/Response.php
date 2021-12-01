@@ -9,6 +9,7 @@ use TLT\Util\Enum\ContentType;
 use TLT\Util\Enum\CORS;
 use TLT\Util\Enum\ErrorStrings;
 use TLT\Util\Enum\StatusCode;
+use TLT\Util\Log\Logger;
 use UnexpectedValueException;
 
 /**
@@ -30,6 +31,8 @@ class Response {
      * @return never-return This function never returns
      */
     public function sendJSON($data, ...$headers) {
+        Logger::getInstance() -> info("Sending response..");
+        Logger::getInstance() -> debug("\t$data");
         if (MapUtil ::is_map($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
@@ -37,7 +40,7 @@ class Response {
             $this -> send(json_encode(json_decode($data)), CORS::ALL, ContentType::JSON, ...$headers); // encode/decode for validation
         }
         else if (is_array($data)) {
-            throw new UnexpectedValueException("Got array passed to sendJSON, did you forget to call map()?");
+            throw new UnexpectedValueException("Got array passed to sendJSON, did you forget to call Map::from()?");
         }
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
@@ -69,15 +72,13 @@ class Response {
      *
      * This function will kill the program, stopping execution
      *
-     * @param Exception|string|null $msg The message / exception to print
+     * @param Exception|string $msg The message / exception to print
      * @return never-return This function never returns
      */
-    public function sendInternalError($msg = null) {
-        if (is_a('Exception', $msg)) {
-            $msg = $msg -> getMessage();
-        }
+    public function sendInternalError($msg = "No message set") {
+        Logger ::getInstance() -> error("An internal error has occurred:");
+        Logger ::getInstance() -> error("\t" . $msg);
 
-        error_log(ErrorStrings::INTERNAL_ERROR . PHP_EOL . PHP_EOL . $msg);
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
     }
 
@@ -92,6 +93,7 @@ class Response {
      * @return never-return This function never returns
      */
     public function sendError($message, ...$headers) {
+        Logger ::getInstance() -> error("Route returned error => ". $message);
         $this -> send(json_encode([
             "error" => true,
             "message" => $message

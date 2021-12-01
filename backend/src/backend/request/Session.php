@@ -13,6 +13,7 @@ use TLT\Request\Module\Impl\HttpModule;
 use TLT\Request\Module\Impl\RoutingModule;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\ParamSource;
+use TLT\Util\Log\Logger;
 use UnexpectedValueException;
 
 /**
@@ -23,6 +24,11 @@ use UnexpectedValueException;
  * This class should only be constructed once.
  */
 class Session {
+    /**
+     * The response object for this session
+     *
+     * @var Response $res
+     */
     public $res;
 
     /**
@@ -78,6 +84,7 @@ class Session {
 
 
     public function __construct() {
+        Logger::getInstance() -> info("Loading modules...");
         $this -> res = new Response();
 
         // init modules
@@ -88,6 +95,7 @@ class Session {
         $this -> cache = new CacheModule($this);
         $this -> auth = new AuthModule($this);
         $this -> db = new DatabaseModule($this);
+        Logger::getInstance() -> info("Modules constructed without error, enabling");
 
         $all = [
             $this -> cfg,
@@ -101,12 +109,15 @@ class Session {
 
         foreach ($all as $mod) {
             try {
+                Logger::getInstance() -> debug("\tEnabling module " . get_class($mod));
                 $mod -> onEnable();
             }
             catch (Exception $ex) {
+                Logger::getInstance() -> error("Module " . get_class($mod) . " encountered an error whilst enabling");
                 $this -> res -> sendInternalError($ex);
             }
         }
+        Logger::getInstance() -> info("Middlewares applied");
     }
 
     public function jsonParams() {
@@ -114,14 +125,23 @@ class Session {
     }
 
     private function parseParams($source) {
+        Logger::getInstance() -> info("Parsing params from source " > $source);
         if ($source == ParamSource::QUERY) {
+            Logger::getInstance() -> debug('Query params selected, returning $_GET');
             return Map ::from($_GET);
         }
         else if ($source == ParamSource::JSON) {
-            $result = json_decode(file_get_contents('php://input'), true);
+            Logger::getInstance() -> debug("Attempting JSON parse..");
+            $raw = file_get_contents('php://input');
+            $result = json_decode($raw, true);
+
             if (!isset($result)) {
+                Logger::getInstance() -> warn("JSON parse failed for input, falling back to empty map");
+                Logger::getInstance() -> warn($raw);
                 return Map ::none();
             }
+
+            Logger::getInstance() -> debug("JSON parse succeeded!");
 
             $result = Map ::from($result);
 
@@ -134,7 +154,7 @@ class Session {
 
         }
 
-        throw new UnexpectedValueException("Unexpected ParamSource $source");
+        Logger::getInstance() -> fatal("Unexpected ParamSource $source");
     }
 
     public function queryParams() {
@@ -149,13 +169,17 @@ class Session {
      * @param BaseMiddleware[] $middlewares The middlewares to apply
      */
     public function applyMiddleware(...$middlewares) {
+        Logger::getInstance() -> info("Applying middlewares..");
+
         foreach ($middlewares as $middleware) {
             $wareResult = null;
+            Logger::getInstance() -> debug("\tLoading middleware " . get_class($middleware));
 
             try {
                 $wareResult = $middleware -> apply($this);
             }
             catch (Exception $ex) {
+                Logger::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
                 $this -> res -> sendInternalError($ex);
             }
 

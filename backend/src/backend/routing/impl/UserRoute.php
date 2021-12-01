@@ -3,6 +3,7 @@
 namespace TLT\Routing\Impl;
 
 use TLT\Middleware\Impl\AuthenticationMiddleware;
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
@@ -97,6 +98,8 @@ class UserRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         if ($sess -> http -> method == RequestMethod::GET && !isset($sess -> queryParams()["id"])) {
             return HttpResult ::BadRequest("No ID provided");
         }

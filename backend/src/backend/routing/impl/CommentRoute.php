@@ -5,6 +5,7 @@
 
 namespace TLT\Routing\Impl;
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\AssertionException;
 use TLT\Util\Data\Map;
@@ -26,6 +27,8 @@ class CommentRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         $method = $sess -> http -> method;
         $query = $sess -> queryParams();
         $body = $sess -> queryParams();

@@ -6,6 +6,7 @@
 namespace TLT\Routing\Impl;
 
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
@@ -21,6 +22,7 @@ class ModerationRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
         return HttpResult ::Ok();
     }
 }

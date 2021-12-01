@@ -7,6 +7,7 @@ namespace TLT\Routing\Impl;
 
 
 use PDO;
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
 use TLT\Request\Session;
@@ -75,6 +76,8 @@ class PostRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         if (!isset($sess -> queryParams()['id'])) {
             return HttpResult ::BadRequest("No id provided");
         }

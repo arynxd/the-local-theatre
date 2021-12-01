@@ -6,6 +6,7 @@
 namespace TLT\Routing\Impl;
 
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
 use TLT\Routing\BaseRoute;
@@ -34,6 +35,7 @@ class CommentListRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
         return HttpResult ::Ok();
     }
 }

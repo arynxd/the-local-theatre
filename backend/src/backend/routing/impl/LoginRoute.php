@@ -6,6 +6,7 @@
 namespace TLT\Routing\Impl;
 
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\AuthUtil;
@@ -59,6 +60,8 @@ class LoginRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {

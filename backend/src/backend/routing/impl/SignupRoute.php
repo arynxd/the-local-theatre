@@ -5,6 +5,7 @@
 
 namespace TLT\Routing\Impl;
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\ModelKeys;
 use TLT\Routing\BaseRoute;
@@ -92,6 +93,8 @@ class SignupRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         $data = $sess -> jsonParams()['data'];
 
         if (!isset($data)) {

@@ -17,7 +17,7 @@ class ShowModel extends Model {
     }
 
     public function toMap() {
-        Map ::from([
+        return Map ::from([
             'id' => $this -> id,
             'title' => $this -> title,
             'showDate' => $this -> showDate,

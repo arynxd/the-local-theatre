@@ -2,6 +2,7 @@
 
 namespace TLT\Routing\Impl;
 
+use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
@@ -36,6 +37,8 @@ class UserListRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+
         return HttpResult ::Ok();
     }
 }
