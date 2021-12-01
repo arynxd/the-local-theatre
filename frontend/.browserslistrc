@@ -1,0 +1,12 @@
+# Specify, to our toolchain, which browsers we want to support
+# This means our JS / CSS / HTML will be formatted correctly
+
+[production]
+>0.2%
+not dead
+not op_mini all
+
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version

@@ -7,6 +7,7 @@ import {logger} from "./log";
  * @returns The URL prefix
  */
 export function getPrefix(): string {
+    
     if (process.env.NODE_ENV === 'development') {
         return 'http://localhost:8000/'
     }

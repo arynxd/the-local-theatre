@@ -20,14 +20,13 @@ class PostModel extends Model {
         $this -> createdAt = $createdAt;
     }
 
-
     public function toMap() {
         return Map ::from([
             'id' => $this -> id,
             'author' => $this -> author -> toMap(),
             'content' => $this -> content,
             'title' => $this -> title,
-            'createdAt' => $this -> createdAt
+            'createdAt' => (int) $this -> createdAt
         ]);
     }
 }

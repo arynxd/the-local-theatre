@@ -70,9 +70,9 @@ class UserModel extends Model {
                 'id' => $this -> id,
                 'firstName' => $this -> firstName,
                 'lastName' => $this -> lastName,
-                'permissions' => $this -> permissions,
-                'dob' => $this -> dob,
-                'joinDate' => $this -> joinDate,
+                'permissions' => (int) $this -> permissions,
+                'dob' => (int) $this -> dob,
+                'joinDate' => (int) $this -> joinDate,
                 'username' => $this -> username
             ]
         );

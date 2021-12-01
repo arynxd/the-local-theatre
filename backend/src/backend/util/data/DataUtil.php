@@ -6,7 +6,7 @@ use UnexpectedValueException;
 
 class DataUtil {
     public static function readOrDefault($fileName, $default, ...$headers) {
-        $path = __DIR__ . "/../../data/";
+        $path = __DIR__ . "/../../../data/";
 
         if (file_exists($path . $fileName)) {
             self ::read($fileName, ...$headers);
@@ -23,6 +23,6 @@ class DataUtil {
         foreach ($headers as $header) {
             header($header);
         }
-        readfile(__DIR__ . "/../../data/$fileName");
+        readfile(__DIR__ . "/../../../data/$fileName");
     }
 }
