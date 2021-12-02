@@ -3,7 +3,6 @@
 namespace TLT\Routing\Impl;
 
 
-use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\ShowModel;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;

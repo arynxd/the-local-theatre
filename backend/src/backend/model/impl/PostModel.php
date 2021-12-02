@@ -26,7 +26,7 @@ class PostModel extends Model {
             'author' => $this -> author -> toMap(),
             'content' => $this -> content,
             'title' => $this -> title,
-            'createdAt' => (int) $this -> createdAt
+            'createdAt' => (int)$this -> createdAt
         ]);
     }
 }

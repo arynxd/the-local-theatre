@@ -7,7 +7,7 @@ use TLT\Util\Enum\LogLevel;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\Log\Logger;
 
-Logger::getInstance() -> enableErrors();
+Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
 Logger::getInstance() -> setLevel(LogLevel::INFO);
 Logger::getInstance() -> setIncludeLoc(false);

@@ -3,7 +3,6 @@
 namespace TLT\Util\Data;
 
 use TLT\Util\Log\Logger;
-use UnexpectedValueException;
 
 class JSONLoader {
     private $path;
@@ -17,7 +16,7 @@ class JSONLoader {
     public function load() {
         $json = json_decode(file_get_contents($this -> path), true);
         if (!isset($json)) {
-            Logger::getInstance() -> fatal("Data at " . $this -> path . " was invalid.");
+            Logger ::getInstance() -> fatal("Data at " . $this -> path . " was invalid.");
         }
         $this -> data = Map ::from($json) -> toMapRecursive();
     }

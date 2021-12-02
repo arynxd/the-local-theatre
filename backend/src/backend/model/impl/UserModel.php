@@ -4,6 +4,7 @@ namespace TLT\Model\Impl;
 
 use TLT\Model\Model;
 use TLT\Util\Data\Map;
+use TLT\Util\Enum\Constants;
 
 class UserModel extends Model {
     /**
@@ -64,15 +65,19 @@ class UserModel extends Model {
         );
     }
 
+    public function avatar() {
+        return Constants ::AVATAR_URL_PREFIX() . "?id=" . $this -> id;
+    }
+
     public function toMap() {
         return Map ::from(
             [
                 'id' => $this -> id,
                 'firstName' => $this -> firstName,
                 'lastName' => $this -> lastName,
-                'permissions' => (int) $this -> permissions,
-                'dob' => (int) $this -> dob,
-                'joinDate' => (int) $this -> joinDate,
+                'permissions' => (int)$this -> permissions,
+                'dob' => (int)$this -> dob,
+                'joinDate' => (int)$this -> joinDate,
                 'username' => $this -> username
             ]
         );

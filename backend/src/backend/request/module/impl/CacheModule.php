@@ -5,7 +5,6 @@ namespace TLT\Request\Module\Impl;
 use TLT\Model\Impl\UserModel;
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\Map;
-use TLT\Util\Enum\Constants;
 
 class CacheModule extends BaseModule {
     private $user;
@@ -33,10 +32,7 @@ class CacheModule extends BaseModule {
                   WHERE token = :token";
 
         $selfUser = $this -> sess -> db -> query($query, ['token' => $auth -> token]) -> fetch();
-        $selfUser = Map ::from($selfUser);
-
-        $selfUser['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $selfUser['id'];
-        $model = UserModel ::fromJSON($selfUser);
+        $model = UserModel ::fromJSON(Map ::from($selfUser));
         $this -> user = $model;
         return $model;
     }

@@ -3,7 +3,9 @@
 namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\BaseModule;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\JSONLoader;
+use TLT\Util\Log\Logger;
 
 class ConfigModule extends BaseModule {
 
@@ -41,6 +43,10 @@ class ConfigModule extends BaseModule {
         $loader = new JSONLoader("./config.json");
         $loader -> load();
         $raw = $loader -> data();
+
+        Assertions::assertSet($raw);
+
+        Logger::getInstance() -> info("config.json loaded successfully, settings fields");
 
         $this -> dbEnabled = (boolean)$raw['db_enabled'];
         $this -> dbURL = (string)$raw['db_url'];

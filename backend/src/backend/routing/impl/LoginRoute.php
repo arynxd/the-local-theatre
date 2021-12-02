@@ -14,7 +14,6 @@ use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
-use UnexpectedValueException;
 
 class LoginRoute extends BaseRoute {
     public function __construct() {
@@ -31,8 +30,8 @@ class LoginRoute extends BaseRoute {
         $email = $data['email'];
         $password = $data['password'];
 
-        Assertions::assertSet($email);
-        Assertions::assertSet($password);
+        Assertions ::assertSet($email);
+        Assertions ::assertSet($password);
 
         $accountDetails = $sess -> db -> query("SELECT * FROM credential WHERE email = :email", [
             'email' => $email

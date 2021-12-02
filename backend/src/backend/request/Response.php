@@ -31,8 +31,8 @@ class Response {
      * @return never-return This function never returns
      */
     public function sendJSON($data, ...$headers) {
-        Logger::getInstance() -> info("Sending response..");
-        Logger::getInstance() -> debug("\t$data");
+        Logger ::getInstance() -> info("Sending response..");
+        Logger ::getInstance() -> debug("\t$data");
         if (MapUtil ::is_map($data)) {
             $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
         }
@@ -59,7 +59,7 @@ class Response {
      * @return never-return This function never returns
      */
     public function send($data, ...$headers) {
-        Logger::getInstance() -> debug("Sending output {$data}");
+        Logger ::getInstance() -> debug("Sending output {$data}");
         foreach ($headers as $header) {
             header($header);
         }
@@ -94,7 +94,7 @@ class Response {
      * @return never-return This function never returns
      */
     public function sendError($message, ...$headers) {
-        Logger ::getInstance() -> error("Route returned error => ". $message);
+        Logger ::getInstance() -> error("Route returned error => " . $message);
         $this -> send(json_encode([
             "error" => true,
             "message" => $message

@@ -31,7 +31,7 @@ class CommentRoute extends BaseRoute {
 
         $method = $sess -> http -> method;
         $query = $sess -> queryParams();
-        $body = $sess -> queryParams();
+        $body = $sess -> jsonParams();
 
         if ($method === RequestMethod::GET) {
             if (!isset($query['id'])) {

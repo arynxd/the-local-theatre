@@ -4,7 +4,6 @@ namespace TLT\Util\Data;
 
 use Exception;
 use TLT\Util\Log\Logger;
-use UnexpectedValueException;
 
 class DataUtil {
     public static function readOrDefault($fileName, $default, ...$headers) {
@@ -17,7 +16,7 @@ class DataUtil {
             self ::read($default, ...$headers);
         }
         else {
-            Logger::getInstance() -> fatal("File did not exist at fileName ($fileName) or default ($default)");
+            Logger ::getInstance() -> fatal("File did not exist at fileName ($fileName) or default ($default)");
         }
     }
 
@@ -28,9 +27,9 @@ class DataUtil {
         try {
             readfile(__DIR__ . "/../../../data/$fileName");
         }
-        catch (Exception $ex ) {
-            Logger::getInstance() -> error($ex);
-            Logger::getInstance() -> fatal("Failed to read file $fileName");
+        catch (Exception $ex) {
+            Logger ::getInstance() -> error($ex);
+            Logger ::getInstance() -> fatal("Failed to read file $fileName");
         }
     }
 }

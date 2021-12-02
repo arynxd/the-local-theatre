@@ -12,16 +12,6 @@ use TLT\Util\Enum\LogLevel;
 
 class Logger {
     private static $INSTANCE = null;
-
-    public static function getInstance() {
-        if (!isset(self::$INSTANCE)) {
-            self::$INSTANCE = new Logger();
-        }
-
-        return self::$INSTANCE;
-    }
-
-
     private $level;
     private $includeLoc;
 
@@ -29,6 +19,14 @@ class Logger {
         // Private constructor, this is a singleton object
         $this -> level = LogLevel::WARN;
         $this -> includeLoc = $this -> level <= LogLevel::DEBUG;
+    }
+
+    public static function getInstance() {
+        if (!isset(self::$INSTANCE)) {
+            self::$INSTANCE = new Logger();
+        }
+
+        return self::$INSTANCE;
     }
 
     /**
@@ -53,13 +51,13 @@ class Logger {
     /**
      * Returns the current log file path
      *
+     * @return string
      * @throws AssertionException If the path is not set
      *
-     * @return string
      */
     public function getLogFile() {
         $path = ini_get("error_log");
-        Assertions::assertSet($path);
+        Assertions::assertNotFalse($path);
         return $path;
     }
 
@@ -76,14 +74,26 @@ class Logger {
     /**
      * Enables PHP error reporting
      */
-    public function enableErrors() {
+    public function enablePHPErrors() {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
     }
 
-    private function shouldLog($atLevel) {
-        return $this -> level >= $atLevel;
+    /**
+     * Logs a fatal error, then closes the application
+     *
+     * @param string|Exception $message
+     * @return no-return
+     */
+    public function fatal($message) {
+        if (is_a(Exception::class, $message)) {
+            $message = "An error has occurred " . $message -> getMessage();
+        }
+
+        $this -> doLog(LogLevel::FATAL, "FATAL", "The application has encountered a fatal error..");
+        $this -> doLog(LogLevel::FATAL, "FATAL", $message);
+        (new Response()) -> sendInternalError();
     }
 
     private function doLog($level, $levelString, $message) {
@@ -94,7 +104,9 @@ class Logger {
         $m = "[$levelString] ";
 
         if ($this -> includeLoc) {
-            $stack =  Map::from(
+            // walk the stack to find where the log was called from
+            // walk 2 levels, since doLog is called by this class internally
+            $stack = Map ::from(
                 debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2)
             ) -> toMapRecursive();
 
@@ -103,11 +115,10 @@ class Logger {
             }
 
 
-
             $stack = $stack[1];
 
             $file = join("/", // take the last section of the path
-                ArrayUtil::arraySliceBackward(
+                ArrayUtil ::arraySliceBackward(
                     explode("/", $stack['file']), 3
                 )
             );
@@ -121,16 +132,8 @@ class Logger {
         error_log($m);
     }
 
-    /**
-     * Logs a fatal error, then closes the application
-     *
-     * @param $message
-     * @return no-return
-     */
-    public function fatal($message) {
-        $this -> doLog(LogLevel::FATAL, "FATAL", "The application has encountered a fatal error..");
-        $this -> doLog(LogLevel::FATAL, "FATAL", $message);
-        (new Response()) -> sendInternalError();
+    private function shouldLog($atLevel) {
+        return $this -> level >= $atLevel;
     }
 
     /**

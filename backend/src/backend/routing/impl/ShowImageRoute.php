@@ -3,7 +3,6 @@
 namespace TLT\Routing\Impl;
 
 
-use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\DataUtil;
@@ -28,11 +27,10 @@ class ShowImageRoute extends BaseRoute {
             "shows/show.png",
             ContentType::PNG, CORS::ALL, StatusCode::OK
         );
+        exit; // exit after reading, since the output has been sent
     }
 
     public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(new DatabaseMiddleware());
-
         if (!isset($sess -> queryParams()['id'])) {
             return HttpResult ::BadRequest("No ID provided.");
         }

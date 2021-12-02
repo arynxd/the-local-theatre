@@ -6,7 +6,6 @@ use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Data\Map;
-use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
@@ -27,10 +26,10 @@ class UserListRoute extends BaseRoute {
         }
 
         foreach ($dbRes -> raw() as $arr) {
-            $map = Map ::from($arr);
-            $map['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $arr['id'];
-            $m = UserModel ::fromJSON($map);
-            $out -> push($m -> toMap());
+            // convert to a model to get the right keys & validate
+            $out -> push(
+                UserModel ::fromJSON(Map ::from($arr)) -> toMap()
+            );
         }
 
         $res -> sendJSON($out, StatusCode::OK);

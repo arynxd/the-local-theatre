@@ -39,7 +39,7 @@ class HttpModule extends BaseModule {
      */
     private function handleCors() {
         if ($this -> method == RequestMethod::OPTIONS) {
-            Logger::getInstance() -> info("CORS OPTIONS request received, sending headers and exiting");
+            Logger ::getInstance() -> info("CORS OPTIONS request received, sending headers and exiting");
             header("Access-Control-Allow-Methods: *");
             header("Access-Control-Allow-Headers: *");
             header("Access-Control-Allow-Origin: *");

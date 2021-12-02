@@ -11,10 +11,10 @@ use TLT\Request\Module\Impl\DatabaseModule;
 use TLT\Request\Module\Impl\DataModule;
 use TLT\Request\Module\Impl\HttpModule;
 use TLT\Request\Module\Impl\RoutingModule;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\ParamSource;
 use TLT\Util\Log\Logger;
-use UnexpectedValueException;
 
 /**
  * Central object representing a single connection, a session.
@@ -84,7 +84,7 @@ class Session {
 
 
     public function __construct() {
-        Logger::getInstance() -> info("Loading modules...");
+        Logger ::getInstance() -> info("Loading modules...");
         $this -> res = new Response();
 
         // init modules
@@ -95,7 +95,7 @@ class Session {
         $this -> cache = new CacheModule($this);
         $this -> auth = new AuthModule($this);
         $this -> db = new DatabaseModule($this);
-        Logger::getInstance() -> info("Modules constructed without error, enabling");
+        Logger ::getInstance() -> info("Modules constructed without error, enabling");
 
         $all = [
             $this -> cfg,
@@ -109,15 +109,15 @@ class Session {
 
         foreach ($all as $mod) {
             try {
-                Logger::getInstance() -> debug("\tEnabling module " . get_class($mod));
+                Logger ::getInstance() -> debug("\tEnabling module " . get_class($mod));
                 $mod -> onEnable();
             }
             catch (Exception $ex) {
-                Logger::getInstance() -> error("Module " . get_class($mod) . " encountered an error whilst enabling");
+                Logger ::getInstance() -> error("Module " . get_class($mod) . " encountered an error whilst enabling");
                 $this -> res -> sendInternalError($ex);
             }
         }
-        Logger::getInstance() -> info("Modules loaded");
+        Logger ::getInstance() -> info("Modules loaded");
     }
 
     public function jsonParams() {
@@ -125,23 +125,24 @@ class Session {
     }
 
     private function parseParams($source) {
-        Logger::getInstance() -> info("Parsing params from source " > $source);
+        Logger ::getInstance() -> info("Parsing params from source $source");
         if ($source == ParamSource::QUERY) {
-            Logger::getInstance() -> debug('Query params selected, returning $_GET');
+            Logger ::getInstance() -> debug('Query params selected, returning $_GET');
             return Map ::from($_GET);
         }
         else if ($source == ParamSource::JSON) {
-            Logger::getInstance() -> debug("Attempting JSON parse..");
+            Logger ::getInstance() -> debug("Attempting JSON parse..");
             $raw = file_get_contents('php://input');
+            Assertions::assertNotFalse($raw);
             $result = json_decode($raw, true);
 
             if (!isset($result)) {
-                Logger::getInstance() -> warn("JSON parse failed for input, falling back to empty map");
-                Logger::getInstance() -> warn($raw);
+                Logger ::getInstance() -> warn("JSON parse failed for input, falling back to empty map");
+                Logger ::getInstance() -> warn($raw);
                 return Map ::none();
             }
 
-            Logger::getInstance() -> debug("JSON parse succeeded!");
+            Logger ::getInstance() -> debug("JSON parse succeeded!");
 
             $result = Map ::from($result);
 
@@ -154,7 +155,7 @@ class Session {
 
         }
 
-        Logger::getInstance() -> fatal("Unexpected ParamSource $source");
+        Logger ::getInstance() -> fatal("Unexpected ParamSource $source");
     }
 
     public function queryParams() {
@@ -169,17 +170,17 @@ class Session {
      * @param BaseMiddleware[] $middlewares The middlewares to apply
      */
     public function applyMiddleware(...$middlewares) {
-        Logger::getInstance() -> info("Applying middlewares..");
+        Logger ::getInstance() -> info("Applying middlewares..");
 
         foreach ($middlewares as $middleware) {
             $wareResult = null;
-            Logger::getInstance() -> debug("\tLoading middleware " . get_class($middleware));
+            Logger ::getInstance() -> debug("\tLoading middleware " . get_class($middleware));
 
             try {
                 $wareResult = $middleware -> apply($this);
             }
             catch (Exception $ex) {
-                Logger::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
+                Logger ::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
                 $this -> res -> sendInternalError($ex);
             }
 
@@ -188,6 +189,6 @@ class Session {
             }
         }
 
-        Logger::getInstance() -> info("Middlewares applied without error");
+        Logger ::getInstance() -> info("Middlewares applied without error");
     }
 }

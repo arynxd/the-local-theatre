@@ -7,6 +7,7 @@ use PDOException;
 use PDOStatement;
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Assert\AssertionException;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Log\Logger;
 
 /*
@@ -26,7 +27,7 @@ class DatabaseModule extends BaseModule {
 
     public function onEnable() {
         if (!$this -> sess -> cfg -> dbEnabled) {
-            Logger::getInstance() -> debug("db_enabled false, halting DB connection");
+            Logger ::getInstance() -> debug("db_enabled false, halting DB connection");
             $this -> dbh = null;
             return;
         }
@@ -43,22 +44,22 @@ class DatabaseModule extends BaseModule {
         $username = $cfg -> dbUsername;
         $password = $cfg -> dbPassword;
 
-        Logger::getInstance() -> info("Starting connection to DB..");
+        Logger ::getInstance() -> info("Starting connection to DB..");
 
-        Logger::getInstance() -> debug("\tURL: $url");
-        Logger::getInstance() -> debug("\tUsername: $username");
-        Logger::getInstance() -> debug("\tPassword: $password");
+        Logger ::getInstance() -> debug("\tURL: $url");
+        Logger ::getInstance() -> debug("\tUsername: $username");
+        Logger ::getInstance() -> debug("\tPassword: $password");
 
         try {
             $this -> dbh = new PDO($url, $username, $password, $opts);
         }
         catch (PDOException $ex) {
-            Logger::getInstance() -> error("PDO connection failed");
+            Logger ::getInstance() -> error("PDO connection failed");
             $this -> sess -> res -> sendInternalError($ex);
         }
 
         if ($this -> sess -> cfg -> env !== "PRODUCTION") {
-            Logger::getInstance() -> info("ENV not in prod, initialising tables");
+            Logger ::getInstance() -> info("ENV not in prod, initialising tables");
             $this -> initTables();
         }
     }
@@ -68,8 +69,9 @@ class DatabaseModule extends BaseModule {
     }
 
     private function initTable($fileName) {
-        Logger::getInstance() -> debug("Running SQL from file " . $fileName);
+        Logger ::getInstance() -> debug("Running SQL from file " . $fileName);
         $sql = file_get_contents(__DIR__ . "/../../../sql/" . $fileName);
+        Assertions::assertNotFalse($sql);
         $this -> query($sql, []);
     }
 
@@ -84,12 +86,12 @@ class DatabaseModule extends BaseModule {
      * @return          PDOStatement the statement representing this query
      */
     public function query($sql, $params = []) {
-        Logger::getInstance() -> debug("Running SQL query " . $sql);
+        Logger ::getInstance() -> debug("Running SQL query " . $sql);
         $st = $this -> prepare($sql);
 
         if (!$st) {
-            Logger::getInstance() -> warn("SQL failed to prepare");
-            Logger::getInstance() -> warn("\t$sql");
+            Logger ::getInstance() -> warn("SQL failed to prepare");
+            Logger ::getInstance() -> warn("\t$sql");
             throw new AssertionException("SQL query failed");
         }
 

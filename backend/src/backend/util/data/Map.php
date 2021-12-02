@@ -6,7 +6,6 @@ use ArrayAccess;
 use JsonSerializable;
 use TLT\Util\ArrayUtil;
 use TLT\Util\Log\Logger;
-use ValueError;
 
 /**
  * A wrapper type surrounding PHP's standard associative array.
@@ -145,7 +144,7 @@ class Map implements ArrayAccess, JsonSerializable {
 
     private function throwIfFrozen() {
         if ($this -> frozen) {
-            Logger::getInstance() -> fatal("Attempted to modify frozen map instance");
+            Logger ::getInstance() -> fatal("Attempted to modify frozen map instance");
         }
     }
 
@@ -171,7 +170,7 @@ class Map implements ArrayAccess, JsonSerializable {
         return $this -> frozen;
     }
 
-    public function toJSON() {
+    public function toJSONString() {
         return json_encode($this -> raw());
     }
 
