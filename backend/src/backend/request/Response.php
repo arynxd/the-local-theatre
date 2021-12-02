@@ -59,6 +59,7 @@ class Response {
      * @return never-return This function never returns
      */
     public function send($data, ...$headers) {
+        Logger::getInstance() -> debug("Sending output {$data}");
         foreach ($headers as $header) {
             header($header);
         }
@@ -72,7 +73,7 @@ class Response {
      *
      * This function will kill the program, stopping execution
      *
-     * @param Exception|string $msg The message / exception to print
+     * @param Exception|string $msg The message / exception to log, will not be sent to the client
      * @return never-return This function never returns
      */
     public function sendInternalError($msg = "No message set") {

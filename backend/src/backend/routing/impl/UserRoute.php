@@ -111,10 +111,10 @@ class UserRoute extends BaseRoute {
                 return HttpResult ::BadRequest("No data provided");
             }
 
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
-
-            $validator = new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL, $data, "Invalid data provided");
-            $sess -> applyMiddleware($validator);
+            $sess -> applyMiddleware(
+                new AuthenticationMiddleware(),
+                new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL, $data, "Invalid data provided")
+            );
         }
 
         return HttpResult ::Ok();

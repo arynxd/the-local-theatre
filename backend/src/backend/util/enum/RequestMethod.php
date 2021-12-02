@@ -8,4 +8,5 @@ class RequestMethod {
     const DELETE = 'DELETE';
     const POST = 'POST';
     const PATCH = 'PATCH';
+    const OPTIONS = 'OPTIONS';
 }

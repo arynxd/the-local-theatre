@@ -32,7 +32,6 @@ abstract class BaseRoute {
      *
      * @param Session $sess the current session
      * @param Response $res the response to send data to
-     * @return              null        the return value is ignored
      */
     public abstract function handle($sess, $res);
 

@@ -117,7 +117,7 @@ class Session {
                 $this -> res -> sendInternalError($ex);
             }
         }
-        Logger::getInstance() -> info("Middlewares applied");
+        Logger::getInstance() -> info("Modules loaded");
     }
 
     public function jsonParams() {
@@ -187,5 +187,7 @@ class Session {
                 $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
             }
         }
+
+        Logger::getInstance() -> info("Middlewares applied without error");
     }
 }

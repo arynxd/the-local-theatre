@@ -2,6 +2,8 @@
 
 namespace TLT\Util\Assert;
 
+use TLT\Util\Log\Logger;
+
 class Assertions {
     /**
      * Asserts that $value is non-null
@@ -10,7 +12,7 @@ class Assertions {
      */
     public static function assertSet($value) {
         if (!isset($value)) {
-            throw new AssertionException("Assertion failed, value was not set.");
+            Logger::getInstance() -> fatal("Assertion failed, value was not set.");
         }
     }
 }

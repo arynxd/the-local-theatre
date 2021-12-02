@@ -31,7 +31,6 @@ class RoutingModule extends BaseModule {
 
         if (!$result) {
             $this -> sess -> res -> sendError("Route " . $rawUri . " not found", StatusCode::NOT_FOUND);
-            exit;
         }
 
         return $result;

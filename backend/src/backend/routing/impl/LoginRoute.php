@@ -31,9 +31,8 @@ class LoginRoute extends BaseRoute {
         $email = $data['email'];
         $password = $data['password'];
 
-        if (!isset($email) || !isset($password)) {
-            throw new UnexpectedValueException("Email or password did not exist, validation must have failed");
-        }
+        Assertions::assertSet($email);
+        Assertions::assertSet($password);
 
         $accountDetails = $sess -> db -> query("SELECT * FROM credential WHERE email = :email", [
             'email' => $email

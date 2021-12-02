@@ -4,6 +4,7 @@ namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\Map;
+use TLT\Util\Log\Logger;
 use UnexpectedValueException;
 
 class DataModule extends BaseModule {
@@ -19,7 +20,7 @@ class DataModule extends BaseModule {
 
     private function parseHeaders() {
         if (!function_exists('getallheaders')) {
-            throw new UnexpectedValueException("getallheaders function did not exist? are we actually running under apache??");
+            Logger::getInstance() -> fatal("getallheaders function did not exist? are we actually running under Apache?");
         }
         return Map ::from(getallheaders());
     }

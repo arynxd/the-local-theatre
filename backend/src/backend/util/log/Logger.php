@@ -3,13 +3,14 @@
 namespace TLT\Util\Log;
 
 use Exception;
+use TLT\Request\Response;
+use TLT\Util\ArrayUtil;
+use TLT\Util\Assert\AssertionException;
+use TLT\Util\Assert\Assertions;
+use TLT\Util\Data\Map;
 use TLT\Util\Enum\LogLevel;
 
 class Logger {
-    private function __construct() {
-        // Private constructor, this is a singleton object
-    }
-
     private static $INSTANCE = null;
 
     public static function getInstance() {
@@ -20,7 +21,15 @@ class Logger {
         return self::$INSTANCE;
     }
 
-    private $level = LogLevel::WARN;
+
+    private $level;
+    private $includeLoc;
+
+    private function __construct() {
+        // Private constructor, this is a singleton object
+        $this -> level = LogLevel::WARN;
+        $this -> includeLoc = $this -> level <= LogLevel::DEBUG;
+    }
 
     /**
      * Sets a LogLevel for this logger
@@ -42,6 +51,29 @@ class Logger {
     }
 
     /**
+     * Returns the current log file path
+     *
+     * @throws AssertionException If the path is not set
+     *
+     * @return string
+     */
+    public function getLogFile() {
+        $path = ini_get("error_log");
+        Assertions::assertSet($path);
+        return $path;
+    }
+
+    /**
+     * Whether we should include log call locations in the logs
+     * By default, this will enable when the level is DEBUG, disabled otherwise
+     *
+     * @param bool $includeLoc
+     */
+    public function setIncludeLoc($includeLoc) {
+        $this -> includeLoc = $includeLoc;
+    }
+
+    /**
      * Enables PHP error reporting
      */
     public function enableErrors() {
@@ -55,23 +87,50 @@ class Logger {
     }
 
     private function doLog($level, $levelString, $message) {
-        if (!$this -> shouldLog($level))
+        if (!$this -> shouldLog($level)) {
             return;
+        }
 
-        error_log("[$levelString] :: $message");
+        $m = "[$levelString] ";
+
+        if ($this -> includeLoc) {
+            $stack =  Map::from(
+                debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2)
+            ) -> toMapRecursive();
+
+            if ($stack -> length() < 2) {
+                $this -> error("Could not get location for log output, stack was empty");
+            }
+
+
+
+            $stack = $stack[1];
+
+            $file = join("/", // take the last section of the path
+                ArrayUtil::arraySliceBackward(
+                    explode("/", $stack['file']), 3
+                )
+            );
+
+            $m .= "@ $file {{$stack['line']}} ";
+
+        }
+
+        $m .= ":: $message";
+
+        error_log($m);
     }
 
     /**
      * Logs a fatal error, then closes the application
      *
      * @param $message
-     * @param $exitCode
      * @return no-return
      */
-    public function fatal($message, $exitCode = 1) {
+    public function fatal($message) {
         $this -> doLog(LogLevel::FATAL, "FATAL", "The application has encountered a fatal error..");
         $this -> doLog(LogLevel::FATAL, "FATAL", $message);
-        die($exitCode);
+        (new Response()) -> sendInternalError();
     }
 
     /**

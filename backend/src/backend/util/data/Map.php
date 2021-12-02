@@ -5,6 +5,7 @@ namespace TLT\Util\Data;
 use ArrayAccess;
 use JsonSerializable;
 use TLT\Util\ArrayUtil;
+use TLT\Util\Log\Logger;
 use ValueError;
 
 /**
@@ -33,7 +34,7 @@ class Map implements ArrayAccess, JsonSerializable {
     }
 
     public function raw() {
-        return ArrayUtil ::array_copy($this -> arr);
+        return ArrayUtil ::arrayCopy($this -> arr);
     }
 
     function toAssocRecursive() {
@@ -58,16 +59,16 @@ class Map implements ArrayAccess, JsonSerializable {
             $r = call_user_func($mapper, $key, $value);
 
             if ($r instanceof Map) {
-                return new Map(ArrayUtil ::array_map_assoc($func, $r -> raw()));
+                return new Map(ArrayUtil ::arrayMapAssoc($func, $r -> raw()));
             }
             else if (is_array($r)) {
-                return ArrayUtil ::array_map_assoc($func, $r);
+                return ArrayUtil ::arrayMapAssoc($func, $r);
             }
 
             return $r;
         };
 
-        return new Map(ArrayUtil ::array_map_assoc($func, $this -> arr));
+        return new Map(ArrayUtil ::arrayMapAssoc($func, $this -> arr));
     }
 
     function toMapRecursive() {
@@ -144,7 +145,7 @@ class Map implements ArrayAccess, JsonSerializable {
 
     private function throwIfFrozen() {
         if ($this -> frozen) {
-            throw new ValueError('Map is frozen and cannot be modified');
+            Logger::getInstance() -> fatal("Attempted to modify frozen map instance");
         }
     }
 

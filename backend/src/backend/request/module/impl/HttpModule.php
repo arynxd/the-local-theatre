@@ -4,6 +4,8 @@ namespace TLT\Request\Module\Impl;
 
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Enum\Constants;
+use TLT\Util\Enum\RequestMethod;
+use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
 
 class HttpModule extends BaseModule {
@@ -26,8 +28,8 @@ class HttpModule extends BaseModule {
     public $method;
 
     public function onEnable() {
-        $this -> handleCors();
         $this -> method = $_SERVER["REQUEST_METHOD"];
+        $this -> handleCors();
         $this -> rawUri = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $this -> uri = $this -> parseURI();
     }
@@ -36,11 +38,12 @@ class HttpModule extends BaseModule {
      * Handle CORS OPTIONS request and respond appropriately
      */
     private function handleCors() {
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        if ($this -> method == RequestMethod::OPTIONS) {
+            Logger::getInstance() -> info("CORS OPTIONS request received, sending headers and exiting");
             header("Access-Control-Allow-Methods: *");
             header("Access-Control-Allow-Headers: *");
             header("Access-Control-Allow-Origin: *");
-            exit(0);
+            die(0);
         }
     }
 

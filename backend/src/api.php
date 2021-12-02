@@ -8,15 +8,17 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enableErrors();
-Logger::getInstance() -> setLogFile("/tmp/php_log.log");
+Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
 Logger::getInstance() -> setLevel(LogLevel::INFO);
+Logger::getInstance() -> setIncludeLoc(false);
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
 Logger::getInstance() -> info("");
 Logger::getInstance() -> info("Incoming request from user agent " . $agent);
 Logger::getInstance() -> info("Starting new session...");
 
-$sess =null;
+$sess = null;
+
 try {
     $sess =  new Session();
 }
@@ -32,6 +34,7 @@ Logger::getInstance() -> info("Session enabled without error");
 $route = $sess -> routing -> route;
 
 if (!$route -> validateMethod($sess)) {
+    Logger::getInstance() -> error("Attempted to use unsupported method {$sess -> http -> method} on route {$route -> path}");
     $sess -> res -> sendError("Unsupported method " . $sess -> http -> method, StatusCode::BAD_REQUEST);
 }
 
