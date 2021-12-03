@@ -19,8 +19,7 @@ async function getPost(backend: ManagerController): Promise<Post[]> {
     if (posts) {
         logger.debug('Received valid post ' + JSON.stringify(posts))
         return posts.slice(0, HOME_PAGE_POST_COUNT)
-    }
-    else {
+    } else {
         logger.debug('No posts received')
         throw new TypeError('No posts received')
     }
@@ -33,18 +32,19 @@ interface ActivityProps {
     backend: ManagerController
     linkTo: string
 }
+
 function PostPlaceholders() {
     return createPlaceholders((i) =>
-            <div key={i}
-                 className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-                <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+        <div key={i}
+             className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+            <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
 
-                <div className='w-full h-full animate-pulse'>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                    <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                </div>
+            <div className='w-full h-full animate-pulse'>
+                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
             </div>
-        )
+        </div>
+    )
 }
 
 
@@ -95,14 +95,19 @@ function LatestShows() {
         const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))
 
         return (
-            <div
-                className='w-auto h-auto bg-gray-200 dark:bg-gray-500 m-2 p-4 shadow-xl rounded-xl flex flex-col place-items-center
-                transition duration-300 ease-in-out transform  hover:scale-105'>
-                <img className='h-2/3 w-1/3 pb-4' src={img}
+            <figure
+                className='w-full h-full bg-gray-200 dark:bg-gray-500 p-4 shadow-xl rounded-xl flex flex-col place-items-center
+                transition duration-300 ease-in-out transform  hover:scale-105 tabbable'>
+                <img className='h-2/3 w-1/3 pb-4 flex-grow' src={img}
                      alt={`Advertisement of ${showProps.model.title}`}/>
+
                 <Separator className='pt-4 w-2/3'/>
-                <h1 className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</h1>
-            </div>
+                <figcaption
+                    className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</figcaption>
+                <p className='text-gray-500 text-sm'>Showing on
+                    <time> {showProps.model.showDate}</time>
+                </p>
+            </figure>
         )
     };
 
@@ -158,23 +163,27 @@ export default function Home() {
             <div
                 className='w-auto md:w-2/5 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
                 {/* Recent activity pane  */}
-                <h1 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h1>
-                <Separator/>
+                <section>
+                    <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h2>
+                    <Separator/>
 
-                <ul className='grid grid-cols-1 grid-flow-row auto-rows-max items-baseline'>
-                    <RecentActivity/>
-                </ul>
+                    <ul className='grid grid-cols-1 grid-flow-row auto-rows-max items-baseline'>
+                        <RecentActivity/>
+                    </ul>
+                </section>
             </div>
 
             <div
                 className='w-auto md:w-2/3 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
                 {/* Latest shows pane  */}
-                <h1 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h1>
-                <Separator/>
+                <section>
+                    <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h2>
+                    <Separator/>
 
-                <ul className='grid grid-cols-1 grid-flow-row auto-rows-max lg:grid-cols-2 items-baseline'>
-                    <LatestShows/>
-                </ul>
+                    <ul className='grid grid-cols-1 gap-4 p-4 grid-flow-row auto-rows-max md:grid-cols-2 items-center'>
+                        <LatestShows/>
+                    </ul>
+                </section>
             </div>
         </div>
     )
