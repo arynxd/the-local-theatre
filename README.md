@@ -50,6 +50,7 @@
 - CAPTCHA integration
 - Ratelimiting
 - 2FA
+- Intelligent autoloader for namespaces
 
 ## Useful Resources
 
