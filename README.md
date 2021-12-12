@@ -24,6 +24,7 @@
 - [x] .editorconfig
 - [x] Implement database integration in backend
 - [x] Make loglevel a proper enum (static final instances)
+- [x] Upgrade tailwind to v3
 - [ ] Change CORS policy in backend
 - [ ] Make comments a separate page (so that users can click back to go back to the post)
 - [ ] Add docs to backend
@@ -34,7 +35,6 @@
 - [ ] Change inline buttons to blue
 - [ ] Change frontend assertions to use TS 'asserts' keyword
 - [ ] Change backend assertions docs to describe types
-- [ ] Upgrade tailwind to v3
 - [ ] Create insert SQL scripts
 
 ## Feature List 
