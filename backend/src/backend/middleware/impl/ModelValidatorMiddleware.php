@@ -12,9 +12,9 @@ class ModelValidatorMiddleware extends BaseMiddleware {
     private $err;
 
     /**
-     * @param $required array The required keys
-     * @param $data Map The input data
-     * @param $err string The error string
+     * @param string[] $required The required keys
+     * @param Map $data The input data
+     * @param string $err The error string
      */
     public function __construct($required, $data, $err) {
         $this -> required = $required;

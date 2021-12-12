@@ -46,7 +46,7 @@ class ConfigModule extends BaseModule {
 
         Assertions::assertSet($raw);
 
-        Logger::getInstance() -> info("config.json loaded successfully, settings fields");
+        Logger::getInstance() -> info("config.json loaded successfully, setting fields");
 
         $this -> dbEnabled = (boolean)$raw['db_enabled'];
         $this -> dbURL = (string)$raw['db_url'];

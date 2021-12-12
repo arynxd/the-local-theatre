@@ -1,4 +1,5 @@
 <?php
+// we must require the autoloader since namespace file resolution is dictated by it
 require_once 'autoloader.php';
 
 use TLT\Request\Response;
@@ -38,6 +39,7 @@ if (!$route -> validateMethod($sess)) {
     $sess -> res -> sendError("Unsupported method " . $sess -> http -> method, StatusCode::BAD_REQUEST);
 }
 
+Logger ::getInstance() -> info("Validating route " . $route -> path);
 $routeResult = $route -> validateRequest($sess, $sess -> res);
 
 if ($routeResult -> isError()) {

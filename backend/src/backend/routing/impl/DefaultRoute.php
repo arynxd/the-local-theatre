@@ -7,6 +7,7 @@ use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\Log\Logger;
 
 class DefaultRoute extends BaseRoute {
     public function __construct() {
@@ -15,7 +16,8 @@ class DefaultRoute extends BaseRoute {
 
     public function handle($sess, $res) {
         $res -> sendJSON(Map ::from([
-            "ok" => true
+            "ok" => true,
+            "log_path" => Logger ::getInstance() -> getLogFile()
         ]), StatusCode::OK);
     }
 

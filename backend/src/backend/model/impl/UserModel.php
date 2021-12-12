@@ -25,7 +25,7 @@ class UserModel extends Model {
      */
     public $permissions;
     /**
-     * @var
+     * @var int $permissions
      */
     public $dob;
     /**

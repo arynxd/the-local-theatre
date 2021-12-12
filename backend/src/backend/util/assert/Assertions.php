@@ -12,6 +12,7 @@ class Assertions {
         if (!isset($value)) {
             Logger ::getInstance() -> fatal(new AssertionException("Assertion failed, value was not set."));
         }
+        return $value;
     }
 
      /**
@@ -21,5 +22,6 @@ class Assertions {
         if (!$value) {
             Logger::getInstance() -> fatal(new AssertionException("Assertion failed, value was falsy"));
         }
+        return $value;
     }
 }

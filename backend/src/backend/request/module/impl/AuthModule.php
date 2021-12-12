@@ -19,8 +19,8 @@ class AuthModule extends BaseModule {
     public function onEnable() {
         $this -> token = $this -> sess -> data -> headers['Authorisation'];
 
-        if (!isset($this -> token)) {
-            Logger ::getInstance() -> info("Authorisation header was not set, this request will be treated as UNAUTHENTICATED..");
+        if (!isset($this -> token) || !$this -> sess -> db -> isEnabled()) {
+            Logger ::getInstance() -> info("Authorisation header was not set or the DB was not enabled, this request will be treated as UNAUTHENTICATED..");
             $this -> isAuthenticated = false;
         }
     }
@@ -30,7 +30,6 @@ class AuthModule extends BaseModule {
             Logger ::getInstance() -> debug("Short circuiting isAuthenticated with value {$this -> isAuthenticated}");
             return $this -> isAuthenticated;
         }
-
 
         Logger ::getInstance() -> debug("Token is set, looking up from the DB");
 

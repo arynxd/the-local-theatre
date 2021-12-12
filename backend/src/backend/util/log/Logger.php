@@ -21,6 +21,11 @@ class Logger {
         $this -> includeLoc = $this -> level <= LogLevel::DEBUG;
     }
 
+    /**
+     * Gets the current logger instance
+     * 
+     * @return Logger The logger instance
+     */
     public static function getInstance() {
         if (!isset(self::$INSTANCE)) {
             self::$INSTANCE = new Logger();
@@ -81,7 +86,7 @@ class Logger {
     }
 
     /**
-     * Logs a fatal error, then closes the application
+     * Logs a fatal error, then close the application
      *
      * @param string|Exception $message
      * @return no-return
@@ -91,17 +96,18 @@ class Logger {
             $message = "An error has occurred " . $message -> getMessage();
         }
 
-        $this -> doLog(LogLevel::FATAL, "FATAL", "The application has encountered a fatal error..");
-        $this -> doLog(LogLevel::FATAL, "FATAL", $message);
+        $this -> doLog(LogLevel::FATAL, "The application has encountered a fatal error..");
+        $this -> doLog(LogLevel::FATAL, $message);
         (new Response()) -> sendInternalError();
     }
 
-    private function doLog($level, $levelString, $message) {
+    private function doLog($level, $message) {
         if (!$this -> shouldLog($level)) {
             return;
         }
 
-        $m = "[$levelString] ";
+        $displayString = LogLevel::asDisplay($level);
+        $m = "[$displayString] ";
 
         if ($this -> includeLoc) {
             // walk the stack to find where the log was called from
@@ -145,7 +151,7 @@ class Logger {
         if (is_a(Exception::class, $message)) {
             $message = "An error has occurred " . $message -> getMessage();
         }
-        $this -> doLog(LogLevel::ERROR, "ERROR", $message);
+        $this -> doLog(LogLevel::ERROR, $message);
     }
 
     /**
@@ -154,7 +160,7 @@ class Logger {
      * @param string $message
      */
     public function warn($message) {
-        $this -> doLog(LogLevel::WARN, "WARN", $message);
+        $this -> doLog(LogLevel::WARN, $message);
     }
 
     /**
@@ -163,7 +169,7 @@ class Logger {
      * @param string $message
      */
     public function info($message) {
-        $this -> doLog(LogLevel::INFO, "INFO", $message);
+        $this -> doLog(LogLevel::INFO, $message);
     }
 
     /**
@@ -172,6 +178,6 @@ class Logger {
      * @param string $message
      */
     public function debug($message) {
-        $this -> doLog(LogLevel::DEBUG, "DEBUG", $message);
+        $this -> doLog(LogLevel::DEBUG, $message);
     }
 }
