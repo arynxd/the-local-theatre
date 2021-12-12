@@ -35,6 +35,7 @@
 - [ ] Change backend assertions docs to describe types
 - [ ] Upgrade tailwind to v3
 - [ ] Create insert SQL scripts
+- [ ] Make loglevel a proper enum (static final instances)
 
 ## Feature List 
 - [x] Login
