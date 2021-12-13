@@ -1,16 +1,16 @@
-import {logger} from "../../util/log";
-import {Post} from "../../model/Post";
-import {useAPI} from "../../backend/hook/useAPI";
-import {Link} from "react-router-dom";
+import { logger } from "../../util/log";
+import { Post } from "../../model/Post";
+import { useAPI } from "../../backend/hook/useAPI";
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import Separator from "../../component/Separator";
-import {toDate} from "../../util/time";
-import {User} from "../../model/User";
-import {Show} from "../../model/Show";
-import {ManagerController} from "../../backend/manager/ManagerController";
-import {getBackend} from "../../backend/global-scope/util/getters";
-import {toURL} from "../../backend/request/mappers";
-import {createPlaceholders} from "../../util/tsx";
+import { toDate } from "../../util/time";
+import { User } from "../../model/User";
+import { Show } from "../../model/Show";
+import { ManagerController } from "../../backend/manager/ManagerController";
+import { getBackend } from "../../backend/global-scope/util/getters";
+import { toURL } from "../../backend/request/mappers";
+import { createPlaceholders } from "../../util/tsx";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -36,12 +36,12 @@ interface ActivityProps {
 function PostPlaceholders() {
     return createPlaceholders((i) =>
         <div key={i}
-             className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
-            <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+            className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+            <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
 
             <div className='w-full h-full animate-pulse'>
-                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
-                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded'/>
+                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
+                <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
             </div>
         </div>
     )
@@ -61,7 +61,7 @@ function Activity(props: ActivityProps) {
             hour: 'numeric',
             minute: 'numeric'
         })
-        }
+            }
     `
     }
 
@@ -71,13 +71,13 @@ function Activity(props: ActivityProps) {
                 className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
                 {!avatar ?
                     // avatar hasn't loaded yet
-                    <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded'/> :
+                    <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded' /> :
                     // avatar has loaded, display it
-                    <img className='w-12 h-12 m-2 ml-5' src={avatar} alt="User avatar"/>
+                    <img className='w-12 h-12 m-2 ml-5' src={avatar} alt="User avatar" />
                 }
                 <div className={activityElementStyles}>
                     {props.message}
-                    <br/>
+                    <br />
                     <p className='text-sm text-gray-500 dark:text-gray-300'>{formatDate(props.timeCreated)}</p>
                 </div>
             </div>
@@ -87,21 +87,33 @@ function Activity(props: ActivityProps) {
 }
 
 function LatestShows() {
-    //TODO have shows display the date they happen on
     const backend = getBackend()
     const shows = useAPI(() => backend.http.loadShows())
 
     const ShowElement = (showProps: { model: Show }) => {
-        const img = useAPI(() => backend.http.loadShowImage(showProps.model).map(toURL))
+        const [isError, setIsError] = useState(false)
+
+        const img = useAPI(
+            () => backend.http.loadShowImage(showProps.model).map(toURL),
+            () => setIsError(true)
+        )
+
+        if (isError) {
+            return (
+                <p>Error</p>
+            )
+        }
+
+
 
         return (
             <figure
                 className='w-full h-full bg-gray-200 dark:bg-gray-500 p-4 shadow-xl rounded-xl flex flex-col place-items-center
                 transition duration-300 ease-in-out transform  hover:scale-105 tabbable'>
                 <img className='h-2/3 w-1/3 pb-4 flex-grow' src={img}
-                     alt={`Advertisement of ${showProps.model.title}`}/>
+                    alt={`Advertisement of ${showProps.model.title}`} />
 
-                <Separator className='pt-4 w-2/3'/>
+                <Separator className='pt-4 w-2/3' />
                 <figcaption
                     className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</figcaption>
                 <p className='text-gray-500 text-sm'>Showing on
@@ -113,7 +125,7 @@ function LatestShows() {
 
     return (
         <>{
-            shows ? shows.map(show => <ShowElement key={show.id} model={show}/>)
+            shows ? shows.map(show => <ShowElement key={show.id} model={show} />)
                 : PostPlaceholders()
         }</>
     )
@@ -166,16 +178,16 @@ export default function Home() {
     logger.debug('Rendering home page')
 
     return (
-        <div className='md:flex flex-col md:flex-row w-auto max-h-screen'>
+        <div className='md:flex flex-col md:flex-row w-auto'>
             <div
                 className='w-auto md:w-2/5 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
                 {/* Recent activity pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h2>
-                    <Separator/>
+                    <Separator />
 
                     <ul className='grid grid-cols-1 grid-flow-row auto-rows-max items-baseline'>
-                        <RecentActivity/>
+                        <RecentActivity />
                     </ul>
                 </section>
             </div>
@@ -185,10 +197,10 @@ export default function Home() {
                 {/* Latest shows pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h2>
-                    <Separator/>
+                    <Separator />
 
                     <ul className='grid grid-cols-1 gap-4 p-4 grid-flow-row auto-rows-max md:grid-cols-2 items-center'>
-                        <LatestShows/>
+                        <LatestShows />
                     </ul>
                 </section>
             </div>
