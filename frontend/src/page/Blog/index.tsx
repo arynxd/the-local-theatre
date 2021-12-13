@@ -14,7 +14,7 @@ function CreatePostView(props: CreatePostProps) {
     const [content, setContent] = useState<string>()
 
     const handleSubmitClick = () => {
-        //TODO send post to backend
+        //TODO: send post to backend
         props.done()
     }
 
@@ -42,7 +42,7 @@ function CreatePostView(props: CreatePostProps) {
     )
 }
 
-type BlogState = 'view_posts' | 'create_post' | 'submitting_post'
+type BlogState = 'view_posts' | 'create_post' | 'submitting_post' | "error"
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
@@ -58,8 +58,16 @@ export default function Blog() {
             </div>
         )
 
-    const posts = useAPI(() => getBackend().http.listPosts())
+    const posts = useAPI(() => getBackend().http.listPosts(), () => setState('error'))
 
+    if (state === 'error') {
+        //TODO: proper error page here
+        return (
+            <p>Error</p>
+        )
+    }
+
+    
     if (!posts) {
         return (
             <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
@@ -87,7 +95,7 @@ export default function Blog() {
                     ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
                         posts.map(post => <Post post={post}/>)
                     }</div>
-                    //TODO make this a proper GUI element
+                    //TODO: make this a proper GUI element
                     : <p className='absolute'>No posties :(</p>
                 }
             </div>

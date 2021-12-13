@@ -103,8 +103,8 @@ class Session {
             $this -> routing,
             $this -> data,
             $this -> cache,
-            $this -> auth,
-            $this -> db
+            $this -> db,
+            $this -> auth
         ];
 
         foreach ($all as $mod) {

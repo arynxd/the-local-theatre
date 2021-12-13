@@ -37,7 +37,7 @@ export class AuthContext extends Context {
         }
         this.observeAuth$$ = new BehaviorSubject<AuthState>(currentState)
 
-        //FIXME remove this hack lol
+        //FIXME: remove this hack lol
         setTimeout(() => {
             if (this.isAuthenticated()) {
                 this.loadSelfUser()
@@ -104,7 +104,7 @@ export class AuthContext extends Context {
             }
         )
 
-        // TODO handle error cases when signing up
+        // TODO: handle error cases when signing up
         const tok = await BackendAction.new(route)
             .flatMap(toJSON)
             .map(res => res.token)
@@ -113,6 +113,7 @@ export class AuthContext extends Context {
         this._token = tok
         localStorage[AUTH_KEY] = tok
         this.observeAuth$$.next('authenticated')
+        this.loadSelfUser()
         return 'success'
     }
 

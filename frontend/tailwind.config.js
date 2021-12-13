@@ -1,4 +1,5 @@
 module.exports = {  
+  darkMode: 'class',
   content: [
     "./src/**/*.{ts,tsx}",
   ],  
@@ -6,4 +7,11 @@ module.exports = {
     extend: {},
   },  
   plugins: [],
+  variants: {
+    extend: {
+        display: ['group-hover'],
+        position: ['group-hover'],
+        visibility: ['group-hover'],
+    },
+  },
 }

@@ -1,6 +1,7 @@
 import {logger} from "../../util/log";
 import BackendError from "../error/BackendError";
 import usePromise from "react-use-promise";
+import { useState } from "react";
 
 /**
  * A React hook for making API requests
@@ -14,12 +15,15 @@ import usePromise from "react-use-promise";
  */
 export function useAPI<T>(
     action: () => Promise<T>,
-    deps: unknown[] = [],
-    errorHandler: (err: BackendError) => void = logger.error
+    errorHandler: (err: BackendError) => void = logger.error,
+    deps: unknown[] = []
 ): T | undefined {
-    const [res, err, ,] = usePromise(action, deps)
+    const [res, err] = usePromise(action, deps)
+    // make sure we only fire the error handler once
+    const [isErrorFired, setErrorFired] = useState(false)
 
-    if (err) {
+    if (err && !isErrorFired) {
+        setErrorFired(true)
         errorHandler(err)
     }
     return res

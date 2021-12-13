@@ -16,10 +16,10 @@ function ProfileMenu() {
 
     const selfUser = useSelfUser()
 
-    //TODO have a placeholder here
+    //TODO: have a placeholder here
     if (!selfUser) {
         return (
-            <> </>
+            <></>
         )
     }
 
@@ -28,7 +28,7 @@ function ProfileMenu() {
         ${isOpen ? 'absolute' : 'hidden'} 
    `
 
-    //TODO finish this menu & have it integrate with the API
+    //TODO: finish this menu & have it integrate with the API
     return (
         <>
             <button onClick={() => setOpen(!isOpen)}
@@ -165,7 +165,7 @@ export default function Navbar() {
                             <div className="ml-3 relative">
                                 {authState === 'authenticated'
                                     ? <ProfileMenu/>
-                                    : <> </>
+                                    : <></>
                                 }
                             </div>
                         </div>

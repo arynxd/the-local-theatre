@@ -3,6 +3,7 @@
 namespace TLT\Util\Data;
 
 use Exception;
+use TLT\Util\HttpUtils;
 use TLT\Util\Log\Logger;
 
 class DataUtil {
@@ -21,9 +22,7 @@ class DataUtil {
     }
 
     public static function read($fileName, ...$headers) {
-        foreach ($headers as $header) {
-            header($header);
-        }
+        HttpUtils::applyHeaders($headers);
         try {
             readfile(__DIR__ . "/../../../data/$fileName");
         }

@@ -10,7 +10,7 @@ use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
-Logger::getInstance() -> setLevel(LogLevel::INFO);
+Logger::getInstance() -> setLevel(LogLevel::ERROR);
 Logger::getInstance() -> setIncludeLoc(false);
 
 $agent = $_SERVER['HTTP_USER_AGENT'];

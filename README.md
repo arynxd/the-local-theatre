@@ -36,6 +36,9 @@
 - [ ] Change frontend assertions to use TS 'asserts' keyword
 - [ ] Change backend assertions docs to describe types
 - [ ] Create insert SQL scripts
+- [ ] Handle backend errors in frontend components
+- [ ] Proper error codes for backend error responses
+- [ ] Make home page stay above of footer
 
 ## Feature List 
 - [x] Login
@@ -48,6 +51,7 @@
 - [x] User promotion
 - [x] User demotion
 - [ ] Moderation log
+- [ ] Footer
 
 ## Ideas
 

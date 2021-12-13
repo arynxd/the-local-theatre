@@ -27,7 +27,14 @@ class AuthModule extends BaseModule {
 
     public function isAuthenticated() {
         if (isset($this -> isAuthenticated)) {
-            Logger ::getInstance() -> debug("Short circuiting isAuthenticated with value {$this -> isAuthenticated}");
+            Logger ::getInstance() -> debug("Short circuiting isAuthenticated with value");
+            if ($this -> isAuthenticated) {
+                Logger ::getInstance() -> debug("\t true");
+            }
+            else {
+                Logger ::getInstance() -> debug("\t false");
+            }
+            
             return $this -> isAuthenticated;
         }
 

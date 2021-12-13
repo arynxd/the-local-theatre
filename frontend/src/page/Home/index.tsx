@@ -2,7 +2,7 @@ import {logger} from "../../util/log";
 import {Post} from "../../model/Post";
 import {useAPI} from "../../backend/hook/useAPI";
 import {Link} from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import Separator from "../../component/Separator";
 import {toDate} from "../../util/time";
 import {User} from "../../model/User";
@@ -120,15 +120,22 @@ function LatestShows() {
 }
 
 function RecentActivity() {
+    const [isError, setIsError] = useState(false)
     const backend = getBackend()
-    const posts = useAPI(() => getPost(backend))
+    const posts = useAPI(() => getPost(backend), () => setIsError(true))
 
+    if (isError) {
+        //TODO: proper GUI element
+        return (
+            <p>Error</p>
+        )
+    }
     if (!posts) {
         return <>{PostPlaceholders()}</>
     }
 
     if (!posts.length) {
-        //TODO make this gooder
+        //TODO: proper GUI element
         return (
             <p>No posties :(</p>
         )

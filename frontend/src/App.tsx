@@ -14,11 +14,6 @@ import {Paths} from "./util/paths";
 import UserSettings from "./page/UserSettings";
 import Moderation from "./page/Moderation";
 
-/**
- * This is the main app function, it will spawn all the components required for the app to function
- *
- * @returns JSX.Element The app
- */
 export default function App() {
     logger.debug('Starting application')
     logger.debug('Base URL is ' + getPrefix())

@@ -26,6 +26,7 @@ class AvatarRoute extends BaseRoute {
             "avatars/avatar.png",
             ContentType::PNG, CORS::ALL, StatusCode::OK
         );
+        exit;
     }
 
     public function validateRequest($sess, $res) {

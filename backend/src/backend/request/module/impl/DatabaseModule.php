@@ -11,8 +11,6 @@ use TLT\Util\Assert\Assertions;
 use TLT\Util\Log\Logger;
 
 /*
-* This connection will persist through runs of script.
-*
 * This class implements the following options for the connection:
 *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 *  PDO::ATTR_PERSISTENT => true,
