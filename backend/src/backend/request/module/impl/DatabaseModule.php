@@ -75,12 +75,10 @@ class DatabaseModule extends BaseModule {
 
     /**
      * Performs the given $sql query using the $params.
-     * This function will attempt to execute the query, returning false if that fails.
-     * If this function returns a non-false value,
-     *  the query was successful and all data can be accessed without checks
+     * This function will attempt to execute the query.
      *
-     * @param $sql      string   the sql string
-     * @param $params   array    associative array of params to prepare
+     * @param string    $sql         the sql string
+     * @param string[]  $params       associative array of params to prepare
      * @return          PDOStatement the statement representing this query
      */
     public function query($sql, $params = []) {
@@ -88,12 +86,16 @@ class DatabaseModule extends BaseModule {
         $st = $this -> prepare($sql);
 
         if (!$st) {
-            Logger ::getInstance() -> warn("SQL failed to prepare");
-            Logger ::getInstance() -> warn("\t$sql");
-            throw new AssertionException("SQL query failed");
+            Logger ::getInstance() -> error("SQL failed to prepare");
+            Logger ::getInstance() -> error("\t$sql");
+            $this -> sess -> res -> sendInternalError();
         }
 
-        $st -> execute($params);
+        if (!$st -> execute($params)) {
+            Logger ::getInstance() -> error("SQL query failed to execute");
+            Logger ::getInstance() -> error("\t$sql");
+            $this -> sess -> res -> sendInternalError();
+        }
 
         return $st;
     }

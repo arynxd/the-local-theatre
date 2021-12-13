@@ -44,4 +44,18 @@ class CommentModel extends Model {
             'editedAt' => $this -> editedAt
         ]);
     }
+
+    /**
+     * @param Map $data
+     */
+    public static function fromJSON($data) {
+        return new CommentModel(
+            $data['id'],
+            $data['authorId'],
+            $data['postId'],
+            $data['content'],
+            $data['createdAt'],
+            $data['editedAt']
+        );
+    }
 }

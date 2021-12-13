@@ -5,32 +5,56 @@
 
 namespace TLT\Routing\Impl;
 
+use StatusCode;
 use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Middleware\Impl\DatabaseMiddleware;
+use TLT\Model\Impl\CommentModel;
+use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\AssertionException;
 use TLT\Util\Assert\Assertions;
+use TLT\Util\Data\Map;
 use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\HttpResult;
 use TLT\Util\Log\Logger;
 
-class CommentRoute extends BaseRoute
-{
-    public function __construct()
-    {
+class CommentRoute extends BaseRoute {
+    public function __construct() {
         parent::__construct("comment", [RequestMethod::GET, RequestMethod::POST, RequestMethod::DELETE]);
     }
 
-    public function handle($sess, $res)
-    {
-        $commentId = $sess->queryParams()['id'];
-        Assertions::assertSet($commentId);
+    /**
+     * @param string $id
+     * @param Session $sess
+     * @return CommentModel|null
+     */
+    private function getById($id, $sess) {
+        $st = $sess -> db -> query("SELECT * FROM comment WHERE id = :id", ['id' => $id]);
+        $res = Map ::from($st -> fetchAll());
 
+        if ($res -> length() == 0) {
+            return null;
+        }
+
+        return CommentModel ::fromJSON($res);
+    }
+    
+    public function handle($sess, $res) {
         $method = $sess -> http -> method;
 
         if ($method == RequestMethod::GET) {
-            // return by id commentId
+            $commentId = $sess -> queryParams()['id'];
+            Assertions ::assertSet($commentId);
+
+            $model = $this -> getById($commentId, $sess);
+
+            if (!isset($model)) {
+                $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+            }
+            else {
+                $res -> sendJSON($model -> toMap(), StatusCode::OK);
+            }
         } 
         else if ($method == RequestMethod::POST) {
             // assert authenticated
@@ -45,6 +69,7 @@ class CommentRoute extends BaseRoute
         else {
             Logger ::getInstance() -> fatal("Unexpected RequestMethod $method");
         }
+        $res -> sendJSON(Map::from(['ok' => true]));
     }
 
     public function validateRequest($sess, $res)
