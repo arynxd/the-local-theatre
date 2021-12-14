@@ -18,10 +18,15 @@ class Assertions {
      /**
      * Asserts that $value is not falsy
      * @param mixed $value
+     * @param string|null an error message
      */
-    public static function assertNotFalse($value) {
+    public static function assertNotFalse($value,$message = null) {
         if (!$value) {
-            Logger::getInstance() -> fatal(new AssertionException("Assertion failed, value was falsy"));
+            $m = "Assertion failed, value was falsy";
+            if (isset($message)) {
+                $m .= $message;
+            }
+            Logger::getInstance() -> fatal(new AssertionException($m));
         }
         return $value;
     }

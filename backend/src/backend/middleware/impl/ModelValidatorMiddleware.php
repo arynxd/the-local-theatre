@@ -22,7 +22,7 @@ class ModelValidatorMiddleware extends BaseMiddleware {
         $this -> err = $err;
     }
 
-    //TODO have this take a Map<string, function> and perform extra validation
+    //TODO: have this take a Map<string, function> and perform extra validation
     public function apply($sess) {
         foreach ($this -> required as $key) {
             if (!$this -> data -> exists($key)) {

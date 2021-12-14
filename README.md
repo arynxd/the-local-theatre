@@ -26,6 +26,8 @@
 - [x] Make loglevel a proper enum (static final instances)
 - [x] Upgrade tailwind to v3
 - [x] Make home page stay above of footer
+- [x] Add interface to frontend logger
+- [x] Make home page stay above of footer
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
@@ -33,13 +35,12 @@
 - [ ] Perm checks for restricted pages
 - [ ] Change inline buttons to blue
 - [ ] Change frontend assertions to use TS 'asserts' keyword
-- [ ] Change backend assertions docs to describe types
 - [ ] Create insert SQL scripts
 - [ ] Handle backend errors in frontend components
 - [ ] Proper error codes for backend error responses
 - [ ] Cache param sources in backend for perf
-- [ ] Make home page stay above of footer
-- [ ] Add interface to frontend logger
+- [ ] Load user prefs from the backend on launch, submit pref changes to the backend
+- [ ] Frontend caching
 
 ## Feature List 
 - [x] Login

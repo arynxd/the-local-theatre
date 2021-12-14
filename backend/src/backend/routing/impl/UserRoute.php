@@ -26,8 +26,7 @@ class UserRoute extends BaseRoute {
         if ($method == RequestMethod::GET) {
             $res -> sendJSON($this -> getUserById($sess, $res, $sess -> queryParams()['id']) -> toMap());
         }
-
-        if ($method == RequestMethod::POST) {
+        else if ($method == RequestMethod::POST) {
             $data = $sess -> jsonParams();
 
             $selfUser = $sess -> cache -> user();

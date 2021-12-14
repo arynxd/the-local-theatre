@@ -24,13 +24,8 @@ class SignupRoute extends BaseRoute {
 
     public function handle($sess, $res) {
         $data = $sess -> jsonParams()['data'];
-
         Assertions ::assertSet($data);
-
-        foreach (ModelKeys::SIGNUP_MODEL as $key) {
-            Assertions ::assertSet($data[$key]);
-        }
-
+        
         $userHasAccount = $this -> userHasAccount($sess, $data['email']);
 
         if ($userHasAccount) {

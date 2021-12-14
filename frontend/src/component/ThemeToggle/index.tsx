@@ -20,12 +20,12 @@ export default function ThemeToggle(props: StylableProps & ThemeToggleProps) {
         if (theme === 'light') {
             setTheme('dark')
             themeCtx.next('dark')
-            props.onChange?.call(null, 'light')
+            props.onChange?.('light')
         }
         else if (theme === 'dark') {
             setTheme('light')
             themeCtx.next('light')
-            props.onChange?.call(null, 'light')
+            props.onChange?.('light')
         }
     }
 
