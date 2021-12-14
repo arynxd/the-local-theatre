@@ -16,12 +16,23 @@ class Assertions {
     }
 
      /**
-     * Asserts that $value is not false
+     * Asserts that $value is not falsy
+     * @param mixed $value
      */
     public static function assertNotFalse($value) {
         if (!$value) {
             Logger::getInstance() -> fatal(new AssertionException("Assertion failed, value was falsy"));
         }
         return $value;
+    }
+
+    /**
+     * Asserts that $value is true
+     * @param bool $bool
+     */
+    public static function assert($bool) {
+        if ($bool !== true) {
+            Logger::getInstance() -> fatal(new AssertionException("Assertion failed, value was false"));
+        }
     }
 }

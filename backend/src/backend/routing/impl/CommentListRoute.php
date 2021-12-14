@@ -7,6 +7,7 @@ namespace TLT\Routing\Impl;
 
 
 use TLT\Middleware\Impl\DatabaseMiddleware;
+use TLT\Model\Impl\CommentModel;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
 use TLT\Routing\BaseRoute;
@@ -22,16 +23,15 @@ class CommentListRoute extends BaseRoute {
     }
 
     public function handle($sess, $res) {
-        $user = new UserModel(StringUtil ::newID(), 'john', 'doe', 1, 1, 1, 'jdoe');
+        $st = $sess -> db -> query("SELECT * FROM comment");
+        $dbRes = $st -> fetchAll();
+        $items = Map ::none();
 
-        $result = Map ::none();
-
-        for ($_ = 0; $_ < 10; $_ ++) {
-            $post = new PostModel(StringUtil ::newID(), $user, 'Lorem ipsum sit damet', 'Latest Latest Latest', 1);
-            $result -> push($post -> toMap());
+        foreach ($dbRes as $item) {
+            $items -> push(CommentModel ::fromJSON(Map ::from($item)));
         }
 
-        $res -> sendJSON(Map ::from(['comments' => $result, 'count' => 10]), StatusCode::OK);
+        $res -> sendJSON(Map ::from(['comments' => $items, 'count' => $items -> length()]), StatusCode::OK);
     }
 
     public function validateRequest($sess, $res) {

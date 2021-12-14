@@ -28,7 +28,7 @@ class UserRoute extends BaseRoute {
         }
 
         if ($method == RequestMethod::POST) {
-            $data = $sess -> jsonParams()['data'];
+            $data = $sess -> jsonParams();
 
             $selfUser = $sess -> cache -> user();
 
@@ -105,7 +105,7 @@ class UserRoute extends BaseRoute {
         }
 
         if ($sess -> http -> method == RequestMethod::POST) {
-            $data = $sess -> jsonParams()['data'];
+            $data = $sess -> jsonParams();
 
             if (!isset($data)) {
                 return HttpResult ::BadRequest("No data provided");

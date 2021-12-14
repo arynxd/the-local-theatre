@@ -5,17 +5,18 @@
 
 namespace TLT\Routing\Impl;
 
-use StatusCode;
 use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Middleware\Impl\DatabaseMiddleware;
+use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\CommentModel;
+use TLT\Model\ModelKeys;
 use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
-use TLT\Util\Assert\AssertionException;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
+use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\Log\Logger;
 
@@ -39,6 +40,22 @@ class CommentRoute extends BaseRoute {
 
         return CommentModel ::fromJSON($res);
     }
+
+    /**
+     * @param string $id
+     * @param Map $data
+     * @param Session $sess
+     */
+    private function updateById($id, $data, $sess) {
+        $query = "UPDATE comment
+            SET column1 = value1, 
+                column2 = value2,
+            WHERE id = :id; 
+        ";
+        $sess -> db -> query($query, [
+
+        ]);
+    }
     
     public function handle($sess, $res) {
         $method = $sess -> http -> method;
@@ -57,6 +74,18 @@ class CommentRoute extends BaseRoute {
             }
         } 
         else if ($method == RequestMethod::POST) {
+            Assertions ::assert($sess -> auth -> isAuthenticated());
+            $selfUser = $sess -> cache -> user();
+            Assertions ::assertSet($selfUser);
+
+            $body = $sess -> jsonParams();
+
+            if (isset($body['id'])) {
+                $this -> updateById($body['id'], $body, $sess);
+            }
+            else { 
+                // insert new post
+            }
             // assert authenticated
             // get user id
             // insert the new comment
@@ -77,8 +106,8 @@ class CommentRoute extends BaseRoute {
         $sess->applyMiddleware(new DatabaseMiddleware());
 
         $method = $sess->http->method;
-        $query = $sess->queryParams();
-        $body = $sess->jsonParams();
+        $query = $sess -> queryParams();
+        $body = $sess -> jsonParams();
 
         if ($method === RequestMethod::GET) {
             if (!isset($query['id'])) {
@@ -86,13 +115,10 @@ class CommentRoute extends BaseRoute {
             }
         } 
         else if ($method === RequestMethod::POST) {
-            $postId = $body['id'];
-
-            if (!isset($postId)) {  // do this before the middleware to save potential DB calls
-                return HttpResult::BadRequest("No ID provided");
-            }
-            
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
+            $sess -> applyMiddleware(
+                new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL, $body, "Invalid data provided"),
+                new AuthenticationMiddleware()
+            );
             $selfUser = $sess -> cache -> user();
 
             Assertions::assertSet($selfUser); // the self user should be set if the middleware passes
@@ -100,8 +126,6 @@ class CommentRoute extends BaseRoute {
             if ($selfUser -> permissions < PermissionLevel::USER) {
                 return HttpResult:: BadRequest("You do not have permission to post this comment");
             }
-
-            return HttpResult ::Ok();
         } 
         else if ($method === RequestMethod::DELETE) {
             $res -> sendError("Unimplemented method " . $method);

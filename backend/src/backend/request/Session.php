@@ -133,7 +133,11 @@ class Session {
         else if ($source == ParamSource::JSON) {
             Logger ::getInstance() -> debug("Attempting JSON parse..");
             $raw = file_get_contents('php://input');
-            Assertions::assertNotFalse($raw);
+            
+            if (!$raw) {
+                $raw = "{}"; //  if no body is passed, default to empty obj
+            }
+            
             $result = json_decode($raw, true);
 
             if (!isset($result)) {

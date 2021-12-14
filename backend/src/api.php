@@ -10,11 +10,11 @@ use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
-Logger::getInstance() -> setLevel(LogLevel::ERROR);
+Logger::getInstance() -> setLevel(LogLevel::WARN);
 Logger::getInstance() -> setIncludeLoc(false);
+Logger::getInstance() -> insertNewLine();
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
-Logger::getInstance() -> info("");
 Logger::getInstance() -> info("Incoming request from user agent " . $agent);
 Logger::getInstance() -> info("Starting new session...");
 
