@@ -39,6 +39,7 @@
 - [ ] Handle backend errors in frontend components
 - [ ] Proper error codes for backend error responses
 - [ ] Make home page stay above of footer
+- [ ] Add interface to frontend logger
 
 ## Feature List 
 - [x] Login
