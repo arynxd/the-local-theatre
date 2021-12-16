@@ -8,7 +8,7 @@ VALUES (
         1639655077,
         2
 );
-
+# pwd: testing123
 INSERT INTO credential (userId, email, password, token)
 VALUES (
         'f568d4d2-28b5-4ad5-956c-50bd3930bbe5',

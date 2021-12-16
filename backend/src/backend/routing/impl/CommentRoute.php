@@ -5,10 +5,12 @@
 
 namespace TLT\Routing\Impl;
 
+use PDO;
 use TLT\Middleware\Impl\AuthenticationMiddleware;
 use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\CommentModel;
+use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
 use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
@@ -33,22 +35,45 @@ class CommentRoute extends BaseRoute {
      * @return CommentModel|null
      */
     private function getById($id, $sess) {
-        $st = $sess -> db -> query("SELECT * FROM comment WHERE id = :id", ['id' => $id]);
-        $res = Map ::from($st -> fetchAll());
+        $st = $sess -> db -> query("SELECT * FROM comment c 
+                LEFT JOIN user u on u.id = c.authorId
+            WHERE c.id = :id", 
+            ['id' => $id]
+        );
 
-        if ($res -> length() == 0) {
+        $res = $st -> fetch(PDO::FETCH_NAMED);
+
+        if (!$res) {
             return null;
         }
 
-        return CommentModel ::fromJSON($res);
+        $ids = $res['id'];
+
+        return new CommentModel(
+            $ids[0],
+            new UserModel(
+                $ids[1],
+                $res['firstName'],
+                $res['lastName'],
+                (int)$res['permissions'],
+                (int)$res['dob'],
+                (int)$res['joinDate'],
+                $res['username']
+            ),
+            $res['postId'],
+            $res['content'],
+            (int)$res['createdAt'],
+            (int)$res['editedAt']
+        );
     }
 
     /**
-     * @param string $id
+     * @param string $commentId
+     * @param string $authorId
      * @param Map $data
      * @param Session $sess
      */
-    private function updateById($id, $data, $sess) {
+    private function updateById($commentId, $authorId, $data, $sess) {
         $query = "INSERT INTO comment
                 (id, authorId, postId, content, createdAt, editedAt) VALUES
                 (:id, :authorId, :postId, :content, :createdAt, :editedAt)
@@ -59,8 +84,8 @@ class CommentRoute extends BaseRoute {
         ";
 
         $sess -> db -> query($query, [
-            'id' => $id,
-            'authorId' => $data['authorId'],
+            'id' => $commentId,
+            'authorId' => $authorId,
             'postId' => $data['postId'],
             'content' => $data['content'],
             'createdAt' => DBUtil ::currentTime(),
@@ -71,20 +96,21 @@ class CommentRoute extends BaseRoute {
 
     /**
      * @param Map $data
+     * @param string $authorId
      * @param Session $sess
      */
-    private function insertNew($data, $sess) {
+    private function insertNew($data, $authorId, $sess) {
         $query = "INSERT INTO comment (
                 id, authorId, postId, content, createdAt, editedAt
             ) 
             VALUES (
-                :id, :authorId, :content, :createdAt, :editedAt
+                :id, :authorId, :postId, :content, :createdAt, :editedAt
             )
         ";
 
         $sess -> db -> query($query, [
             'id' => StringUtil ::newID(),
-            'authorId' => $data['authorId'],
+            'authorId' => $authorId,
             'postId' => $data['postId'],
             'content' => $data['content'],
             'createdAt' => DBUtil ::currentTime(),
@@ -128,15 +154,12 @@ class CommentRoute extends BaseRoute {
 
             $body = $sess -> jsonParams();
 
-            if ($body['authorId'] != $selfUser -> id) {
-                $res -> sendError("Cannot add comments on behalf of other users", StatusCode::FORBIDDEN);
-            }
 
             if (isset($body['id'])) {
-                $this -> updateById($body['id'], $body, $sess);
+                $this -> updateById($body['id'], $selfUser -> id, $body, $sess);
             }
             else { 
-                $this -> insertNew($body, $sess);
+                $this -> insertNew($body, $selfUser -> id, $sess);
             }
         } 
         else if ($method == RequestMethod::DELETE) {
@@ -154,7 +177,7 @@ class CommentRoute extends BaseRoute {
                     $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
                 }
                 else {
-                    $res -> sendJSON([], StatusCode ::OK);
+                    $res -> sendJSON("{}", StatusCode ::OK);
                 }
             }
 
@@ -175,7 +198,7 @@ class CommentRoute extends BaseRoute {
         else {
             Logger ::getInstance() -> fatal("Unexpected RequestMethod $method");
         }
-        $res -> sendJSON([], StatusCode ::OK);
+        $res -> sendJSON("{}", StatusCode ::OK);
     }
 
     public function validateRequest($sess, $res) {
@@ -184,6 +207,8 @@ class CommentRoute extends BaseRoute {
         $method = $sess->http->method;
         $query = $sess -> queryParams();
         $body = $sess -> jsonParams();
+
+
 
         if ($method === RequestMethod::GET) {
             if (!isset($query['id'])) {

@@ -7,7 +7,7 @@ use TLT\Util\Data\Map;
 
 class CommentModel extends Model {
     public $id;
-    public $authorId;
+    public $author;
     public $postId;
     public $content;
     public $createdAt;
@@ -15,15 +15,15 @@ class CommentModel extends Model {
 
     /**
      * @param string $id The comment ID
-     * @param string $authorId The author ID
+     * @param UserModel $authorId The author 
      * @param string $postId The post ID
      * @param string $content The content
      * @param int $createdAt The timestamp when this comment was created
      * @param int $editedAt The timestamp when this comment was last edited
      */
-    public function __construct($id, $authorId, $postId, $content, $createdAt, $editedAt) {
+    public function __construct($id, $author, $postId, $content, $createdAt, $editedAt) {
         $this -> id = $id;
-        $this -> authorId = $authorId;
+        $this -> author = $author;
         $this -> postId = $postId;
         $this -> content = $content;
         $this -> createdAt = $createdAt;
@@ -37,25 +37,11 @@ class CommentModel extends Model {
     public function toMap() {
         return Map ::from([
             'id' => $this -> id,
-            'authorId' => $this -> authorId,
+            'author' => $this -> author -> toMap(),
             'postId' => $this -> postId,
             'content' => $this -> content,
             'createdAt' => $this -> createdAt,
             'editedAt' => $this -> editedAt
         ]);
-    }
-
-    /**
-     * @param Map $data
-     */
-    public static function fromJSON($data) {
-        return new CommentModel(
-            $data['id'],
-            $data['authorId'],
-            $data['postId'],
-            $data['content'],
-            $data['createdAt'],
-            $data['editedAt']
-        );
     }
 }

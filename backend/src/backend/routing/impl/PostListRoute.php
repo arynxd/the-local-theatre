@@ -11,10 +11,12 @@ use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
 use TLT\Routing\BaseRoute;
+use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\Log\Logger;
 
 class PostListRoute extends BaseRoute {
     public function __construct() {
@@ -22,27 +24,28 @@ class PostListRoute extends BaseRoute {
     }
 
     public function handle($sess, $res) {
-        $query = "SELECT * FROM post p LEFT JOIN user u on p.authorId = u.id;";
-        $st = $sess -> db -> query($query);
+        $st = $sess -> db -> query("SELECT * FROM post p 
+                LEFT JOIN user u on u.id = p.authorId");
 
-        $dbData = $st -> fetchAll(PDO::FETCH_NAMED);
+        $db = $st -> fetchAll(PDO::FETCH_NAMED);
         $posts = Map ::none();
 
-        foreach ($dbData as $item) {
+        foreach ($db as $item) {
             $model = new PostModel(
                 $item['id'][0],
                 new UserModel(
                     $item['id'][1],
                     $item['firstName'],
                     $item['lastName'],
-                    $item['permissions'],
-                    $item['dob'],
-                    $item['joinDate'],
+                    (int)$item['permissions'],
+                    (int)$item['dob'],
+                    (int)$item['joinDate'],
                     $item['username']
                 ),
                 $item['content'],
                 $item['title'],
-                $item['createdAt']
+                (int)$item['createdAt'],
+                (int)$item['editedAt']
             );
             $posts -> push($model -> toMap());
         }

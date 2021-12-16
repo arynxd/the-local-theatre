@@ -15,6 +15,7 @@ use TLT\Model\ModelKeys;
 use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
+use TLT\Util\Data\Map;
 use TLT\Util\DBUtil;
 use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
@@ -47,21 +48,37 @@ class PostRoute extends BaseRoute {
         else if ($method == RequestMethod::POST) {
             Assertions ::assert($sess -> auth -> isAuthenticated());
             Assertions ::assert($this -> isModMakingRequest($sess));
+            $selfUser = $sess -> cache -> user();
+            Assertions ::assertSet($selfUser);
 
             $body = $sess -> jsonParams();
+            
+            $data = Map ::from([
+                'authorId' => $selfUser -> id,
+                'content' => $body['content'],
+                'title' => $body['title'],
+                'createdAt' => DBUtil ::currentTime(),
+                'editedAt' => $body -> orDefault("editedAt", null)
+            ]);
 
             if (isset($body['id'])) {
-                if ($this -> updateById($body['id'], $body, $sess)) {
-                    $res -> sendJSON("{}", StatusCode ::OK);
-                }
-                else {
+                $data['id'] = $body['id'];
+                if (!$this -> updateById($data, $sess)) {
                     $res -> sendError("Post not found", StatusCode::NOT_FOUND);
                 }
             }
             else { 
-                $this -> insertNew($body, $sess);
-                $res -> sendJSON("{}", StatusCode ::OK);
+                $data['id'] = StringUtil ::newID();
+                $this -> insertNew($data, $sess);
             }
+
+
+            $id = $sess -> queryParams()['id'];
+            Assertions ::assertSet($id);
+            $model = $this -> getById($sess, $id);
+            Assertions ::assertSet($model);
+
+            $res -> sendJSON($model -> toMap(), StatusCode::OK);
         }
         else if ($method == RequestMethod::DELETE) {
             Assertions ::assert($sess -> auth -> isAuthenticated());
@@ -96,12 +113,11 @@ class PostRoute extends BaseRoute {
     }
 
     /**
-     * @param string $id
      * @param Map $data
      * @param Session $sess
      * @return boolean whether any data was updated
      */
-    private function updateById($id, $data, $sess) {
+    private function updateById($data, $sess) {
         $query = "INSERT INTO post (id, content, title, authorId, createdAt, editedAt)
                 VALUES (
                     :id, :content, :title, :authorId, :createdAt, :editedAt
@@ -112,11 +128,12 @@ class PostRoute extends BaseRoute {
         ";
 
         $res = $sess -> db -> query($query, [
-            'id' => $id,
+            'id' => $data['id'],
+            'title' => $data['title'],
             'authorId' => $data['authorId'],
             'content' => $data['content'],
-            'createdAt' => DBUtil ::currentTime(),
-            'editedAt' => $data -> orDefault("editedAt", null)
+            'createdAt' => $data['createdAt'],
+            'editedAt' => $data['editedAt']
         ]);
 
         return $res -> rowCount() > 0;
@@ -125,6 +142,7 @@ class PostRoute extends BaseRoute {
 
     /**
      * @param Map $data
+     * @param string $authorId
      * @param Session $sess
      */
     private function insertNew($data, $sess) {
@@ -135,11 +153,12 @@ class PostRoute extends BaseRoute {
         ";
 
         $sess -> db -> query($query, [
-            'id' => StringUtil ::newID(),
+            'id' => $data['id'],
+            'title' => $data['title'],
             'authorId' => $data['authorId'],
             'content' => $data['content'],
-            'createdAt' => DBUtil ::currentTime(),
-            'editedAt' => null
+            'createdAt' => $data['createdAt'],
+            'editedAt' => $data['editedAt']
         ]);
     }
 
@@ -151,35 +170,35 @@ class PostRoute extends BaseRoute {
      * @return PostModel|null The model, or null if not found
      */
     private function getById($sess, $id) {
-        $query = "SELECT * FROM post p 
-                    LEFT JOIN user u on p.authorId = u.id 
-                   WHERE p.id = :id;";
+        $st = $sess -> db -> query("SELECT * FROM post p 
+                LEFT JOIN user u on u.id = p.authorId
+            WHERE p.id = :id", 
+            ['id' => $id]
+        );
 
-        $st = $sess -> db -> query($query, [
-            'id' => $id
-        ]);
+        $res = $st -> fetch(PDO::FETCH_NAMED);
 
-        //TODO: investigate a better way to handle dupe col names through PDO
-        $dbData = $st -> fetch(PDO::FETCH_NAMED);
-
-        if (!$dbData) {
+        if (!$res) {
             return null;
         }
 
+        $ids = $res['id'];
+
         return new PostModel(
-            $dbData['id'][0],
+            $ids[0],
             new UserModel(
-                $dbData['id'][1],
-                $dbData['firstName'],
-                $dbData['lastName'],
-                $dbData['permissions'],
-                $dbData['dob'],
-                $dbData['joinDate'],
-                $dbData['username']
+                $ids[1],
+                $res['firstName'],
+                $res['lastName'],
+                (int)$res['permissions'],
+                (int)$res['dob'],
+                (int)$res['joinDate'],
+                $res['username']
             ),
-            $dbData['content'],
-            $dbData['title'],
-            $dbData['createdAt']
+            $res['postId'],
+            $res['content'],
+            (int)$res['createdAt'],
+            (int)$res['editedAt']
         );
     }
 
