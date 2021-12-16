@@ -28,19 +28,20 @@
 - [x] Make home page stay above of footer
 - [x] Add interface to frontend logger
 - [x] Make home page stay above of footer
+- [x] Create insert SQL scripts
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Unify shadows
-- [ ] Perm checks for restricted pages
+- [ ] Perm checks for restricted pages on frontend
 - [ ] Change inline buttons to blue
 - [ ] Change frontend assertions to use TS 'asserts' keyword
-- [ ] Create insert SQL scripts
 - [ ] Handle backend errors in frontend components
 - [ ] Proper error codes for backend error responses
 - [ ] Cache param sources in backend for perf
 - [ ] Load user prefs from the backend on launch, submit pref changes to the backend
 - [ ] Frontend caching
+- [ ] Potentially abstract backend DB calls
 
 ## Feature List 
 - [x] Login

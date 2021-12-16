@@ -66,16 +66,16 @@ ALTER TABLE `moderation_action`
 	ADD FOREIGN KEY (`type`) REFERENCES `moderation_type` (`type`);
 
 ALTER TABLE `post`
-	ADD FOREIGN KEY (`authorId`) REFERENCES `user` (`id`);
+	ADD FOREIGN KEY (`authorId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `credential`
-	ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`);
+	ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `comment`
-	ADD FOREIGN KEY (`authorId`) REFERENCES `user` (`id`);
+	ADD FOREIGN KEY (`authorId`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `comment`
-	ADD FOREIGN KEY (`postId`) REFERENCES `post` (`id`);
+	ADD FOREIGN KEY (`postId`) REFERENCES `post` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `user_prefs`
-	ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`);
+	ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE;

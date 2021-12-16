@@ -43,7 +43,7 @@ function ProfileMenu() {
 
                     <div className='flex flex-row items-center'>
                         <h2 className='p-2 dark:text-gray-200'>Theme Toggle: </h2>
-                        <ThemeToggle className='h-9 h-9'/>
+                        <ThemeToggle className='h-9 w-9'/>
                     </div>
                     <Separator className='w-6/12' />
 

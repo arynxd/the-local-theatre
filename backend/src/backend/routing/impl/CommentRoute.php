@@ -14,11 +14,13 @@ use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
+use TLT\Util\DBUtil;
 use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\Log\Logger;
+use TLT\Util\StringUtil;
 
 class CommentRoute extends BaseRoute {
     public function __construct() {
@@ -47,16 +49,62 @@ class CommentRoute extends BaseRoute {
      * @param Session $sess
      */
     private function updateById($id, $data, $sess) {
-        $query = "UPDATE comment
-            SET column1 = value1, 
-                column2 = value2,
-            WHERE id = :id; 
+        $query = "INSERT INTO comment
+                (id, authorId, postId, content, createdAt, editedAt) VALUES
+                (:id, :authorId, :postId, :content, :createdAt, :editedAt)
+            ON DUPLICATE KEY UPDATE
+                content=:content,
+                editedAt=:editedAt
+            ;
         ";
-        $sess -> db -> query($query, [
 
+        $sess -> db -> query($query, [
+            'id' => $id,
+            'authorId' => $data['authorId'],
+            'postId' => $data['postId'],
+            'content' => $data['content'],
+            'createdAt' => DBUtil ::currentTime(),
+            'editedAt' => $data -> orDefault("editedAt", null)
         ]);
     }
-    
+
+
+    /**
+     * @param Map $data
+     * @param Session $sess
+     */
+    private function insertNew($data, $sess) {
+        $query = "INSERT INTO comment (
+                id, authorId, postId, content, createdAt, editedAt
+            ) 
+            VALUES (
+                :id, :authorId, :content, :createdAt, :editedAt
+            )
+        ";
+
+        $sess -> db -> query($query, [
+            'id' => StringUtil ::newID(),
+            'authorId' => $data['authorId'],
+            'postId' => $data['postId'],
+            'content' => $data['content'],
+            'createdAt' => DBUtil ::currentTime(),
+            'editedAt' => null
+        ]);
+    }
+
+    /**
+     * @param string $id
+     * @param Session $sess
+     * @return boolean if the deletion succeeded or not
+     */
+    private function deleteById($id, $sess) {
+        $query = "DELETE FROM comment WHERE id = :id";
+
+        $res = $sess -> db -> query($query, ['id' => $id]);
+
+        return $res -> rowCount() > 0; // true if it was modified, false otherwise
+    }
+
     public function handle($sess, $res) {
         $method = $sess -> http -> method;
 
@@ -80,29 +128,57 @@ class CommentRoute extends BaseRoute {
 
             $body = $sess -> jsonParams();
 
+            if ($body['authorId'] != $selfUser -> id) {
+                $res -> sendError("Cannot add comments on behalf of other users", StatusCode::FORBIDDEN);
+            }
+
             if (isset($body['id'])) {
                 $this -> updateById($body['id'], $body, $sess);
             }
             else { 
-                // insert new post
+                $this -> insertNew($body, $sess);
             }
-            // assert authenticated
-            // get user id
-            // insert the new comment
         } 
         else if ($method == RequestMethod::DELETE) {
-            // assert authenticated
-            // check if sending user can delete (mod or own comment)
-            // delete
+            $id = $sess -> queryParams()['id'];
+            Assertions ::assertSet($id);
+
+            Assertions ::assert($sess -> auth -> isAuthenticated());
+            $selfUser = $sess -> cache -> user();
+            Assertions ::assertSet($selfUser);
+
+            $isMod = $selfUser -> permissions >= PermissionLevel ::MODERATOR;
+            
+            if ($isMod) {
+                if (!$this -> deleteById($id, $sess)) {
+                    $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+                }
+                else {
+                    $res -> sendJSON([], StatusCode ::OK);
+                }
+            }
+
+            $comment = $this -> getById($id, $sess);
+
+            if (!isset($comment)) {
+                $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+            }
+
+            if ($comment -> authorId != $selfUser -> id) {
+                $res -> sendError("Cannot delete comments you did not make", StatusCode ::FORBIDDEN);
+            }
+
+            if (!$this -> deleteById($id, $sess)) {
+                $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+            }
         } 
         else {
             Logger ::getInstance() -> fatal("Unexpected RequestMethod $method");
         }
-        $res -> sendJSON(Map::from(['ok' => true]));
+        $res -> sendJSON([], StatusCode ::OK);
     }
 
-    public function validateRequest($sess, $res)
-    {
+    public function validateRequest($sess, $res) {
         $sess->applyMiddleware(new DatabaseMiddleware());
 
         $method = $sess->http->method;
@@ -128,7 +204,11 @@ class CommentRoute extends BaseRoute {
             }
         } 
         else if ($method === RequestMethod::DELETE) {
-            $res -> sendError("Unimplemented method " . $method);
+            $sess -> applyMiddleware(new AuthenticationMiddleware());
+
+            if (!isset($query['id'])) {
+                return HttpResult ::BadRequest("No ID provided");
+            }
         } 
         else {
             Logger ::getInstance() -> fatal("Unknown method $method");

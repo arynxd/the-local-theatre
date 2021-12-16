@@ -9,7 +9,7 @@ use TLT\Util\Enum\ContentType;
 use TLT\Util\Enum\CORS;
 use TLT\Util\Enum\ErrorStrings;
 use TLT\Util\Enum\StatusCode;
-use TLT\Util\HttpUtils;
+use TLT\Util\HttpUtil;
 use TLT\Util\Log\Logger;
 use UnexpectedValueException;
 
@@ -61,7 +61,7 @@ class Response {
      */
     public function send($data, ...$headers) {
         Logger ::getInstance() -> debug("Sending output {$data}");
-        HttpUtils::applyHeaders($headers);
+        HttpUtil::applyHeaders($headers);
 
         echo $data;
         exit(0);
