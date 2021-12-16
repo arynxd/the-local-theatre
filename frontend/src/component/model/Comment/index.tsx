@@ -8,7 +8,8 @@ import {User} from "../../../model/User";
 import {useSubscription} from "../../../backend/hook/useSubscription";
 
 interface CommentProps {
-    model: CommentModel
+    model: CommentModel,
+    onDeletion?: (commenet: CommentModel) => void
 }
 
 interface ContextMenuProps {
@@ -63,16 +64,19 @@ function ContextMenu(props: ContextMenuProps) {
 }
 
 export default function Comment(props: CommentProps & StylableProps) {
-    const model = props.model
-    const author = model.author
+    const {model, onDeletion} = props
+    const {author} = model
 
     const [isContextOpen, setContextOpen] = useState(false)
     const [thisExists, setExists] = useState(true)
 
     const deleteHandler = useCallback(() => {
         getBackend().http.deleteComment(model.id)
-            .also(() => setExists(false))
-    }, [model.id])
+            .then(() => {
+                setExists(false)
+                onDeletion?.(model)
+            })
+    }, [model, onDeletion])
 
     if (!thisExists) {
         return (<> </>)
@@ -87,7 +91,7 @@ export default function Comment(props: CommentProps & StylableProps) {
         <div className={props.className}>
             <div className='group bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded'>
                 <h3 className='text-xl p-2 w-max dark:text-gray-200'>{author.firstName} {author.lastName}</h3>
-                <p className='text-md p-2 w-max dark:text-gray-300'>{model.content}</p>
+                <p className='text-md p-2 dark:text-gray-300 break-words'>{model.content}</p>
                 <div onClick={() => setContextOpen(!isContextOpen)}
                      className={contextStyles}>
                     <img className='h-4 w-4' src={menuIco} alt='Click to show comment menu'/>

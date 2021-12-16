@@ -1,13 +1,16 @@
 import {toDate} from "../../../util/time";
 import {Post as PostModel} from "../../../model/Post";
 import commentIco from '../../../assets/comment.png'
-import {ChangeEvent, useCallback, useState} from "react";
+import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
 import Comment from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/tsx";
+import { useStatefulCache } from "../../../util/cache";
+import { EntityIdentifier } from "../../../model/EntityIdentifier";
+import { Comment as CommentModel } from "../../../model/Comment";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -20,17 +23,24 @@ interface AddCommentProps {
 }
 
 function CommentView(props: PostProps) {
-    const apiRes = useAPI(() => getBackend().http.fetchComments(props.post.id))
+    const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
+    const [commentCache, updateCommentCache] = useStatefulCache<EntityIdentifier, CommentModel>()
 
     const LoadingComments = () =>
-        createPlaceholders(() =>
-            <div className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
+        createPlaceholders((i) =>
+            <div key={i} className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
                 <div className='bg-gray-300 w-2/5 h-4 animate-pulse rounded-xl m-2 mb-3'/>
 
                 <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
                 <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
             </div>
         )
+    
+    useEffect(() => updateCommentCache(cache => {
+        if (apiRes) {
+            cache.setAll(apiRes[0].map(c => [c.id, c]))
+        }
+    }), [apiRes, updateCommentCache])
     
     if (!apiRes) {
         return (
@@ -41,13 +51,18 @@ function CommentView(props: PostProps) {
 
     }
 
-    //TODO add comment count using second value here
-    const [comments, ] = apiRes
+    if (!commentCache.size) {
+        return (
+            <p>No comments :(</p>
+        )
+    }
+
+    const deleteHandler = (c: CommentModel) => 
+        updateCommentCache((cache) => cache.delete(c.id))
 
     return (
-        <>
-            {
-            comments.map((c) => <Comment model={c}/>)
+        <>{
+            commentCache.valueArray().map(c => <Comment key={c.id} model={c} onDeletion={deleteHandler}/>)
         }</>
     )
 }
@@ -62,6 +77,7 @@ function AddCommentView(props: PostProps & AddCommentProps) {
         assert(() => text.length > 0,
             () => new TypeError("Text was empty"))
 
+            //TODO: add comments to cache when they are submitted
         getBackend().http.addComment(props.post.id, text)
             .then(() => {
                 setText('')
@@ -91,7 +107,6 @@ function AddCommentView(props: PostProps & AddCommentProps) {
 
 export default function Post(props: PostProps) {
     const post = props.post
-    //TODO change to a stateful cache for comments and update when it's empty
     const [isCommentsOpen, setCommentsOpen] = useState(false)
     const [isAddingComment, setAddingComment] = useState(false)
 

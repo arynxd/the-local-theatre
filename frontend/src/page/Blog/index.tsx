@@ -10,12 +10,29 @@ interface CreatePostProps {
 }
 
 function CreatePostView(props: CreatePostProps) {
-    const [title, setTitle] = useState<string>()
-    const [content, setContent] = useState<string>()
+    const [title, setTitle] = useState<string>("")
+    const [content, setContent] = useState<string>("")
 
     const handleSubmitClick = () => {
-        //TODO: send post to backend
-        props.done()
+        let err = false
+        if (!title) {
+            setTitle("Title is required")
+            err = true
+        }
+
+        if (!content) {
+            setContent("Content is required")
+            err = true
+        }
+
+        if (err) {
+            return
+        }
+
+        getBackend().http.addPost(title, content)
+            .then(() => {
+                props.done()
+            })
     }
 
     if (!getAuth().isAuthenticated()) {
@@ -42,7 +59,7 @@ function CreatePostView(props: CreatePostProps) {
     )
 }
 
-type BlogState = 'view_posts' | 'create_post' | 'submitting_post' | "error"
+type BlogState = 'view_posts' | 'create_post' | "error"
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
@@ -58,7 +75,7 @@ export default function Blog() {
             </div>
         )
 
-    const posts = useAPI(() => getBackend().http.listPosts(), () => setState('error'))
+    const posts = useAPI(() => getBackend().http.loadAllPosts(), () => setState('error'))
 
     if (state === 'error') {
         //TODO: proper error page here
@@ -103,7 +120,7 @@ export default function Blog() {
     }
     else if (state === 'create_post') {
         return (
-            <CreatePostView done={() => setState('submitting_post')}/>
+            <CreatePostView done={() => setState('view_posts')}/>
         )
     }
     else {

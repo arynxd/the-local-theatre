@@ -57,7 +57,7 @@ function ModerationUser(props: ModerationUserProps) {
 
     const handleDelete = () => {
         getBackend().http.deleteUser(user.id)
-        setState('deletion')
+            .then(() => setState('deletion'))
     }
 
     const handleDone = (perm: PermissionValue) => {
@@ -96,6 +96,7 @@ function ModerationUser(props: ModerationUserProps) {
 
 function UserList() {
     const users = useAPI(() => getBackend().http.loadUsers())
+    const selfUser = useSelfUser()
 
     const UserPlaceholders = () =>
         createPlaceholders(() =>
@@ -106,7 +107,7 @@ function UserList() {
                 <div className='w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2'/>
             </div>
         )
-    if (!users) {
+    if (!users || !selfUser) {
         return (
             <>
                 {UserPlaceholders()}
@@ -114,10 +115,10 @@ function UserList() {
         )
 
     }
+    //TODO: handle empty case
     return (
         <ul>{
-            //@ts-ignore
-            users.map(u => <ModerationUser user={u}/>)
+            users.filter(u => u.id != selfUser.id).map(u => <ModerationUser user={u}/>)
         }</ul>
     )
 }

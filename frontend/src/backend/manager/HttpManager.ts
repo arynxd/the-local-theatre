@@ -14,13 +14,29 @@ import {fromPromise, toJSON, toModel, toModelArray} from "../request/mappers";
  * **ALL** requests should go through this manager
  */
 export class HttpManager extends Manager {
-    loadUser(id: EntityIdentifier): BackendAction<User> {
-        const route = Routes.User.FETCH.compile()
-            .withQueryParam('id', id.toString())
-
+    addPost(title: string, content: string): BackendAction<Post> {
+        const route = Routes.Post.ADD.compile()
+            .withBody({
+                title,
+                content
+            })
+        
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(this.backend().entity.createUser)
+            .map(v => toModel(v, this.backend().entity.createPost))
+    }
+
+    loadUser(id: EntityIdentifier): BackendAction<User> {
+        const route = Routes.User.FETCH.compile()
+                        .withQueryParam('id', id.toString())
+
+        return BackendAction
+            .usingCache(
+                () => this.backend().cache.user.get(id),
+                () => BackendAction.new(route)
+                        .flatMap(toJSON)
+                        .map(this.backend().entity.createUser)
+                )
     }
 
     /**
@@ -35,12 +51,13 @@ export class HttpManager extends Manager {
             .flatMap(res => fromPromise(res.blob()))
     }
 
-    listPosts(): BackendAction<Post[]> {
+    loadAllPosts(): BackendAction<Post[]> {
         const route = Routes.Post.LIST.compile()
-
+        // this wont use cache as we wont know what's in cache vs what we're missing
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(v => toModelArray(v, this.backend().entity.createPost))
+            .also(posts => this.backend().cache.post.setAll(posts.map(p => [p.id, p])))
     }
 
     loadShowImage(show: Show): BackendAction<Blob> {
@@ -59,24 +76,39 @@ export class HttpManager extends Manager {
             .map(v => toModelArray(v, this.backend().entity.createShow))
     }
 
-    fetchComments(id: EntityIdentifier): BackendAction<[Comment[], number]> {
+    loadCommentsForPost(postId: EntityIdentifier): BackendAction<[Comment[], number]> {
         const route = Routes.Comment.LIST.compile()
-            .withQueryParam('id', id)
+            .withQueryParam('id', postId)
 
-        return BackendAction.new(route)
-            .flatMap(toJSON)
-            .map(v => {
-                const count = v.count
-                if (typeof count !== 'number')
-                    throw new TypeError("Count was not a number")
+        const cachingFunction = () => {
+            const arr = Array.from(this.backend().cache.comment.values())
+                .filter(x => x.postId === postId)
 
-                return [toModelArray(v.comments, this.backend().entity.createComment), count]
-            })
+            if (!arr.length) {
+                return undefined
+            }
+            return [arr, arr.length] as [Comment[], number]
+        }
+
+        return BackendAction.usingCache(
+            cachingFunction, 
+            () => BackendAction.new(route)
+                    .flatMap(toJSON)
+                    .map(v => {
+                        const count = v.count
+                        if (typeof count !== 'number')
+                            throw new TypeError("Count was not a number")
+
+                        return [toModelArray(v.comments, this.backend().entity.createComment), count] as [Comment[], number]
+                    })
+                    .also(comments => this.backend().cache.comment.setAll(comments[0].map(c => [c.id, c])))
+        )
     }
 
     loadSelfUser(): BackendAction<User> {
         const route = Routes.Self.FETCH.compile()
 
+        // this cannot be cached as we do not know our ID
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(v => this.backend().entity.createUser(v))
@@ -92,10 +124,13 @@ export class HttpManager extends Manager {
         const route = Routes.Post.FETCH.compile()
             .withQueryParam('id', id)
 
-        return BackendAction.new(route)
-            .flatMap(toJSON)
-            .map(v => toModel(v, this.backend().entity.createPost))
-
+        return BackendAction.usingCache(
+            () => this.backend().cache.post.get(id),
+            () => BackendAction.new(route)
+                .flatMap(toJSON)
+                .map(v => toModel(v, this.backend().entity.createPost))
+                .also(v => this.backend().cache.post.set(v.id, v))
+        )
     }
 
     deleteComment(id: EntityIdentifier): BackendAction<void> {
@@ -105,18 +140,21 @@ export class HttpManager extends Manager {
         return BackendAction.new(route).toVoid()
     }
 
-    addComment(postId: EntityIdentifier, text: string): BackendAction<void> {
+    addComment(postId: EntityIdentifier, text: string): BackendAction<Comment> {
         const route = Routes.Comment.ADD.compile()
             .withBody({
-                id: postId,
-                data: text
+                postId: postId,
+                content: text
             })
 
-        return BackendAction.new(route).toVoid()
+        return BackendAction.new(route)
+            .flatMap(toJSON)
+            .map(v => toModel(v, this.backend().entity.createComment))
     }
 
     loadUsers(): BackendAction<User[]> {
         const route = Routes.User.FETCH_ALL.compile()
+        // this wont use cache as we wont know what's in cache vs what we're missing
         return BackendAction.new(route)
             .flatMap(toJSON)
             .map(v => toModelArray(v, this.backend().entity.createUser))
@@ -127,7 +165,6 @@ export class HttpManager extends Manager {
     updateUser(newUser: User): BackendAction<void> {
         const route = Routes.User.UPDATE.compile()
             .withBody({
-                data: {
                     id: newUser.id,
                     firstName: newUser.firstName,
                     lastName: newUser.lastName,
@@ -135,8 +172,7 @@ export class HttpManager extends Manager {
                     dob: newUser.dob,
                     joinDate: newUser.dob,
                     username: newUser.username
-                }
-            })
+                })
 
         return BackendAction.new(route)
             .toVoid()

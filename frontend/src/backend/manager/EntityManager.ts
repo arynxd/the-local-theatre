@@ -16,7 +16,7 @@ export class EntityManager extends Manager {
             this.err("User", json)
         }
 
-        getBackend().cache.user.cache(json.id, json)
+        getBackend().cache.user.set(json.id, json)
         return json
     }
 

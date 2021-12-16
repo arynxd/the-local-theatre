@@ -15,7 +15,7 @@ import { createPlaceholders } from "../../util/tsx";
 const HOME_PAGE_POST_COUNT = 10
 
 async function getPost(backend: ManagerController): Promise<Post[]> {
-    const posts = await backend.http.listPosts()
+    const posts = await backend.http.loadAllPosts()
     if (posts) {
         logger.debug('Received valid post ' + JSON.stringify(posts))
         return posts.slice(0, HOME_PAGE_POST_COUNT)

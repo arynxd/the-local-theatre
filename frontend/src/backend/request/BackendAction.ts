@@ -4,8 +4,10 @@ import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
 import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
-import {getAuth} from "../global-scope/util/getters";
+import {getAuth, getBackend} from "../global-scope/util/getters";
 import {toJSON, ValidTypeOf} from "./mappers";
+import { AbstractCache } from "../cache/AbstractCache";
+import { EntityIdentifier } from "../../model/EntityIdentifier";
 
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 
@@ -22,6 +24,37 @@ export class BackendAction<T> extends Promise<T> {
         route: CompiledRoute
     ): BackendAction<Response> {
         return newBackendAction(route)
+    }
+
+    /**
+     * Makes a backend request, hitting the cache first.
+     * If the cache lookup fails, the provided onMiss function will be used to resolve the value.
+     * 
+     * @param cacheSelector The function to get the cached value
+     * @param onMiss The function to run when the cache misses
+     * @returns The action representing this request
+     */
+    public static usingCache <T> (cacheSelector: () => T | undefined, onMiss: () => BackendAction<T>): BackendAction<T> {
+        return new BackendAction(async (res, rej) => {
+            let cacheHit: T | undefined
+
+            try {
+                cacheHit = cacheSelector()
+            }
+            catch (ex) {
+                rej(ex)
+                return
+            }
+            
+            if (cacheHit) {
+                res(cacheHit)
+            }
+            else {
+                onMiss()
+                    .then(res)
+                    .catch(rej)
+            }
+        })
     }
 
     public flatMap<U>(mapper: (action: T) => BackendActionLike<U>): BackendAction<U> {

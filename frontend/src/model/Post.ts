@@ -9,6 +9,7 @@ export interface Post extends IdentifiedEntity, GenericModel {
     title: string,
     content: string,
     createdAt: number
+    editedAt: number
 }
 
 export function isPost(json: JSONObject | Post): json is Post {
@@ -20,7 +21,9 @@ export function isPost(json: JSONObject | Post): json is Post {
         typeof json.title === 'string' &&
         typeof json.content === 'string' &&
         typeof json.createdAt === 'number' &&
+        typeof json.editedAt === 'number' &&
         // posts cannot be created in the future (obviously)
         // this also asserts the number is some sort of valid utc
-        now.getTime() >= new Date(json.createdAt * 1000).getTime()
+        now.getTime() >= new Date(json.createdAt * 1000).getTime() &&
+        json.editedAt ? typeof json.editedAt == 'number' ? true : false : true
 }
