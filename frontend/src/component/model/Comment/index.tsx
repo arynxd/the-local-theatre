@@ -45,17 +45,17 @@ function ContextMenu(props: ContextMenuProps) {
     }
 
     return (
-        <ul className='absolute top-2 right-10 bg-white p-2 shadow-xl rounded-xl'>
+        <ul className='absolute top-2 right-10 bg-white p-2 shadow-xl rounded-xl flex flex-col items-center'>
             {canEdit
                 ? <button onClick={props.editComment}>
-                    <li className=''>Edit Comment</li>
+                    <li className=''>Edit</li>
                 </button>
                 : <> </>
             }
 
             {canDelete
                 ? <button onClick={props.deleteComment}>
-                    <li className='text-red-600 font-semibold'>Delete Comment</li>
+                    <li className='text-red-600 font-semibold'>Delete</li>
                 </button>
                 : <> </>
             }
@@ -91,7 +91,10 @@ export default function Comment(props: CommentProps & StylableProps) {
                     <img className='h-4 w-4' src={menuIco} alt='Click to show comment menu'/>
                 </div>
                 {isContextOpen
-                    ? <ContextMenu model={props.model} deleteComment={deleteHandler} editComment={() => {
+                    ? <ContextMenu 
+                        model={props.model} 
+                        deleteComment={deleteHandler} 
+                        editComment={() => {
                         throw TypeError("Unimplemented")
                     }}/>
                     : <> </>

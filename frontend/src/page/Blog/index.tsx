@@ -1,10 +1,11 @@
 import {useAPI} from "../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../backend/global-scope/util/getters";
 import Post from "../../component/model/Post";
-import {createError, createPlaceholders, createWarning} from "../../util/factory";
+import {createPlaceholders} from "../../util/factory";
 import {useState} from "react";
 import Separator from "../../component/Separator";
 import InlineButton from "../../component/InlineButton";
+import { Error, Warning } from "../../component/Factory";
 
 interface CreatePostProps {
     done: () => void
@@ -55,7 +56,7 @@ function CreatePostView(props: CreatePostProps) {
                       onChange={(ev) => setContent(ev.target.value)}
                       className='w-full p-2 bg-gray-100 h-24 rounded shadow-xl'/>
 
-            <button onClick={handleSubmitClick}>Submit</button>
+            <InlineButton className='mt-2' onClick={handleSubmitClick}>Submit</InlineButton>
         </div>
     )
 }
@@ -86,7 +87,7 @@ export default function Blog() {
     if (state === 'error') {
         return (
             <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {createError("An error occurred")}
+                {<Error>"An error occurred"</Error>}
             </div>
         )
     }
@@ -105,7 +106,6 @@ export default function Blog() {
         setState('create_post')
     }
 
-    //createInlineButton("Create post", handlePostClick, )
     const createPostButton = getAuth().isAuthenticated()
         ? <InlineButton 
             onClick={handlePostClick} 
@@ -114,16 +114,19 @@ export default function Blog() {
         </InlineButton>
         : <></>
 
+    const sorted = [...posts]
+        .sort((a, b) => b.createdAt - a.createdAt)
+
     if (state === 'view_posts') {
         return (
             <>
             {createPostButton}
-            {posts.length
+            {sorted.length
                 ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
-                    posts.map(post => <Post post={post}/>)
+                    sorted.map(post => <Post post={post}/>)
                 }</div>
                 : <div className='w-full m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center'>
-                    {createWarning("No posts found")}
+                    {<Warning>No posts found</Warning>}
                 </div>
             }
             </>

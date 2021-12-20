@@ -29,22 +29,21 @@
 - [x] Add interface to frontend logger
 - [x] Make home page stay above of footer
 - [x] Create insert SQL scripts
-- [x] Frontend caching
+- [x] Change frontend inline buttons to blue
+- [x] Handle backend errors in frontend components
+- [x] Perm checks for restricted pages on frontend
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Unify shadows
-- [ ] Perm checks for restricted pages on frontend
-- [ ] Change frontend inline buttons to blue
 - [ ] Change frontend assertions to use TS 'asserts' keyword
-- [ ] Handle backend errors in frontend components
 - [ ] Proper error codes for backend error responses
 - [ ] Cache param sources in backend for perf
 - [ ] Load user prefs from the backend on launch, submit pref changes to the backend
 - [ ] Cache user prefs (AuthContext custom object, SelfUser)
 - [ ] Abstract backend DB calls
 - [ ] Add more data to navbar profile image
-- [ ] Time based caches for fetchAllX calls
+- [ ] Fix comments / posts not being updated in UI when they are changed 
 
 ## Feature List 
 - [x] Login

@@ -1,17 +1,15 @@
 import {toDate} from "../../../util/time";
 import {Post as PostModel} from "../../../model/Post";
 import commentIco from '../../../assets/comment.png'
-import {ChangeEvent, useCallback, useEffect, useState} from "react";
+import {ChangeEvent, useCallback, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
 import Comment from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/factory";
-import { useStatefulCache } from "../../../util/cache";
-import { EntityIdentifier } from "../../../model/EntityIdentifier";
-import { Comment as CommentModel } from "../../../model/Comment";
 import InlineButton from "../../InlineButton";
+import { WarningIcon } from "../../Factory";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -25,7 +23,6 @@ interface AddCommentProps {
 
 function CommentView(props: PostProps) {
     const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
-    const [commentCache, updateCommentCache] = useStatefulCache<EntityIdentifier, CommentModel>()
 
     const LoadingComments = () =>
         createPlaceholders((i) =>
@@ -34,16 +31,8 @@ function CommentView(props: PostProps) {
 
                 <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
                 <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
-            </div>
+            </div>, 3
         )
-    
-    useEffect(() => {
-        if (apiRes) {
-            updateCommentCache(cache => {
-                cache.setAll(apiRes[0].map(c => [c.id, c]))
-            })
-        }
-    }, [apiRes])
     
     if (!apiRes) {
         return (
@@ -53,28 +42,26 @@ function CommentView(props: PostProps) {
         )
     }
 
-    if (!commentCache.size) {
-        //TODO: proper GUI element
+    if (!apiRes[0].length) {
         return (
-            <div className=''>
-                <p>No comments found</p>
+            <div className='bg-gray-100 p-2 my-2 w-auto rounded shadow-xl flex flex-col items-center'>
+                <div className='flex flex-row items-center justify-items-center'>
+                    <WarningIcon className='w-6 h-6 mr-2'/>
+                    <p>No comments found</p>
+                </div>
             </div>
         )
     }
 
-
-    //FIXME: ghost cache elements when comments are deleted
-    const deleteHandler = (c: CommentModel) => 
-        updateCommentCache((cache) => cache.delete(c.id))
+        
 
     return (
         <>{
-            commentCache.valueArray().map(c => <Comment key={c.id} model={c} onDeletion={deleteHandler}/>)
+            apiRes[0].map(c => <Comment key={c.id} model={c}/>)
         }</>
     )
 }
 
-//TODO: pass the cache into this view and update it
 function AddCommentView(props: PostProps & AddCommentProps) {
     const [text, setText] = useState("")
 

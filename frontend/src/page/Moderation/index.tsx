@@ -7,7 +7,8 @@ import {User} from "../../model/User";
 import {useAPI} from "../../backend/hook/useAPI";
 import {getBackend} from "../../backend/global-scope/util/getters";
 import {useState} from "react";
-import {createPlaceholders, createWarning} from "../../util/factory";
+import {createPlaceholders} from "../../util/factory";
+import { Warning } from "../../component/Factory";
 
 interface ModerationUserProps {
     user: User
@@ -116,12 +117,11 @@ function UserList() {
     }
 
     users = users.filter(u => u.id !== selfUser.id)
-
-    //TODO: handle empty case
+    
     if (!users.length) {
         return (
             <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2 flex flex-col items-center'>
-                {createWarning("No users found")}
+                <Warning>No users found</Warning>
             </div>
         )
     }

@@ -72,8 +72,7 @@ class PostRoute extends BaseRoute {
                 $this -> insertNew($data, $sess);
             }
 
-
-            $id = $sess -> queryParams()['id'];
+            $id = $data['id'];
             Assertions ::assertSet($id);
             $model = $this -> getById($sess, $id);
             Assertions ::assertSet($model);
@@ -195,8 +194,8 @@ class PostRoute extends BaseRoute {
                 (int)$res['joinDate'],
                 $res['username']
             ),
-            $res['postId'],
             $res['content'],
+            $res['title'],
             (int)$res['createdAt'],
             (int)$res['editedAt']
         );

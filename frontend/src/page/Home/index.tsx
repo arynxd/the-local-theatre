@@ -10,7 +10,8 @@ import { Show } from "../../model/Show";
 import { ManagerController } from "../../backend/manager/ManagerController";
 import { getBackend } from "../../backend/global-scope/util/getters";
 import { toURL } from "../../backend/request/mappers";
-import { createPlaceholders, createWarning, createError } from "../../util/factory";
+import { createPlaceholders } from "../../util/factory";
+import { Error, Warning } from "../../component/Factory";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -106,7 +107,7 @@ function LatestShows() {
         if (isInnerError) {
             return (
                 <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                    {createError("An error occurred")}
+                    {<Error>An error occurred</Error>}
                 </div>
             )
         }
@@ -132,7 +133,7 @@ function LatestShows() {
     if (isError) {
         return (
             <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {createError("An error occurred")}
+                {<Error>An error occurred</Error>}
             </div>
         )
     }
@@ -157,7 +158,7 @@ function RecentActivity() {
     if (isError) {
         return (
             <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {createError("An error occurred")}
+                {<Error>An error occurred</Error>}
             </div>
         )
     }
@@ -167,14 +168,14 @@ function RecentActivity() {
 
     if (!posts.length) {
         return (
-            createWarning("No posts found")
+            <Warning>"No posts found"</Warning>
         )
     }
 
 
     const earliestFirst = [...posts]
         .sort((a, b) =>
-            a.createdAt - b.createdAt
+            b.createdAt - a.createdAt
         )
         .slice(0, 5)
 
@@ -203,7 +204,7 @@ export default function Home() {
                 {/* Recent activity pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h2>
-                    <Separator />
+                    <Separator className='mx-2'/>
 
                     <ul className='grid grid-cols-1 grid-flow-row auto-rows-max items-baseline'>
                         <RecentActivity />
@@ -216,7 +217,7 @@ export default function Home() {
                 {/* Latest shows pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h2>
-                    <Separator />
+                    <Separator className='mx-2'/>
 
                     <LatestShows />
                 </section>
