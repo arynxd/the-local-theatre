@@ -2,18 +2,20 @@ import { StylableProps } from "../props/StylableProps";
 
 interface InlineButtonProps extends StylableProps {
   onClick?: () => void
-  children: string
+  children: Array<string | JSX.Element> | string | JSX.Element
 }
 
 export default function InlineButton(props: InlineButtonProps) {
   const styles = `
-    bg-blue-800 text-blue-100 text-semibold p-1 px-4 shadow-xl rounded-xl
+    bg-blue-800 text-blue-100 text-semibold p-2 px-4 shadow-xl rounded-xl
     ${props.className}
   `
+
   return (
     <button 
         onClick={props.onClick} 
-        className={styles}>
+        className={styles}
+    >
         {props.children}
     </button>
   )

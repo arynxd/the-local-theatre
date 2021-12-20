@@ -1,15 +1,15 @@
 import {toDate} from "../../../util/time";
 import {Post as PostModel} from "../../../model/Post";
-import commentIco from '../../../assets/comment.png'
-import {ChangeEvent, useCallback, useState} from "react";
+import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
-import Comment from "../Comment";
+import CommentElement from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/factory";
 import InlineButton from "../../InlineButton";
 import { WarningIcon } from "../../Factory";
+import { Comment } from "../../../model/Comment";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -23,7 +23,7 @@ interface AddCommentProps {
 
 function CommentView(props: PostProps) {
     const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
-
+    
     const LoadingComments = () =>
         createPlaceholders((i) =>
             <div key={i} className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
@@ -33,6 +33,7 @@ function CommentView(props: PostProps) {
                 <div className={'bg-gray-300 w-auto  h-3 animate-pulse rounded-xl m-2'}/>
             </div>, 3
         )
+    
     
     if (!apiRes) {
         return (
@@ -44,7 +45,7 @@ function CommentView(props: PostProps) {
 
     if (!apiRes[0].length) {
         return (
-            <div className='bg-gray-100 p-2 my-2 w-auto rounded shadow-xl flex flex-col items-center'>
+            <div className='bg-gray-100 dark:bg-gray-600 dark:text-gray-100 p-2 my-2 w-auto rounded shadow-xl flex flex-col items-center'>
                 <div className='flex flex-row items-center justify-items-center'>
                     <WarningIcon className='w-6 h-6 mr-2'/>
                     <p>No comments found</p>
@@ -53,11 +54,9 @@ function CommentView(props: PostProps) {
         )
     }
 
-        
-
     return (
         <>{
-            apiRes[0].map(c => <Comment key={c.id} model={c}/>)
+            apiRes[0].map(c => <CommentElement key={c.id} model={c}/>)
         }</>
     )
 }
@@ -106,6 +105,42 @@ export default function Post(props: PostProps) {
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
 
+    const SeeCommentsButton = () => {
+        if (!getAuth().isAuthenticated()) {
+            return ( <> </> )
+        }
+
+        return (
+            <InlineButton
+                className='w-max text-sm'
+                    onClick={() => {
+                        setCommentsOpen(!isCommentsOpen); 
+                        setAddingComment(false)
+                    }}
+                >
+                See comments
+            </InlineButton>
+        )
+    }
+
+    const AddCommentButton = () => {
+        if (!getAuth().isAuthenticated()) {
+            return ( <> </> )
+        }
+
+        return (
+            <InlineButton
+                className='w-max text-sm'
+                onClick={() => {
+                    setCommentsOpen(false); 
+                    setAddingComment(!isAddingComment)
+                }}
+                >
+                Add comment
+            </InlineButton>
+        )
+    }
+
     return (
         <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
             <h1 className='text-3xl font-bold pb-2 dark:text-gray-100'>{post.title}</h1>
@@ -114,32 +149,10 @@ export default function Post(props: PostProps) {
             <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
 
             <div className='w-1/2'>
-                <div className='flex flex-col md:flex-row'>
-                    <div
-                        className='block w-full h-10 bg-gray-100 dark:bg-gray-500 shadow-xl rounded mb-1 md:mr-1 md:my-0'>
-                        <div onClick={() => {
-                            setCommentsOpen(!isCommentsOpen)
-                            setAddingComment(false)
-                        }}
-                             className='flex flex-row items-center justify-center h-full'>
-                            <img className='w-5 h-5 m-2' src={commentIco} alt='Click to see comments'/>
-                            <p className='m-2 block select-none text-sm dark:text-gray-100'>See comments</p>
-                        </div>
-                    </div>
-
-                    {getAuth().isAuthenticated()
-                        ? <div
-                            className='block w-full h-10 bg-gray-100 dark:bg-gray-500 shadow-xl rounded mt-1 md:ml-1 md:my-0'>
-                            <div onClick={() => {
-                                setAddingComment(!isAddingComment)
-                                setCommentsOpen(false)
-                            }}
-                                 className='flex flex-row items-center justify-center h-full'>
-                                <img className='w-5 h-5 m-2' src={commentIco} alt='Click to see comments'/>
-                                <p className='m-2 block select-none text-sm dark:text-gray-100'>Add comment</p>
-                            </div>
-                        </div>
-                        : <> </>}
+                <div className='flex flex-col gap-4 md:flex-row w-full'>
+                    <SeeCommentsButton />
+                    <div className='flex-grow' />
+                    <AddCommentButton />
                 </div>
 
                 {isCommentsOpen

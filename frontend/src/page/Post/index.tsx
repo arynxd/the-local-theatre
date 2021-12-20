@@ -2,7 +2,6 @@ import {EntityIdentifier} from "../../model/EntityIdentifier";
 import {useParams} from "react-router";
 import {useAPI} from "../../backend/hook/useAPI";
 import {getBackend} from "../../backend/global-scope/util/getters";
-import React from "react";
 import PostElement from "../../component/model/Post";
 
 export function Post() {

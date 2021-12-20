@@ -69,12 +69,12 @@ export default function Comment(props: CommentProps & StylableProps) {
 
     const [isContextOpen, setContextOpen] = useState(false)
 
-    const deleteHandler = useCallback(() => {
+    const deleteHandler = () => {
         getBackend().http.deleteComment(model.id)
             .then(() => {
                 onDeletion?.(model)
             })
-    }, [model, onDeletion])
+    }
 
     const contextStyles = `
         invisible group-hover:visible absolute top-0 right-0 m-2 bg-white p-1 rounded ring-1
