@@ -7,7 +7,7 @@ import {User} from "../../model/User";
 import {useAPI} from "../../backend/hook/useAPI";
 import {getBackend} from "../../backend/global-scope/util/getters";
 import {useState} from "react";
-import {createPlaceholders} from "../../util/tsx";
+import {createPlaceholders, createWarning} from "../../util/factory";
 
 interface ModerationUserProps {
     user: User
@@ -95,7 +95,7 @@ function ModerationUser(props: ModerationUserProps) {
 }
 
 function UserList() {
-    const users = useAPI(() => getBackend().http.loadUsers())
+    let users = useAPI(() => getBackend().http.loadUsers())
     const selfUser = useSelfUser()
 
     const UserPlaceholders = () =>
@@ -113,12 +113,21 @@ function UserList() {
                 {UserPlaceholders()}
             </>
         )
-
     }
+
+    users = users.filter(u => u.id !== selfUser.id)
+
     //TODO: handle empty case
+    if (!users.length) {
+        return (
+            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2 flex flex-col items-center'>
+                {createWarning("No users found")}
+            </div>
+        )
+    }
     return (
         <ul>{
-            users.filter(u => u.id != selfUser.id).map(u => <ModerationUser user={u}/>)
+            users.map(u => <ModerationUser key={u.id} user={u}/>)
         }</ul>
     )
 }
@@ -132,12 +141,12 @@ export default function Moderation() {
         )
     }
 
-    //TODO change to a stateful cache and update when it's empty
+    //TODO: change to a stateful cache and update when it's empty
     return (
         <div className='w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow'>
             <div className='w-max'>
                 <h2 className='pt-2 px-2 font-semibold text-lg dark:text-gray-100'>Moderation</h2>
-                <Separator/>
+                <Separator className='mx-2'/>
             </div>
 
             <UserList/>

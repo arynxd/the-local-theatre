@@ -58,6 +58,7 @@ export class HttpManager extends Manager {
             .flatMap(toJSON)
             .map(v => toModelArray(v, this.backend().entity.createPost))
             .also(posts => this.backend().cache.post.setAll(posts.map(p => [p.id, p])))
+            // set posts in cache so that individual lookups can use it
     }
 
     loadShowImage(show: Show): BackendAction<Blob> {

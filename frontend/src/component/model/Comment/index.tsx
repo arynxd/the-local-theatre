@@ -68,19 +68,13 @@ export default function Comment(props: CommentProps & StylableProps) {
     const {author} = model
 
     const [isContextOpen, setContextOpen] = useState(false)
-    const [thisExists, setExists] = useState(true)
 
     const deleteHandler = useCallback(() => {
         getBackend().http.deleteComment(model.id)
             .then(() => {
-                setExists(false)
                 onDeletion?.(model)
             })
     }, [model, onDeletion])
-
-    if (!thisExists) {
-        return (<> </>)
-    }
 
     const contextStyles = `
         invisible group-hover:visible absolute top-0 right-0 m-2 bg-white p-1 rounded ring-1

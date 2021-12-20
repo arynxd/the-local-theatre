@@ -67,7 +67,7 @@ export default function App() {
     return (
         <BrowserRouter>
             <Navbar />
-            <div className="h-full md:h-screen flex flex-col overflow-visible">
+            <div className="h-screen flex flex-col overflow-visible">
                 <div className="flex-grow">
                     <Body />
                 </div>

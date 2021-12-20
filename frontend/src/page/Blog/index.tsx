@@ -1,9 +1,10 @@
 import {useAPI} from "../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../backend/global-scope/util/getters";
 import Post from "../../component/model/Post";
-import {createPlaceholders} from "../../util/tsx";
+import {createError, createPlaceholders, createWarning} from "../../util/factory";
 import {useState} from "react";
 import Separator from "../../component/Separator";
+import InlineButton from "../../component/InlineButton";
 
 interface CreatePostProps {
     done: () => void
@@ -63,6 +64,7 @@ type BlogState = 'view_posts' | 'create_post' | "error"
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
+
     const PostPlaceholders = () =>
         createPlaceholders(() =>
             <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
@@ -75,12 +77,17 @@ export default function Blog() {
             </div>
         )
 
-    const posts = useAPI(() => getBackend().http.loadAllPosts(), () => setState('error'))
+
+    const posts = useAPI(
+        () => getBackend().http.loadAllPosts(), 
+        () => setState('error')
+    )
 
     if (state === 'error') {
-        //TODO: proper error page here
         return (
-            <p>Error</p>
+            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
+                {createError("An error occurred")}
+            </div>
         )
     }
 
@@ -98,24 +105,28 @@ export default function Blog() {
         setState('create_post')
     }
 
+    //createInlineButton("Create post", handlePostClick, )
     const createPostButton = getAuth().isAuthenticated()
-        ? <button onClick={handlePostClick}
-                  className='absolute top-0 right-0 m-4 bg-blue-200 p-2 px-4 shadow-xl rounded-xl'>Create post
-        </button>
+        ? <InlineButton 
+            onClick={handlePostClick} 
+            className="fixed bottom-0 right-0 m-2">
+                Create post
+        </InlineButton>
         : <></>
 
     if (state === 'view_posts') {
         return (
-            <div className='relative'>
-                {createPostButton}
-                {posts.length
-                    ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
-                        posts.map(post => <Post post={post}/>)
-                    }</div>
-                    //TODO: make this a proper GUI element
-                    : <p className='absolute'>No posties :(</p>
-                }
-            </div>
+            <>
+            {createPostButton}
+            {posts.length
+                ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
+                    posts.map(post => <Post post={post}/>)
+                }</div>
+                : <div className='w-full m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center'>
+                    {createWarning("No posts found")}
+                </div>
+            }
+            </>
         )
     }
     else if (state === 'create_post') {

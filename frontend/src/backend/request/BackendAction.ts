@@ -4,10 +4,8 @@ import BackendError from "../error/BackendError";
 import {CompiledRoute} from "./route/CompiledRoute";
 import {logger} from "../../util/log";
 import {assert} from "../../util/assert";
-import {getAuth, getBackend} from "../global-scope/util/getters";
+import {getAuth} from "../global-scope/util/getters";
 import {toJSON, ValidTypeOf} from "./mappers";
-import { AbstractCache } from "../cache/AbstractCache";
-import { EntityIdentifier } from "../../model/EntityIdentifier";
 
 export type BackendActionLike<T> = BackendAction<T> | Promise<T>
 

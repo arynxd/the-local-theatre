@@ -1,4 +1,5 @@
-module.exports = {  
+module.exports = {
+  mode: 'jit',
   darkMode: 'class',
   content: [
     "./src/**/*.{ts,tsx}",
@@ -6,7 +7,8 @@ module.exports = {
   theme: {
     extend: {},
   },  
-  plugins: [],
+  plugins: [
+  ],
   variants: {
     extend: {
         display: ['group-hover'],

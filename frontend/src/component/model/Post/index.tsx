@@ -7,10 +7,11 @@ import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
 import Comment from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
-import {createPlaceholders} from "../../../util/tsx";
+import {createPlaceholders} from "../../../util/factory";
 import { useStatefulCache } from "../../../util/cache";
 import { EntityIdentifier } from "../../../model/EntityIdentifier";
 import { Comment as CommentModel } from "../../../model/Comment";
+import InlineButton from "../../InlineButton";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -36,11 +37,13 @@ function CommentView(props: PostProps) {
             </div>
         )
     
-    useEffect(() => updateCommentCache(cache => {
+    useEffect(() => {
         if (apiRes) {
-            cache.setAll(apiRes[0].map(c => [c.id, c]))
+            updateCommentCache(cache => {
+                cache.setAll(apiRes[0].map(c => [c.id, c]))
+            })
         }
-    }), [apiRes, updateCommentCache])
+    }, [apiRes])
     
     if (!apiRes) {
         return (
@@ -48,15 +51,19 @@ function CommentView(props: PostProps) {
                 LoadingComments()
             }</>
         )
-
     }
 
     if (!commentCache.size) {
+        //TODO: proper GUI element
         return (
-            <p>No comments :(</p>
+            <div className=''>
+                <p>No comments found</p>
+            </div>
         )
     }
 
+
+    //FIXME: ghost cache elements when comments are deleted
     const deleteHandler = (c: CommentModel) => 
         updateCommentCache((cache) => cache.delete(c.id))
 
@@ -67,6 +74,7 @@ function CommentView(props: PostProps) {
     )
 }
 
+//TODO: pass the cache into this view and update it
 function AddCommentView(props: PostProps & AddCommentProps) {
     const [text, setText] = useState("")
 
@@ -76,8 +84,7 @@ function AddCommentView(props: PostProps & AddCommentProps) {
 
         assert(() => text.length > 0,
             () => new TypeError("Text was empty"))
-
-            //TODO: add comments to cache when they are submitted
+            
         getBackend().http.addComment(props.post.id, text)
             .then(() => {
                 setText('')
@@ -95,12 +102,9 @@ function AddCommentView(props: PostProps & AddCommentProps) {
             <Separator className='mx-0'/>
 
             <textarea minLength={1} maxLength={MAX_COMMENT_LENGTH} onChange={changeHandler}
-                      className='w-full h-44 rounded-xl shadow p-2 dark:bg-gray-600 dark:text-gray-100'/>
+                      className='w-full h-44 rounded-xl shadow p-2 mt-2 dark:bg-gray-600 dark:text-gray-100'/>
 
-            <button onClick={submitHandler}
-                    className='p-1 mt-4 w-6/12 text-gray-100 font-semibold text-md bg-blue-900 rounded shadow-xl'>
-                Submit
-            </button>
+            <InlineButton onClick={submitHandler} className='mt-2 w-full'>Submit</InlineButton>
         </div>
     )
 }
@@ -119,7 +123,7 @@ export default function Post(props: PostProps) {
         <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
             <h1 className='text-3xl font-bold pb-2 dark:text-gray-100'>{post.title}</h1>
             <Separator className='mx-0'/>
-            <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-12'>{formatDate(post.createdAt)}</h3>
+            <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
             <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
 
             <div className='w-1/2'>

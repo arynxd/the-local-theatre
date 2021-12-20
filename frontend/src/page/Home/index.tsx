@@ -10,7 +10,7 @@ import { Show } from "../../model/Show";
 import { ManagerController } from "../../backend/manager/ManagerController";
 import { getBackend } from "../../backend/global-scope/util/getters";
 import { toURL } from "../../backend/request/mappers";
-import { createPlaceholders } from "../../util/tsx";
+import { createPlaceholders, createWarning, createError } from "../../util/factory";
 
 const HOME_PAGE_POST_COUNT = 10
 
@@ -43,7 +43,7 @@ function PostPlaceholders() {
                 <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
                 <div className='w-auto h-4 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
             </div>
-        </div>
+        </div>, 6
     )
 }
 
@@ -88,24 +88,30 @@ function Activity(props: ActivityProps) {
 
 function LatestShows() {
     const backend = getBackend()
-    const shows = useAPI(() => backend.http.loadShows())
+    const [isError, setIsError] = useState(false)
+    const shows = useAPI(
+        () => backend.http.loadShows(),
+        () => setIsError(true)
+    )
+    
 
     const ShowElement = (showProps: { model: Show }) => {
-        const [isError, setIsError] = useState(false)
+        const [isInnerError, setIsInnerError] = useState(false)
 
         const img = useAPI(
             () => backend.http.loadShowImage(showProps.model).map(toURL),
-            () => setIsError(true)
+            () => setIsInnerError(true)
         )
 
-        if (isError) {
+        if (isInnerError) {
             return (
-                <p>Error</p>
+                <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
+                    {createError("An error occurred")}
+                </div>
             )
         }
 
-
-
+        const showDate = toDate(showProps.model.showDate)
         return (
             <figure
                 className='w-full h-full bg-gray-200 dark:bg-gray-500 p-4 shadow-xl rounded-xl flex flex-col place-items-center
@@ -115,31 +121,44 @@ function LatestShows() {
 
                 <Separator className='pt-4 w-2/3' />
                 <figcaption
-                    className='text-bold text-xl text-gray-900 dark:text-gray-100'>{showProps.model.title}</figcaption>
+                    className='text-bold text-xl text-gray-900 dark:text-gray-100 text-center'>{showProps.model.title}</figcaption>
                 <p className='text-gray-500 text-sm'>Showing on
-                    <time> {showProps.model.showDate}</time>
+                    <time dateTime={showDate.toUTCString()}> {showDate.toLocaleDateString()}</time>
                 </p>
             </figure>
         )
     };
 
+    if (isError) {
+        return (
+            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
+                {createError("An error occurred")}
+            </div>
+        )
+    }
+
     return (
-        <>{
-            shows ? shows.map(show => <ShowElement key={show.id} model={show} />)
-                : PostPlaceholders()
-        }</>
+        <ul className='grid grid-cols-1 gap-4 p-4 grid-flow-row auto-rows-max md:grid-cols-2 items-center'>
+            {shows 
+                ? shows.map(show => <ShowElement key={show.id} model={show} />)
+                : PostPlaceholders()}
+        </ul>
     )
 }
 
 function RecentActivity() {
     const [isError, setIsError] = useState(false)
     const backend = getBackend()
-    const posts = useAPI(() => getPost(backend), () => setIsError(true))
+    const posts = useAPI(
+        () => getPost(backend), 
+        () => setIsError(true)
+    )
 
     if (isError) {
-        //TODO: proper GUI element
         return (
-            <p>Error</p>
+            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
+                {createError("An error occurred")}
+            </div>
         )
     }
     if (!posts) {
@@ -147,9 +166,8 @@ function RecentActivity() {
     }
 
     if (!posts.length) {
-        //TODO: proper GUI element
         return (
-            <p>No posties :(</p>
+            createWarning("No posts found")
         )
     }
 
@@ -158,6 +176,7 @@ function RecentActivity() {
         .sort((a, b) =>
             a.createdAt - b.createdAt
         )
+        .slice(0, 5)
 
     return (
         <>{earliestFirst.map((post, idx) =>
@@ -199,9 +218,7 @@ export default function Home() {
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h2>
                     <Separator />
 
-                    <ul className='grid grid-cols-1 gap-4 p-4 grid-flow-row auto-rows-max md:grid-cols-2 items-center'>
-                        <LatestShows />
-                    </ul>
+                    <LatestShows />
                 </section>
             </div>
         </div>

@@ -10,7 +10,7 @@ const CONTACT_DETAILS = Object.freeze({
 
 export default function Contact() {
     return (
-        <div className='md:flex md:justify-center md:w-auto md:h-screen'>
+        <div className='md:flex md:justify-center md:w-auto'>
             <div
                 className='flex flex-col w-auto items-center md:w-1/3 h-44 m-2 rounded-2xl shadow-xl bg-gray-200 dark:bg-gray-500'>
                 <h2 className='text-2xl text-center font-semibold pt-2 text-gray-900 dark:text-gray-200'>Contact Us</h2>
