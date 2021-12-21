@@ -43,6 +43,7 @@
 - [ ] Fix comments / posts not being updated in UI when they are changed 
 - [ ] Animate all moving elements
 - [ ] Colour icons
+- [ ] Cache for blogs
 
 ## Feature List 
 - [x] Login
