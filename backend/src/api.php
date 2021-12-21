@@ -11,7 +11,7 @@ use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
-Logger::getInstance() -> setLevel(LogLevel::ERROR);
+Logger::getInstance() -> setLevel(LogLevel::INFO);
 Logger::getInstance() -> setIncludeLoc(false);
 Logger::getInstance() -> insertNewLine();
 

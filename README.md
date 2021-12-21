@@ -42,6 +42,9 @@
 - [ ] Cache param sources in backend for perf
 - [ ] Abstract backend DB calls
 - [ ] Animate all moving elements
+- [ ] Use useCallback for callback functions
+- [ ] Reactive cache implementation
+- [ ] Loading spinner on submit buttons
 
 ## Feature List 
 - [x] Login

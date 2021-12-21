@@ -14,6 +14,18 @@ import {fromPromise, toJSON, toModel, toModelArray} from "../request/mappers";
  * **ALL** requests should go through this manager
  */
 export class HttpManager extends Manager {
+    updateComment(id: string, content: string): BackendAction<Comment> {
+        const route = Routes.Comment.UPDATE.compile()
+            .withBody({
+                id,
+                content
+            })
+        
+        return BackendAction.new(route)
+            .flatMap(toJSON)
+            .map(v => toModel(v, this.backend().entity.createComment))
+    }
+
     addPost(title: string, content: string): BackendAction<Post> {
         const route = Routes.Post.ADD.compile()
             .withBody({

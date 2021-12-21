@@ -3,7 +3,7 @@ import {Post as PostModel} from "../../../model/Post";
 import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useAPI} from "../../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
-import CommentElement from "../Comment";
+import CommentElement, { MAX_COMMENT_LENGTH } from "../Comment";
 import Separator from "../../Separator";
 import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/factory";
@@ -11,8 +11,6 @@ import InlineButton from "../../InlineButton";
 import { WarningIcon } from "../../Factory";
 import { EntityIdentifier } from "../../../model/EntityIdentifier";
 import { Comment } from "../../../model/Comment";
-
-const MAX_COMMENT_LENGTH = 3000
 
 interface CommentCacheProps {
     cache: Map<EntityIdentifier, Comment>
@@ -69,7 +67,13 @@ function CommentView(props: PostProps & CommentCacheProps) {
 
     return (
         <>{
-            sorted.map(c => <CommentElement key={c.id} model={c} onDeletion={deleteHandler}/>)
+            sorted.map(c => <CommentElement 
+                    key={c.id} 
+                    model={c} 
+                    onDeletion={deleteHandler} 
+                    cache={props.cache} 
+                    setCache={props.setCache}
+                />)
         }</>
     )
 }
@@ -133,10 +137,6 @@ export default function Post(props: PostProps) {
     }
 
     const SeeCommentsButton = () => {
-        if (!getAuth().isAuthenticated()) {
-            return ( <> </> )
-        }
-
         return (
             <InlineButton
                 className='w-max text-sm'

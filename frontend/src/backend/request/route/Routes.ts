@@ -29,6 +29,7 @@ export default class Routes {
         public static readonly LIST = new Route('api/comment/list', 'GET', ['id'], [], false)
         public static readonly DELETE = new Route('api/comment', 'DELETE', [], [], true)
         public static readonly ADD = new Route('api/comment', 'POST', [], ['content', 'postId'], true)
+        public static readonly UPDATE = new Route('api/comment', 'POST', [], [], true)
     }
 
     public static readonly Show = class {

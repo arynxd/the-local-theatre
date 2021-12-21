@@ -8,7 +8,7 @@ class ModelKeys {
     }
 
     public static function COMMENT_MODEL() {
-        return ['postId', 'content'];
+        return ['content'];
     }
 
     public static function USER_MODEL() {

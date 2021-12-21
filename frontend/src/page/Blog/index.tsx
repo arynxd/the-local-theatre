@@ -94,7 +94,7 @@ export default function Blog() {
     }
 
     
-    if (!posts || !selfUser) {
+    if (!posts || (!selfUser && getAuth().isAuthenticated())) {
         return (
             <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
                 PostPlaceholders()
@@ -107,7 +107,7 @@ export default function Blog() {
         setState('create_post')
     }
 
-    const createPostButton = getAuth().isAuthenticated() && hasPermission(selfUser.permissions,  "moderator")
+    const createPostButton = selfUser && hasPermission(selfUser.permissions,  "moderator")
         ? <InlineButton 
             onClick={handlePostClick} 
             className="fixed bottom-0 right-0 m-2">

@@ -166,8 +166,11 @@ class CommentRoute extends BaseRoute {
                 $this -> updateById($body['id'], $selfUser -> id, $body, $sess);
                 $idToFetchWith = $body['id'];
             }
-            else { 
+            else if (isset($body['postId'])) { 
                 $idToFetchWith = $this -> insertNew($body, $selfUser -> id, $sess)['id'];
+            }
+            else {
+                $res -> sendError("No identifiers passed, cannot infer what action should be performed", [StatusCode::BAD_REQUEST]);
             }
 
             $comment = $this -> getById($idToFetchWith, $sess);
@@ -228,7 +231,7 @@ class CommentRoute extends BaseRoute {
         } 
         else if ($method === RequestMethod::POST) {
             $body = $sess -> jsonParams();
-            $sess -> applyMiddleware( new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL(), $body, "Invalid data provided"));
+            $sess -> applyMiddleware(new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL(), $body, "Invalid data provided"));
             $sess -> applyMiddleware(new AuthenticationMiddleware());
             $selfUser = $sess -> cache -> user();
 

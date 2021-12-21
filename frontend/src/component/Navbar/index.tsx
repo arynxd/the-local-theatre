@@ -27,8 +27,7 @@ function ProfileMenu() {
         origin-top-right right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-gray-100 dark:bg-gray-600 focus:outline-none
         ${isOpen ? 'absolute' : 'hidden'} 
    `
-
-    //TODO: finish this menu & have it integrate with the API
+   
     return (
         <>
             <button onClick={() => setOpen(!isOpen)}
