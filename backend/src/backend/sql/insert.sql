@@ -8,12 +8,12 @@ VALUES (
         1639655077,
         2
 );
-# pwd: testing123
+# pwd: testing123AA
 INSERT INTO credential (userId, email, password, token)
 VALUES (
         'f568d4d2-28b5-4ad5-956c-50bd3930bbe5',
         'aryn@test.com',
-        '$2y$10$kKWy28U8T2g7Exfhw7tdjOpldEkxTn9WanWZFBsFmtYedmJ.xCHV6',
+        '$2y$11$tykSfMmum11BgcIqERxWb.0dRyyJ4ZSsR3wKU5AmVQSnST5DowiLu',
         'ad4dbe85b97f41eeb0c3208ddda9637ce6bf1fff28fe69171435c1866b379aa8'
 );
 
