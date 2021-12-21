@@ -34,15 +34,14 @@
 - [x] Perm checks for restricted pages on frontend
 - [x] Add more data to navbar profile image
 - [x] Unify shadows
+- [x] Fix comments / posts not being updated in UI when they are changed 
+- [x] Colour icons
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
-- [ ] Proper error codes for backend error responses
 - [ ] Cache param sources in backend for perf
 - [ ] Abstract backend DB calls
-- [ ] Fix comments / posts not being updated in UI when they are changed 
 - [ ] Animate all moving elements
-- [ ] Colour icons
 
 ## Feature List 
 - [x] Login
@@ -72,6 +71,5 @@
 
 - php -S localhost:8000 api.php (local php server with hot reload)
 - https://dbdiagram.io/d/617c73c7fa17df5ea6759df1
-- https://ui.dev/react-router-url-parameters/ (for post rendering)
 - https://heroicons.dev/
 

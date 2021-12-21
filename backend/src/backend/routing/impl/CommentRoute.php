@@ -98,6 +98,7 @@ class CommentRoute extends BaseRoute {
      * @param Map $data
      * @param string $authorId
      * @param Session $sess
+     * @return Map the inserted data
      */
     private function insertNew($data, $authorId, $sess) {
         $query = "INSERT INTO comment (
@@ -108,14 +109,19 @@ class CommentRoute extends BaseRoute {
             )
         ";
 
-        $sess -> db -> query($query, [
-            'id' => StringUtil ::newID(),
+        $newId = StringUtil ::newID();
+        $time = DBUtil ::currentTime();
+        $model = [
+            'id' => $newId,
             'authorId' => $authorId,
             'postId' => $data['postId'],
             'content' => $data['content'],
-            'createdAt' => DBUtil ::currentTime(),
+            'createdAt' => $time,
             'editedAt' => null
-        ]);
+        ];
+        $sess -> db -> query($query, $model);
+
+        return Map::from($model);
     }
 
     /**
@@ -155,12 +161,19 @@ class CommentRoute extends BaseRoute {
             $body = $sess -> jsonParams();
 
 
+            $idToFetchWith = null;
             if (isset($body['id'])) {
                 $this -> updateById($body['id'], $selfUser -> id, $body, $sess);
+                $idToFetchWith = $body['id'];
             }
             else { 
-                $this -> insertNew($body, $selfUser -> id, $sess);
+                $idToFetchWith = $this -> insertNew($body, $selfUser -> id, $sess)['id'];
             }
+
+            $comment = $this -> getById($idToFetchWith, $sess);
+
+            Assertions::assertSet($comment); // it should be set, we just inserted / updated
+            $res -> sendJSON($comment -> toMap());
         } 
         else if ($method == RequestMethod::DELETE) {
             $id = $sess -> queryParams()['id'];
@@ -172,33 +185,34 @@ class CommentRoute extends BaseRoute {
 
             $isMod = $selfUser -> permissions >= PermissionLevel ::MODERATOR;
             
+            $comment = $this -> getById($id, $sess);
+
             if ($isMod) {
-                if (!$this -> deleteById($id, $sess)) {
+                if (!$this -> deleteById($id, $sess) || !isset($comment)) {
                     $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
                 }
                 else {
-                    $res -> sendJSON("{}", [StatusCode ::OK]);
+                    $res -> sendJSON($comment -> toMap(), [StatusCode ::OK]);
                 }
             }
-
-            $comment = $this -> getById($id, $sess);
 
             if (!isset($comment)) {
                 $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
             }
 
-            if ($comment -> authorId != $selfUser -> id) {
+            if ($comment -> author -> id != $selfUser -> id) {
                 $res -> sendError("Cannot delete comments you did not make", [StatusCode ::FORBIDDEN]);
             }
 
             if (!$this -> deleteById($id, $sess)) {
                 $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
             }
+
+            $res -> sendJSON($comment -> toMap());
         } 
         else {
             Logger ::getInstance() -> fatal("Unexpected RequestMethod $method");
         }
-        $res -> sendJSON("{}", StatusCode ::OK);
     }
 
     public function validateRequest($sess, $res) {
@@ -206,9 +220,6 @@ class CommentRoute extends BaseRoute {
 
         $method = $sess->http->method;
         $query = $sess -> queryParams();
-        $body = $sess -> jsonParams();
-
-
 
         if ($method === RequestMethod::GET) {
             if (!isset($query['id'])) {
@@ -216,10 +227,9 @@ class CommentRoute extends BaseRoute {
             }
         } 
         else if ($method === RequestMethod::POST) {
-            $sess -> applyMiddleware(
-                new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL, $body, "Invalid data provided"),
-                new AuthenticationMiddleware()
-            );
+            $body = $sess -> jsonParams();
+            $sess -> applyMiddleware( new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL(), $body, "Invalid data provided"));
+            $sess -> applyMiddleware(new AuthenticationMiddleware());
             $selfUser = $sess -> cache -> user();
 
             Assertions::assertSet($selfUser); // the self user should be set if the middleware passes

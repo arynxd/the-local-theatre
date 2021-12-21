@@ -9,8 +9,16 @@ import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/factory";
 import InlineButton from "../../InlineButton";
 import { WarningIcon } from "../../Factory";
+import { EntityIdentifier } from "../../../model/EntityIdentifier";
+import { Comment } from "../../../model/Comment";
 
 const MAX_COMMENT_LENGTH = 3000
+
+interface CommentCacheProps {
+    cache: Map<EntityIdentifier, Comment>
+    setCache: (newCache: Map<EntityIdentifier, Comment>) => void
+    loaded: boolean
+}
 
 interface PostProps {
     post: PostModel
@@ -20,9 +28,7 @@ interface AddCommentProps {
     done: () => void
 }
 
-function CommentView(props: PostProps) {
-    const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
-    
+function CommentView(props: PostProps & CommentCacheProps) {
     const LoadingComments = () =>
         createPlaceholders((i) =>
             <div key={i} className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded p-2'>
@@ -34,7 +40,12 @@ function CommentView(props: PostProps) {
         )
     
     
-    if (!apiRes) {
+    const deleteHandler = (comment: Comment) => {
+        const newCache = props.cache
+        newCache.delete(comment.id)
+        props.setCache(new Map(newCache))
+    }
+    if (!props.loaded) {
         return (
             <>{
                 LoadingComments()
@@ -42,7 +53,10 @@ function CommentView(props: PostProps) {
         )
     }
 
-    if (!apiRes[0].length) {
+    let sorted = Array.from(props.cache.values())
+        .sort((a, b) => b.createdAt - a.createdAt)
+
+    if (!sorted.length) {
         return (
             <div className='bg-gray-100 dark:bg-gray-600 dark:text-gray-100 p-2 my-2 w-auto rounded shadow-xl flex flex-col items-center'>
                 <div className='flex flex-row items-center justify-items-center'>
@@ -55,12 +69,12 @@ function CommentView(props: PostProps) {
 
     return (
         <>{
-            apiRes[0].map(c => <CommentElement key={c.id} model={c}/>)
+            sorted.map(c => <CommentElement key={c.id} model={c} onDeletion={deleteHandler}/>)
         }</>
     )
 }
 
-function AddCommentView(props: PostProps & AddCommentProps) {
+function AddCommentView(props: PostProps & AddCommentProps & CommentCacheProps) {
     const [text, setText] = useState("")
 
     const submitHandler = useCallback(() => {
@@ -71,8 +85,10 @@ function AddCommentView(props: PostProps & AddCommentProps) {
             () => new TypeError("Text was empty"))
             
         getBackend().http.addComment(props.post.id, text)
-            .then(() => {
-                setText('')
+            .then((c) => {
+                const newCache = props.cache
+                newCache.set(c.id, c)
+                props.setCache(new Map(newCache))
                 props.done()
             })
     }, [props, text])
@@ -98,7 +114,19 @@ export default function Post(props: PostProps) {
     const post = props.post
     const [isCommentsOpen, setCommentsOpen] = useState(false)
     const [isAddingComment, setAddingComment] = useState(false)
+    const [cache, setCache] = useState(new Map<EntityIdentifier, Comment>())
+    const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
 
+    useEffect(() => {
+        if (apiRes) {
+            const map = new Map<EntityIdentifier, Comment>()
+            for (const comment of apiRes[0]) {
+                map.set(comment.id, comment)
+            }
+            setCache(map)
+        }
+    }, [apiRes])
+    
     const formatDate = (unix: number): string => {
         const d = toDate(unix)
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
@@ -153,12 +181,12 @@ export default function Post(props: PostProps) {
                 </div>
 
                 {isCommentsOpen
-                    ? <CommentView post={post}/>
+                    ? <CommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes}/>
                     : <> </>
                 }
 
                 {isAddingComment
-                    ? <AddCommentView post={post} done={() => {
+                    ? <AddCommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes} done={() => {
                         setAddingComment(false)
                         setCommentsOpen(true)
                     }}/>

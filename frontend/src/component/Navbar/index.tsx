@@ -43,7 +43,7 @@ function ProfileMenu() {
                     <Separator className='w-2/3'/>
 
                     <div className='flex flex-row items-center'>
-                        <h2 className='p-2 dark:text-gray-200'>Theme Toggle: </h2>
+                        <h2 className='p-2 dark:text-gray-200'>Toggle theme: </h2>
                         <ThemeToggle className='h-8 w-8'/>
                     </div>
                     <Separator className='w-6/12' />
@@ -71,10 +71,12 @@ export default function Navbar() {
     useSubscription(auth$$, useCallback((newAuth) => setAuthState(newAuth), []))
 
     const hamburgerCloseStyles = `
+        fill-white
         ${isMobileOpen ? 'hidden' : 'block'} h-6 w-6
     `
 
     const hamburgerOpenStyles = `
+        fill-white
         ${isMobileOpen ? 'block' : 'hidden'} h-6 w-6
     `
 

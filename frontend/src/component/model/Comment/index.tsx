@@ -66,7 +66,7 @@ function ContextMenu(props: ContextMenuProps) {
 export default function Comment(props: CommentProps & StylableProps) {
     const {model, onDeletion} = props
     const {author} = model
-
+    
     const [isContextOpen, setContextOpen] = useState(false)
 
     const deleteHandler = () => {
@@ -77,7 +77,7 @@ export default function Comment(props: CommentProps & StylableProps) {
     }
 
     const contextStyles = `
-        invisible group-hover:visible absolute top-0 right-0 m-2 bg-white p-1 rounded ring-1
+        invisible group-hover:visible absolute top-0 right-0 m-2 bg-white dark:bg-blue-900 p-1 rounded shadow-xl
         ${getAuth().isAuthenticated() ? '' : 'hidden'}
     `
 
