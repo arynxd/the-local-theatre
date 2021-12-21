@@ -9,7 +9,6 @@ import {assert} from "../../../util/assert";
 import {createPlaceholders} from "../../../util/factory";
 import InlineButton from "../../InlineButton";
 import { WarningIcon } from "../../Factory";
-import { Comment } from "../../../model/Comment";
 
 const MAX_COMMENT_LENGTH = 3000
 
@@ -83,12 +82,12 @@ function AddCommentView(props: PostProps & AddCommentProps) {
     }, [])
 
     return (
-        <div className='bg-gray-100 dark:bg-gray-600 mt-2 p-2 shadow rounded w-full'>
+        <div className='bg-gray-100 dark:bg-gray-600 mt-2 p-2 shadow-xl rounded w-full'>
             <h2 className='select-none dark:text-gray-100'>Add a comment</h2>
             <Separator className='mx-0'/>
 
             <textarea minLength={1} maxLength={MAX_COMMENT_LENGTH} onChange={changeHandler}
-                      className='w-full h-44 rounded-xl shadow p-2 mt-2 dark:bg-gray-600 dark:text-gray-100'/>
+                      className='w-full h-44 rounded-xl shadow-xl p-2 mt-2 dark:bg-gray-600 dark:text-gray-100'/>
 
             <InlineButton onClick={submitHandler} className='mt-2 w-full'>Submit</InlineButton>
         </div>
@@ -148,10 +147,8 @@ export default function Post(props: PostProps) {
             <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
             <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
 
-            <div className='w-1/2'>
-                <div className='flex flex-col gap-4 md:flex-row w-full'>
+            <div className='flex flex-col gap-4 md:flex-row w-full'>
                     <SeeCommentsButton />
-                    <div className='flex-grow' />
                     <AddCommentButton />
                 </div>
 
@@ -167,7 +164,6 @@ export default function Post(props: PostProps) {
                     }}/>
                     : <> </>
                 }
-            </div>
         </div>
     )
 }

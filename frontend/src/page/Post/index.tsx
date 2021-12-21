@@ -11,7 +11,7 @@ export function Post() {
     if (!post) {
         return (
             <div
-                className='flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl mx-4 md:mx-24 lg:mx-44'>
+                className='flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-xl rounded-xl mx-4 md:mx-24 lg:mx-44'>
                 <div className='w-full h-full animate-pulse m-2'>
                     <div className='w-3/5 h-5 m-2 mb-4 bg-gray-300 dark:bg-gray-400 rounded'/>
 

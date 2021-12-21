@@ -1,11 +1,8 @@
 export default function Footer() {
-    //TODO: add links here
     return (
         <footer className='bg-gray-100 dark:bg-gray-800 h-12'>
-            <div className='grid grid-cols-3 gap-4 place-items-center w-full h-full dark:text-white'>
-                <p>Social link 1</p>
-                <p>Social link 2</p>
-                <p>Social link 3</p>
+            <div className='flex flex-col items-center justify-center h-full w-full'>
+                <p className='dark:text-gray-200'>© Aryn Folkard 20006203 2021</p>
             </div>
         </footer>
     )

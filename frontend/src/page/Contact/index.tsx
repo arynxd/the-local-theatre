@@ -1,5 +1,4 @@
-import email from '../../assets/email.png'
-import phone from '../../assets/calling.png'
+import { Email, Phone } from "../../component/Icons";
 import Separator from "../../component/Separator";
 
 const CONTACT_DETAILS = Object.freeze({
@@ -18,13 +17,13 @@ export default function Contact() {
                 <Separator className='w-3/5 md:w-3/12'/>
 
                 <div className='flex flex-row items-center'>
-                    <img className='w-10 h-10 m-2' src={email} alt="Email icon"/>
+                    <Email className='w-10 h-10 m-2'/>
                     <a href="mailto:admin@test.com"><p
                         className='text-xl m-2 text-gray-800 dark:text-gray-300'>{CONTACT_DETAILS.email}</p></a>
                 </div>
 
                 <div className='flex flex-row items-center mb-4'>
-                    <img className='w-10 h-10 m-1' src={phone} alt="Phone icon"/>
+                    <Phone className='w-10 h-10 m-1'/>
                     <p className='text-xl m-3 text-gray-800 dark:text-gray-300'>{CONTACT_DETAILS.phone}</p>
                 </div>
             </div>

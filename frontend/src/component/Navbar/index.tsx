@@ -1,6 +1,6 @@
-import React, {useCallback, useState} from "react";
+import {useCallback, useState} from "react";
 import {Link} from "react-router-dom";
-import logo from '../../assets/apple-touch-icon-76x76.png'
+import logo from '../../assets/ico76x76.png'
 import logoWithText from '../../assets/LogoWithTextNoBG.png'
 import {Paths} from "../../util/paths";
 import {getAuth} from "../../backend/global-scope/util/getters";
@@ -10,13 +10,13 @@ import {useSelfUser} from "../../backend/hook/useSelfUser";
 import Avatar from "../Avatar";
 import {hasPermission} from "../../model/Permission";
 import ThemeToggle from "../ThemeToggle";
+import {Hamburger, Close} from '../Icons'
 
 function ProfileMenu() {
     const [isOpen, setOpen] = useState(false)
 
     const selfUser = useSelfUser()
 
-    //TODO: have a placeholder here
     if (!selfUser) {
         return (
             <></>
@@ -24,7 +24,7 @@ function ProfileMenu() {
     }
 
     const imageStyles = `
-        origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-100 dark:bg-gray-600 ring-1 focus:outline-none
+        origin-top-right right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-gray-100 dark:bg-gray-600 focus:outline-none
         ${isOpen ? 'absolute' : 'hidden'} 
    `
 
@@ -36,21 +36,25 @@ function ProfileMenu() {
                 <span className="sr-only">Open user menu</span>
                 <Avatar className="h-10 w-10 rounded-full" user={selfUser}/>
             </button>
+
             <div className={imageStyles}>
-                <div className='grid grid-cols-1 place-items-center w-full h-full'>
-                    <h1 className='font-semibold text-xl dark:text-gray-200'>Profile</h1>
+                <div className='grid grid-cols-1 gap-3 p-4 pt-2 place-items-center w-full h-full'>
+                    <h2 className='font-semibold text-xl dark:text-gray-200'>Profile ({selfUser.firstName} {selfUser.lastName})</h2>
                     <Separator className='w-2/3'/>
 
                     <div className='flex flex-row items-center'>
                         <h2 className='p-2 dark:text-gray-200'>Theme Toggle: </h2>
-                        <ThemeToggle className='h-9 w-9'/>
+                        <ThemeToggle className='h-8 w-8'/>
                     </div>
                     <Separator className='w-6/12' />
 
-                    <Link className='dark:text-gray-200' onClick={() => setOpen(false)} to={Paths.USER_SETTINGS}>Settings</Link>
+                    <Link className='dark:text-gray-200' onClick={() => setOpen(false)} to={Paths.USER_SETTINGS}>Edit your details</Link>
                     <Separator className='w-1/3'/>
 
-                    <Link to={Paths.HOME} className='dark:text-gray-200' onClick={() => getAuth().logout()}>Sign out</Link>
+                    <Link to={Paths.HOME} className='dark:text-gray-200' onClick={() => {
+                        getAuth().logout()
+                        setOpen(false)
+                    }}>Sign out</Link>
                 </div>
             </div>
         </>
@@ -58,8 +62,6 @@ function ProfileMenu() {
 }
 
 export default function Navbar() {
-    //TODO: get the animation to work when the navbar comes down on mobile
-
     const auth$$ = getAuth().observeAuth$$
 
     const [authState, setAuthState] = useState(auth$$.value)
@@ -111,17 +113,12 @@ export default function Navbar() {
                             {/* Hamburger menu, only appears on mobile. */}
                             <button onClick={() => setMobileOpen(!isMobileOpen)}
                                     className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-blue-600 focus:outline-none">
-                                {/* Close icon (X) */}
-                                <svg className={hamburgerCloseStyles} fill="none" viewBox="0 0 24 24" stroke="#FFFFFF">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                          d="M4 6h16M4 12h16M4 18h16"/>
-                                </svg>
-
+                                
                                 {/* Open icon (Hamburger) */}
-                                <svg className={hamburgerOpenStyles} fill="none" viewBox="0 0 24 24" stroke="#FFFFFF">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                          d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
+                                <Hamburger className={hamburgerCloseStyles} />
+
+                                {/* Close icon (X) */}
+                                <Close className={hamburgerOpenStyles} />
                             </button>
                         </div>
 

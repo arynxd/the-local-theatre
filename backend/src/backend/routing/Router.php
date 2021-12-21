@@ -15,7 +15,6 @@ use TLT\Routing\Impl\ShowImageRoute;
 use TLT\Routing\Impl\ShowListRoute;
 use TLT\Routing\Impl\SignupRoute;
 use TLT\Routing\Impl\UserListRoute;
-use TLT\Routing\Impl\UserPreferencesRoute;
 use TLT\Routing\Impl\UserRoute;
 
 /**
@@ -40,7 +39,6 @@ class Router {
             new ShowListRoute(),
             new SignupRoute(),
             new UserListRoute(),
-            new UserPreferencesRoute(),
             new UserRoute(),
         ];
     }

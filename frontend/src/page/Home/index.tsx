@@ -37,7 +37,7 @@ interface ActivityProps {
 function PostPlaceholders() {
     return createPlaceholders((i) =>
         <div key={i}
-            className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+            className='flex animate-pulse items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-xl rounded-xl'>
             <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded' />
 
             <div className='w-full h-full animate-pulse'>
@@ -69,7 +69,7 @@ function Activity(props: ActivityProps) {
     return (
         <Link to={props.linkTo}>
             <div
-                className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-2xl rounded-xl'>
+                className='transition duration-300 ease-in-out transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-400 flex items-center bg-gray-200 dark:bg-gray-500 m-2 shadow-xl rounded-xl'>
                 {!avatar ?
                     // avatar hasn't loaded yet
                     <div className='w-12 h-12 m-2 bg-gray-200 dark:bg-gray-400 rounded' /> :
@@ -106,9 +106,7 @@ function LatestShows() {
 
         if (isInnerError) {
             return (
-                <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                    {<Error>An error occurred</Error>}
-                </div>
+                <>{<Error>An error occurred</Error>}</>
             )
         }
 
@@ -132,9 +130,7 @@ function LatestShows() {
 
     if (isError) {
         return (
-            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {<Error>An error occurred</Error>}
-            </div>
+            <>{<Error>An error occurred</Error>}</>
         )
     }
 
@@ -157,9 +153,7 @@ function RecentActivity() {
 
     if (isError) {
         return (
-            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {<Error>An error occurred</Error>}
-            </div>
+            <>{<Error>An error occurred</Error>}</>
         )
     }
     if (!posts) {
@@ -200,7 +194,7 @@ export default function Home() {
     return (
         <div className='md:flex flex-col md:flex-row w-auto'>
             <div
-                className='w-auto md:w-2/5 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
+                className='w-auto md:w-2/5 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-xl rounded'>
                 {/* Recent activity pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Recent Activity</h2>
@@ -213,7 +207,7 @@ export default function Home() {
             </div>
 
             <div
-                className='w-auto md:w-2/3 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-2xl rounded'>
+                className='w-auto md:w-2/3 h-full overflow-scroll md:overflow-visible bg-gray-300 dark:bg-gray-500 m-2 p-2 shadow-xl rounded'>
                 {/* Latest shows pane  */}
                 <section>
                     <h2 className='text-xl font-semibold p-2 text-gray-900 dark:text-gray-200'>Latest shows</h2>

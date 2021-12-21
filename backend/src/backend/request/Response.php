@@ -80,16 +80,7 @@ class Response {
         Logger ::getInstance() -> error("An internal error has occurred:");
         Logger ::getInstance() -> error("\t" . $msg);
 
-        if (is_a('Exception', $msg)) {
-            throw new RuntimeException($msg -> getMessage());
-        }
-        else {
-            throw new RuntimeException($msg);
-        }
-        
         $this -> sendError(ErrorStrings::INTERNAL_ERROR, [StatusCode::INTERNAL_ERROR]);
-
-        
     }
 
     /**
@@ -103,9 +94,6 @@ class Response {
      * @return never-return This function never returns
      */
     public function sendError($message, $headers = []) {
-        if (!is_array($headers)) {
-            throw new RuntimeException("");
-        }
         Logger ::getInstance() -> error("Route returned error => " . $message);
         $this -> send(json_encode([
             "error" => true,

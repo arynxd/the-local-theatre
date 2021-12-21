@@ -1,10 +1,9 @@
 import {MouseEvent, useCallback, useState} from "react";
 import {StylableProps} from "../props/StylableProps";
-import sun from '../../assets/sun.png'
-import moon from '../../assets/moon (1).png'
 import {useSubscription} from "../../backend/hook/useSubscription";
 import {getTheme} from "../../backend/global-scope/util/getters";
 import {Theme} from "../../backend/global-scope/context/ThemeContext";
+import { Moon, Sun } from "../Icons";
 
 interface ThemeToggleProps {
     onChange?: (newTheme: Theme) => void
@@ -16,7 +15,7 @@ export default function ThemeToggle(props: StylableProps & ThemeToggleProps) {
 
     useSubscription(themeCtx, useCallback(newTheme => setTheme(newTheme), []))
 
-    const handler = (_: MouseEvent<HTMLImageElement>): void => {
+    const handler = (): void => {
         if (theme === 'light') {
             setTheme('dark')
             themeCtx.next('dark')
@@ -31,12 +30,16 @@ export default function ThemeToggle(props: StylableProps & ThemeToggleProps) {
 
     if (theme === 'dark') {
         return (
-            <img src={sun} onClick={handler} className={props.className} alt='Light theme toggle'/>
+            <button onClick={handler}>
+                <Sun className={props.className}/>
+            </button>
         )
     }
     else if (theme === 'light') {
         return (
-            <img src={moon} onClick={handler} className={props.className} alt='Dark theme toggle'/>
+            <button onClick={handler}>
+                <Moon className={props.className}/>
+            </button>
         )
     }
     else {

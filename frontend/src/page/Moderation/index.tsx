@@ -25,7 +25,7 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
 
     return (
         <div
-            className='absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow p-2 ring-1'>
+            className='absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow-xl p-2 ring-1'>
             <h2 className='font-md'>Editing {props.user.username}'s permissions</h2>
             <Separator className='w-4/5'/>
 
@@ -38,7 +38,7 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
 
             <Separator className='w-2/5'/>
 
-            <button className='text-sm bg-gray-100 px-2 py-1 shadow rounded'
+            <button className='text-sm bg-gray-100 px-2 py-1 shadow-xl rounded'
                     onClick={() => props.done(level)}>Done
             </button>
         </div>
@@ -48,7 +48,7 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
 function ModerationUser(props: ModerationUserProps) {
     const user = props.user
     const buttonStyles = (lightColour: string, darkColour: string) =>
-        `block text-sm md:text-md bg-${lightColour} dark:bg-${darkColour} dark:text-gray-200 shadow rounded p-2`
+        `block text-sm md:text-md bg-${lightColour} dark:bg-${darkColour} dark:text-gray-200 shadow-xl rounded p-2`
 
     const [state, setState] = useState<ModerationUserState>('idle')
 
@@ -101,7 +101,7 @@ function UserList() {
 
     const UserPlaceholders = () =>
         createPlaceholders(() =>
-            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2'>
+            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2'>
                 <div className='w-1/3 h-3 bg-gray-300 animate-pulse rounded-xl m-2 mb-4'/>
 
                 <div className='w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2'/>
@@ -120,7 +120,7 @@ function UserList() {
     
     if (!users.length) {
         return (
-            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2 flex flex-col items-center'>
+            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2 flex flex-col items-center'>
                 <Warning>No users found</Warning>
             </div>
         )
@@ -143,7 +143,7 @@ export default function Moderation() {
 
     //TODO: change to a stateful cache and update when it's empty
     return (
-        <div className='w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow'>
+        <div className='w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow-xl'>
             <div className='w-max'>
                 <h2 className='pt-2 px-2 font-semibold text-lg dark:text-gray-100'>Moderation</h2>
                 <Separator className='mx-2'/>

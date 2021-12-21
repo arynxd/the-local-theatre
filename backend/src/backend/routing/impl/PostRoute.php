@@ -226,7 +226,7 @@ class PostRoute extends BaseRoute {
         else if ($method == RequestMethod ::POST) {
             $body = $sess -> jsonParams();
             $sess -> applyMiddleware(
-                new ModelValidatorMiddleware(ModelKeys::POST_MODEL, $body, "Invalid data provided"),
+                new ModelValidatorMiddleware(ModelKeys::POST_MODEL(), $body, "Invalid data provided"),
                 new AuthenticationMiddleware()
             );
 

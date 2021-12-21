@@ -54,7 +54,7 @@ class LoginRoute extends BaseRoute {
 
         $res -> sendJSON(Map ::from([
             "token" => $accountDetails['token']
-        ]), StatusCode::OK);
+        ]), [StatusCode::OK]);
     }
 
     public function validateRequest($sess, $res) {

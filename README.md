@@ -32,18 +32,17 @@
 - [x] Change frontend inline buttons to blue
 - [x] Handle backend errors in frontend components
 - [x] Perm checks for restricted pages on frontend
+- [x] Add more data to navbar profile image
+- [x] Unify shadows
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
-- [ ] Unify shadows
-- [ ] Change frontend assertions to use TS 'asserts' keyword
 - [ ] Proper error codes for backend error responses
 - [ ] Cache param sources in backend for perf
-- [ ] Load user prefs from the backend on launch, submit pref changes to the backend
-- [ ] Cache user prefs (AuthContext custom object, SelfUser)
 - [ ] Abstract backend DB calls
-- [ ] Add more data to navbar profile image
 - [ ] Fix comments / posts not being updated in UI when they are changed 
+- [ ] Animate all moving elements
+- [ ] Colour icons
 
 ## Feature List 
 - [x] Login
@@ -55,9 +54,9 @@
 - [x] Comment add
 - [x] User promotion
 - [x] User demotion
+- [x] Footer
+- [x] 404 Page
 - [ ] Moderation log
-- [ ] Footer
-- [ ] 404 Page
 - [ ] Editing of comments
 - [ ] Editing of post
 - [ ] Deletion of posts 

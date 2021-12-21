@@ -49,16 +49,6 @@ CREATE TABLE IF NOT EXISTS `comment`
 	`editedAt`  bigint DEFAULT null
 );
 
-CREATE TABLE IF NOT EXISTS `user_prefs`
-(
-	`userId` char(36) PRIMARY KEY,
-	`theme`  enum
-				 (
-					 'light',
-					 'dark'
-					 ) NOT NULL
-);
-
 ALTER TABLE `moderation_action`
 	ADD FOREIGN KEY (`moderator`) REFERENCES `user` (`id`);
 
@@ -76,6 +66,3 @@ ALTER TABLE `comment`
 
 ALTER TABLE `comment`
 	ADD FOREIGN KEY (`postId`) REFERENCES `post` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `user_prefs`
-	ADD FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE;

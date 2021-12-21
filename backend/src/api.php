@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // we must require the autoloader since namespace file resolution is dictated by it
 require_once 'autoloader.php';
 
@@ -15,7 +11,7 @@ use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
-Logger::getInstance() -> setLevel(LogLevel::DISABLED);
+Logger::getInstance() -> setLevel(LogLevel::ERROR);
 Logger::getInstance() -> setIncludeLoc(false);
 Logger::getInstance() -> insertNewLine();
 

@@ -6,6 +6,8 @@ import {useState} from "react";
 import Separator from "../../component/Separator";
 import InlineButton from "../../component/InlineButton";
 import { Error, Warning } from "../../component/Factory";
+import { useSelfUser } from "../../backend/hook/useSelfUser";
+import { hasPermission } from "../../model/Permission";
 
 interface CreatePostProps {
     done: () => void
@@ -44,17 +46,17 @@ function CreatePostView(props: CreatePostProps) {
     }
 
     return (
-        <div className='w-auto bg-gray-200 rounded shadow-xl m-4 p-2'>
+        <div className='w-auto bg-gray-200 dark:bg-gray-600 rounded shadow-xl m-4 p-2'>
             <div className='w-max'>
-                <h2 className='text-lg '>Create a new post</h2>
+                <h2 className='text-lg dark:text-gray-100'>Create a new post</h2>
                 <Separator className='w-full mt-1 pb-4'/>
             </div>
 
             <textarea placeholder='Post title' maxLength={50} minLength={1} onChange={(ev) => setTitle(ev.target.value)}
-                      className='w-full p-2 bg-gray-100 h-10 mb-4 rounded shadow-xl'/>
+                      className='w-full p-2 bg-gray-100 dark:bg-gray-600 dark:text-gray-100 h-10 mb-4 rounded shadow-xl'/>
             <textarea placeholder='Post content' maxLength={5000} minLength={1}
                       onChange={(ev) => setContent(ev.target.value)}
-                      className='w-full p-2 bg-gray-100 h-24 rounded shadow-xl'/>
+                      className='w-full p-2 bg-gray-100 dark:bg-gray-600 dark:text-gray-100 h-24 rounded shadow-xl'/>
 
             <InlineButton className='mt-2' onClick={handleSubmitClick}>Submit</InlineButton>
         </div>
@@ -65,10 +67,11 @@ type BlogState = 'view_posts' | 'create_post' | "error"
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
+    const selfUser = useSelfUser()
 
     const PostPlaceholders = () =>
-        createPlaceholders(() =>
-            <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
+        createPlaceholders((i) =>
+            <div key={i} className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
                 <div className='w-2/5 h-8 m-2 bg-gray-300 animate-pulse rounded-xl'/>
 
                 <div className='w-full h-4 m-2 mt-4 bg-gray-300 animate-pulse rounded-xl'/>
@@ -86,14 +89,12 @@ export default function Blog() {
 
     if (state === 'error') {
         return (
-            <div className='flex flex-col items-center bg-gray-200 rounded p-2 m-2 shadow-xl'>
-                {<Error>"An error occurred"</Error>}
-            </div>
+            <>{<Error>An error occurred</Error>}</>
         )
     }
 
     
-    if (!posts) {
+    if (!posts || !selfUser) {
         return (
             <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
                 PostPlaceholders()
@@ -106,7 +107,7 @@ export default function Blog() {
         setState('create_post')
     }
 
-    const createPostButton = getAuth().isAuthenticated()
+    const createPostButton = getAuth().isAuthenticated() && hasPermission(selfUser.permissions,  "moderator")
         ? <InlineButton 
             onClick={handlePostClick} 
             className="fixed bottom-0 right-0 m-2">
@@ -123,7 +124,7 @@ export default function Blog() {
             {createPostButton}
             {sorted.length
                 ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
-                    sorted.map(post => <Post post={post}/>)
+                    sorted.map(post => <Post key={post.id} post={post}/>)
                 }</div>
                 : <div className='w-full m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center'>
                     {<Warning>No posts found</Warning>}

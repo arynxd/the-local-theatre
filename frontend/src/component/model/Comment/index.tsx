@@ -1,6 +1,6 @@
 import {Comment as CommentModel} from "../../../model/Comment";
 import {StylableProps} from "../../props/StylableProps";
-import menuIco from '../../../assets/dots-menu.png'
+import { Hamburger } from "../../Icons";
 import {useCallback, useState} from "react";
 import {getAuth, getBackend} from "../../../backend/global-scope/util/getters";
 import {toLevel} from "../../../model/Permission";
@@ -88,7 +88,7 @@ export default function Comment(props: CommentProps & StylableProps) {
                 <p className='text-md p-2 dark:text-gray-300 break-words'>{model.content}</p>
                 <div onClick={() => setContextOpen(!isContextOpen)}
                      className={contextStyles}>
-                    <img className='h-4 w-4' src={menuIco} alt='Click to show comment menu'/>
+                    <Hamburger className='h-4 w-4'/>
                 </div>
                 {isContextOpen
                     ? <ContextMenu 

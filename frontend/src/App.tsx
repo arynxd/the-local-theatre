@@ -13,6 +13,7 @@ import { Post } from './page/Post'
 import { Paths } from "./util/paths";
 import UserSettings from "./page/UserSettings";
 import Moderation from "./page/Moderation";
+import ThemeToggle from './component/ThemeToggle';
 
 
 function Body() {
@@ -67,8 +68,8 @@ export default function App() {
     return (
         <BrowserRouter>
             <Navbar />
-            <div className="h-screen flex flex-col overflow-visible">
-                <div className="flex-grow">
+            <div className="h-max flex flex-col overflow-visible">
+                <div className="min-h-screen flex-grow">
                     <Body />
                 </div>
                 <Footer />
