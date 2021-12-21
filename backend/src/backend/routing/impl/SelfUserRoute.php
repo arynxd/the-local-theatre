@@ -28,14 +28,12 @@ class SelfUserRoute extends BaseRoute {
         $selfUser['joinDate'] = (int)$selfUser['joinDate'];
         $selfUser['dob'] = (int)$selfUser['dob'];
 
-        $res -> sendJSON($selfUser, StatusCode::OK);
+        $res -> sendJSON($selfUser, [StatusCode::OK]);
     }
 
     public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(
-            new DatabaseMiddleware(),
-            new AuthenticationMiddleware()
-        );
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+        $sess -> applyMiddleware(new AuthenticationMiddleware());
         return HttpResult ::Ok();
     }
 }

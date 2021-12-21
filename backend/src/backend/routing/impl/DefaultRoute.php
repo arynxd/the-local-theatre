@@ -18,7 +18,7 @@ class DefaultRoute extends BaseRoute {
         $res -> sendJSON(Map ::from([
             "ok" => true,
             "log_path" => Logger ::getInstance() -> getLogFile()
-        ]), StatusCode::OK);
+        ]), [StatusCode::OK]);
     }
 
     public function validateRequest($sess, $res) {

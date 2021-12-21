@@ -38,11 +38,11 @@ class UserRoute extends BaseRoute {
             $isEditingPerms = $selfUser -> permissions != $data['permissions'];
 
             if (!$isModifyingSelf && !$isSelfAdmin) {
-                $res -> sendError("You may only modify your own user account", StatusCode::UNAUTHORIZED);
+                $res -> sendError("You may only modify your own user account", [StatusCode::UNAUTHORIZED]);
             }
 
             if ($isModifyingSelf && $isEditingPerms) {
-                $res -> sendError("You cannot change your own permissions", StatusCode::UNAUTHORIZED);
+                $res -> sendError("You cannot change your own permissions", [StatusCode::UNAUTHORIZED]);
             }
 
             $this -> updateUser($sess, $data);
@@ -67,7 +67,7 @@ class UserRoute extends BaseRoute {
         $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
-            $res -> sendError("User not found", StatusCode::NOT_FOUND);
+            $res -> sendError("User not found", [StatusCode::NOT_FOUND]);
         }
 
         $dbRes = Map ::from($dbRes -> first()); // we get arrays back from the db, convert it to a map
@@ -110,10 +110,8 @@ class UserRoute extends BaseRoute {
                 return HttpResult ::BadRequest("No data provided");
             }
 
-            $sess -> applyMiddleware(
-                new AuthenticationMiddleware(),
-                new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL, $data, "Invalid data provided")
-            );
+            $sess -> applyMiddleware(new AuthenticationMiddleware());
+            $sess -> applyMiddleware(new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL(), $data, "Invalid data provided"));
         }
 
         return HttpResult ::Ok();

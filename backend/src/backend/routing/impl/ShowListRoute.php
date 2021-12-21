@@ -29,7 +29,7 @@ class ShowListRoute extends BaseRoute {
         });
 
 
-        $res -> sendJSON($maps, StatusCode::OK);
+        $res -> sendJSON($maps, [StatusCode::OK]);
     }
 
     public function validateRequest($sess, $res) {

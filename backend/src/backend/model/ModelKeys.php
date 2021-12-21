@@ -3,9 +3,23 @@
 namespace TLT\Model;
 
 class ModelKeys {
-    const POST_MODEL = ['content', 'title'];
-    const COMMENT_MODEL = ['postId', 'content'];
-    const USER_MODEL = ['id', 'firstName', 'lastName', 'permissions', 'dob', 'joinDate', 'username'];
-    const USER_UPDATE_MODEL = ['id', 'firstName', 'lastName', 'permissions', 'dob', 'username'];
-    const SIGNUP_MODEL = ['firstName', 'lastName', 'username', 'dob', 'email', 'password'];
+    public static function POST_MODEL() {
+        return ['content', 'title'];
+    }
+
+    public static function COMMENT_MODEL() {
+        return ['postId', 'content'];
+    }
+
+    public static function USER_MODEL() {
+        return ['id', 'firstName', 'lastName', 'permissions', 'dob', 'joinDate', 'username'];
+    }
+
+    public static function USER_UPDATE_MODEL() {
+        return ['id', 'firstName', 'lastName', 'permissions', 'dob', 'username'];
+    }
+
+    public static function SIGNUP_MODEL() {
+        return ['firstName', 'lastName', 'username', 'dob', 'email', 'password'];
+    }
 }

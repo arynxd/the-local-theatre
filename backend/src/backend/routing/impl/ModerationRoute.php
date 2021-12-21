@@ -18,7 +18,7 @@ class ModerationRoute extends BaseRoute {
     }
 
     public function handle($sess, $res) {
-        $res -> sendError("Not implemented", StatusCode::BAD_REQUEST);
+        $res -> sendError("Not implemented", [StatusCode::BAD_REQUEST]);
     }
 
     public function validateRequest($sess, $res) {

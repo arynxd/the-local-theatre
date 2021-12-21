@@ -141,10 +141,10 @@ class CommentRoute extends BaseRoute {
             $model = $this -> getById($commentId, $sess);
 
             if (!isset($model)) {
-                $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
             }
             else {
-                $res -> sendJSON($model -> toMap(), StatusCode::OK);
+                $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
             }
         } 
         else if ($method == RequestMethod::POST) {
@@ -174,25 +174,25 @@ class CommentRoute extends BaseRoute {
             
             if ($isMod) {
                 if (!$this -> deleteById($id, $sess)) {
-                    $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+                    $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
                 }
                 else {
-                    $res -> sendJSON("{}", StatusCode ::OK);
+                    $res -> sendJSON("{}", [StatusCode ::OK]);
                 }
             }
 
             $comment = $this -> getById($id, $sess);
 
             if (!isset($comment)) {
-                $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+                $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
             }
 
             if ($comment -> authorId != $selfUser -> id) {
-                $res -> sendError("Cannot delete comments you did not make", StatusCode ::FORBIDDEN);
+                $res -> sendError("Cannot delete comments you did not make", [StatusCode ::FORBIDDEN]);
             }
 
             if (!$this -> deleteById($id, $sess)) {
-                $res -> sendError("Unknown comment $id", StatusCode ::NOT_FOUND);
+                $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
             }
         } 
         else {

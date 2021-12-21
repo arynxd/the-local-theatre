@@ -40,10 +40,10 @@ class PostRoute extends BaseRoute {
             $model = $this -> getById($sess, $id);
 
             if (!isset($model)) {
-                $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
             }
 
-            $res -> sendJSON($model -> toMap(), StatusCode::OK);
+            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
         }
         else if ($method == RequestMethod::POST) {
             Assertions ::assert($sess -> auth -> isAuthenticated());
@@ -64,7 +64,7 @@ class PostRoute extends BaseRoute {
             if (isset($body['id'])) {
                 $data['id'] = $body['id'];
                 if (!$this -> updateById($data, $sess)) {
-                    $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+                    $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
                 }
             }
             else { 
@@ -77,7 +77,7 @@ class PostRoute extends BaseRoute {
             $model = $this -> getById($sess, $id);
             Assertions ::assertSet($model);
 
-            $res -> sendJSON($model -> toMap(), StatusCode::OK);
+            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
         }
         else if ($method == RequestMethod::DELETE) {
             Assertions ::assert($sess -> auth -> isAuthenticated());
@@ -87,10 +87,10 @@ class PostRoute extends BaseRoute {
             Assertions ::assertSet($id);
 
             if ($this -> deleteById($id, $sess)) {
-                $res -> sendJSON("{}", StatusCode::OK);
+                $res -> sendJSON("{}", [StatusCode::OK]);
             }
             else {
-                $res -> sendError("Post not found", StatusCode::NOT_FOUND);
+                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
             }
         }
         else {

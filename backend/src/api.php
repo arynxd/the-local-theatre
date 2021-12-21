@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // we must require the autoloader since namespace file resolution is dictated by it
 require_once 'autoloader.php';
 
@@ -10,7 +15,7 @@ use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
 Logger::getInstance() -> setLogFile(sys_get_temp_dir() . "/php_log.log");
-Logger::getInstance() -> setLevel(LogLevel::INFO);
+Logger::getInstance() -> setLevel(LogLevel::DISABLED);
 Logger::getInstance() -> setIncludeLoc(false);
 Logger::getInstance() -> insertNewLine();
 
@@ -21,11 +26,10 @@ Logger::getInstance() -> info("Starting new session...");
 $sess = null;
 
 try {
-    $sess =  new Session();
+    $sess = new Session();
 }
 catch (Exception $ex) {
     Logger::getInstance() -> error("Failed to start session..");
-
     // We will have to create a new response since the session is in an undefined state
     $res = new Response();
     $res -> sendInternalError($ex);
@@ -36,14 +40,14 @@ $route = $sess -> routing -> route;
 
 if (!$route -> validateMethod($sess)) {
     Logger::getInstance() -> error("Attempted to use unsupported method {$sess -> http -> method} on route {$route -> path}");
-    $sess -> res -> sendError("Unsupported method " . $sess -> http -> method, StatusCode::BAD_REQUEST);
+    $sess -> res -> sendError("Unsupported method " . $sess -> http -> method, [StatusCode::BAD_REQUEST]);
 }
 
 Logger ::getInstance() -> info("Validating route " . $route -> path);
 $routeResult = $route -> validateRequest($sess, $sess -> res);
 
 if ($routeResult -> isError()) {
-    $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, ...$routeResult -> headers);
+    $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, $routeResult -> headers);
 }
 else {
     Logger::getInstance() -> info("Starting route " . $route -> path);

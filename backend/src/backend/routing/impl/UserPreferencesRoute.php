@@ -41,10 +41,9 @@ class UserPreferencesRoute extends BaseRoute {
     }
 
     public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(
-            new DatabaseMiddleware(),
-            new AuthenticationMiddleware()
-        );
+        $sess -> applyMiddleware(new DatabaseMiddleware());
+        $sess -> applyMiddleware(new AuthenticationMiddleware());
+        
         return HttpResult ::Ok();
     }
 }

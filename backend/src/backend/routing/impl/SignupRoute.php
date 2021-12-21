@@ -29,7 +29,7 @@ class SignupRoute extends BaseRoute {
         $userHasAccount = $this -> userHasAccount($sess, $data['email']);
 
         if ($userHasAccount) {
-            $res -> sendError("Account already exists", StatusCode::CONFLICT);
+            $res -> sendError("Account already exists", [StatusCode::CONFLICT]);
         }
         else {
             $newToken = $this -> createAccount($sess, $data);
@@ -96,7 +96,7 @@ class SignupRoute extends BaseRoute {
             return HttpResult ::BadRequest("No data provided");
         }
 
-        $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL, Map ::from($data), "Invalid data provided");
+        $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL(), Map ::from($data), "Invalid data provided");
         $sess -> applyMiddleware($validator);
 
         return HttpResult ::Ok();

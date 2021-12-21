@@ -2,7 +2,7 @@
 
 namespace TLT\Request;
 
-use Exception;
+use RuntimeException;
 use TLT\Util\Data\Map;
 use TLT\Util\Data\MapUtil;
 use TLT\Util\Enum\ContentType;
@@ -31,14 +31,15 @@ class Response {
      *
      * @return never-return This function never returns
      */
-    public function sendJSON($data, ...$headers) {
+    public function sendJSON($data, $headers = []) {
         Logger ::getInstance() -> info("Sending response..");
         Logger ::getInstance() -> debug("\t$data");
+
         if (MapUtil ::is_map($data)) {
-            $this -> send(json_encode($data), CORS::ALL, ContentType::JSON, ...$headers);
+            $this -> send(json_encode($data), array_merge([ContentType::JSON, CORS::ALL], $headers));
         }
         else if (is_string($data)) {
-            $this -> send(json_encode(json_decode($data)), CORS::ALL, ContentType::JSON, ...$headers); // encode/decode for validation
+            $this -> send(json_encode(json_decode($data)), array_merge([ContentType::JSON, CORS::ALL], $headers)); // encode/decode for validation
         }
         else if (is_array($data)) {
             throw new UnexpectedValueException("Got array passed to sendJSON, did you forget to call Map::from()?");
@@ -59,7 +60,7 @@ class Response {
      *
      * @return never-return This function never returns
      */
-    public function send($data, ...$headers) {
+    public function send($data, $headers = []) {
         Logger ::getInstance() -> debug("Sending output {$data}");
         HttpUtil::applyHeaders($headers);
 
@@ -79,7 +80,16 @@ class Response {
         Logger ::getInstance() -> error("An internal error has occurred:");
         Logger ::getInstance() -> error("\t" . $msg);
 
-        $this -> sendError(ErrorStrings::INTERNAL_ERROR, StatusCode::INTERNAL_ERROR);
+        if (is_a('Exception', $msg)) {
+            throw new RuntimeException($msg -> getMessage());
+        }
+        else {
+            throw new RuntimeException($msg);
+        }
+        
+        $this -> sendError(ErrorStrings::INTERNAL_ERROR, [StatusCode::INTERNAL_ERROR]);
+
+        
     }
 
     /**
@@ -92,11 +102,14 @@ class Response {
      *
      * @return never-return This function never returns
      */
-    public function sendError($message, ...$headers) {
+    public function sendError($message, $headers = []) {
+        if (!is_array($headers)) {
+            throw new RuntimeException("");
+        }
         Logger ::getInstance() -> error("Route returned error => " . $message);
         $this -> send(json_encode([
             "error" => true,
             "message" => $message
-        ]), ContentType::JSON, CORS::ALL, ...$headers);
+        ]), array_merge([ContentType::JSON, CORS::ALL], $headers));
     }
 }

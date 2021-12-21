@@ -11,17 +11,19 @@ class LogLevel {
     const DEBUG = 5;
     const ALL = 6;
 
-    const LEVEL_TO_DISPLAY_NAME = [
-        self::DISABLED => "DISABLED",
-        self::FATAL => "FATAL",
-        self::ERROR => "ERROR",
-        self::WARN  => "WARN",
-        self::INFO  => "INFO",
-        self::DEBUG => "DEBUG",
-        self::ALL   => "ALL",
-    ];
+    public static function LEVEL_TO_DISPLAY_NAME() {
+        return [
+            self::DISABLED => "DISABLED",
+            self::FATAL => "FATAL",
+            self::ERROR => "ERROR",
+            self::WARN  => "WARN",
+            self::INFO  => "INFO",
+            self::DEBUG => "DEBUG",
+            self::ALL   => "ALL",
+        ];
+    }
 
     public static function asDisplay($level) {
-        return self::LEVEL_TO_DISPLAY_NAME[$level];
+        return self::LEVEL_TO_DISPLAY_NAME()[$level];
     }
 }

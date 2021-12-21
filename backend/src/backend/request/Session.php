@@ -171,28 +171,23 @@ class Session {
      *
      * If the middleware fails, the connection is terminated with an error
      *
-     * @param BaseMiddleware[] $middlewares The middlewares to apply
+     * @param BaseMiddleware $middlewares The middlewares to apply
      */
-    public function applyMiddleware(...$middlewares) {
-        Logger ::getInstance() -> info("Applying middlewares..");
+    public function applyMiddleware($middleware) {
+        $wareResult = null;
+        Logger ::getInstance() -> debug("Applying middleware " . get_class($middleware));
 
-        foreach ($middlewares as $middleware) {
-            $wareResult = null;
-            Logger ::getInstance() -> debug("\tLoading middleware " . get_class($middleware));
-
-            try {
-                $wareResult = $middleware -> apply($this);
-            }
-            catch (Exception $ex) {
-                Logger ::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
-                $this -> res -> sendInternalError($ex);
-            }
-
-            if ($wareResult -> isError()) {
-                $this -> res -> sendError($wareResult -> error, $wareResult -> httpCode, ...$wareResult -> headers);
-            }
+        try {
+            $wareResult = $middleware -> apply($this);
+        }
+        catch (Exception $ex) {
+            Logger ::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
+            $this -> res -> sendInternalError($ex);
         }
 
-        Logger ::getInstance() -> info("Middlewares applied without error");
+        if ($wareResult -> isError()) {
+            $this -> res -> sendError($wareResult -> error, array_merge([$wareResult -> httpCode], $wareResult -> headers));
+        }
+        Logger ::getInstance() -> info("Middleware applied without error");
     }
 }

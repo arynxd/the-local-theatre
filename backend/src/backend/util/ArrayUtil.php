@@ -26,7 +26,7 @@ class ArrayUtil {
                 $newArray[$key] = self ::arrayCopy($value);
             }
             else if (is_object($value)) {
-                $newArray[$key] = clone $value;
+                $newArray[$key] = $value;
             }
             else {
                 $newArray[$key] = $value;

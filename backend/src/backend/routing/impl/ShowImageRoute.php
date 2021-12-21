@@ -25,7 +25,7 @@ class ShowImageRoute extends BaseRoute {
         DataUtil ::readOrDefault(
             "shows/$id.png",
             "shows/show.png",
-            ContentType::PNG, CORS::ALL, StatusCode::OK
+            [ContentType::PNG, CORS::ALL, StatusCode::OK]
         );
         exit; // exit after reading, since the output has been sent
     }

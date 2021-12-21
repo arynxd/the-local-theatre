@@ -24,7 +24,7 @@ class AvatarRoute extends BaseRoute {
         DataUtil ::readOrDefault(
             "avatars/$id.png",
             "avatars/avatar.png",
-            ContentType::PNG, CORS::ALL, StatusCode::OK
+            [ContentType::PNG, CORS::ALL, StatusCode::OK]
         );
         exit;
     }

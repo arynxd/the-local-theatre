@@ -22,7 +22,7 @@ class UserListRoute extends BaseRoute {
         $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
-            $res -> sendError("No users present", StatusCode::NOT_FOUND);
+            $res -> sendError("No users present", [StatusCode::NOT_FOUND]);
         }
 
         foreach ($dbRes -> raw() as $arr) {
@@ -32,7 +32,7 @@ class UserListRoute extends BaseRoute {
             );
         }
 
-        $res -> sendJSON($out, StatusCode::OK);
+        $res -> sendJSON($out, [StatusCode::OK]);
     }
 
     public function validateRequest($sess, $res) {

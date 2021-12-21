@@ -31,19 +31,19 @@ class HttpResult {
         $this -> headers = $headers;
     }
 
-    public static function Ok(...$headers) {
+    public static function Ok($headers = []) {
         return new HttpResult(StatusCode::OK, null, $headers);
     }
 
-    public static function BadRequest($error, ...$headers) {
+    public static function BadRequest($error, $headers = []) {
         return new HttpResult(StatusCode::BAD_REQUEST, $error, $headers);
     }
 
-    public static function Unprocessable($error, ...$headers) {
+    public static function Unprocessable($error, $headers = []) {
         return new HttpResult(StatusCode::UNPROCESSABLE_ENTITY, $error, $headers);
     }
 
-    public static function from($code, $error, ...$headers) {
+    public static function from($code, $error, $headers = []) {
         return new HttpResult($code, $error, $headers);
     }
 

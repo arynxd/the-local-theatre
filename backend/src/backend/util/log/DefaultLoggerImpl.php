@@ -17,6 +17,7 @@ class DefaultLoggerImpl {
     public function __construct() {
         $this -> level = LogLevel::WARN;
         $this -> includeLoc = $this -> level <= LogLevel::DEBUG;
+        ini_set('date.timezone', 'UTC');
     }
 
 
@@ -63,17 +64,20 @@ class DefaultLoggerImpl {
      * @inheritDoc
      */
     public function insertNewLine() {
-        $f = fopen($this -> getLogFile(), 'a');
-        Assertions ::assertNotFalse($f);
-        fwrite($f, PHP_EOL);
-        fclose($f);
+        // if logging is enabled
+        if ($this -> shouldLog(LogLevel::DEBUG)) {
+            $f = fopen($this -> getLogFile(), 'a');
+            Assertions ::assertNotFalse($f);
+            fwrite($f, PHP_EOL);
+            fclose($f);
+        }
     }
 
     /**
      * @inheritDoc
      */
     public function fatal($message) {
-        if (is_a(Exception::class, $message)) {
+        if (is_a('Exception', $message)) {
             $message = "An error has occurred " . $message -> getMessage();
         }
 
@@ -101,7 +105,6 @@ class DefaultLoggerImpl {
                 $this -> error("Could not get location for log output, stack was empty");
             }
 
-
             $stack = $stack[1];
 
             $file = join("/", // take the last section of the path
@@ -127,7 +130,7 @@ class DefaultLoggerImpl {
      * @inheritDoc
      */
     public function error($message) {
-        if (is_a(Exception::class, $message)) {
+        if (is_a('Exception', $message)) {
             $message = "An error has occurred " . $message -> getMessage();
         }
         $this -> doLog(LogLevel::ERROR, $message);
