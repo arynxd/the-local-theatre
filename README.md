@@ -50,7 +50,6 @@
 - [ ] Context menu component
 - [ ] Changeable avatars
 - [ ] Improve backend response api
-- [ ] Show 'No comments' when final comment is deleted
 - [ ] Input validation for edits
 - [ ] Moderator deleted comments do not update frontend cache
   - [ ] Clear caches when we logout
