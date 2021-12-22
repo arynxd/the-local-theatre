@@ -49,6 +49,7 @@
 - [ ] Cache for blogs
 - [ ] Context menu component
 - [ ] Changeable avatars
+- [ ] Improve backend response api
 
 ## Feature List 
 - [x] Login
