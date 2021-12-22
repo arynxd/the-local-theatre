@@ -25,6 +25,7 @@ interface CommentCacheProps {
 
 interface ContextMenuProps {
     model: CommentModel
+    state: CommentState
     setState: (newState: CommentState) => void
 }
 
@@ -54,22 +55,52 @@ function ContextMenu(props: ContextMenuProps) {
         )
     }
 
-    return (
-        <ul className='absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center'>
-            {canEdit
-                ? <button onClick={() => props.setState("edit")}>
-                    <li className='dark:text-gray-200 font-semibold'>Edit</li>
-                </button>
-                : <> </>
-            }
+    const contextHandler = () => {
+        if (props.state === 'context') {
+            props.setState("view")
+        }
+        else {
+            props.setState("context")
+        }
+    }
 
-            {canDelete
-                ? <button onClick={() => props.setState("delete")}>
-                    <li className='text-red-600 font-semibold'>Delete</li>
-                </button>
-                : <> </>
+    const contextStyles = `
+        absolute top-0 right-0 m-2 bg-blue-800 p-1 
+        rounded shadow-xl w-8 h-8 flex flex-col items-center align-center
+        ${getAuth().isAuthenticated() ? '' : 'hidden'}
+    `
+
+    if (!showMenu) {
+        return ( <> </> )
+    }
+
+    const menu = <ul className='absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center'>
+                    {canEdit
+                        ? <button onClick={() => props.setState("edit")}>
+                            <li className='dark:text-gray-200 font-semibold'>Edit</li>
+                        </button>
+                        : <> </>
+                    }
+
+                    {canDelete
+                        ? <button onClick={() => props.setState("delete")}>
+                            <li className='text-red-600 font-semibold'>Delete</li>
+                        </button>
+                        : <> </>
+                    }
+                </ul>
+    return (
+        <>
+            <div onClick={contextHandler}
+                className={contextStyles}>
+                <Hamburger className='h-6 w-6 fill-white'/>
+            </div>
+            
+            {props.state === 'context'
+                ? menu 
+                : <> </> 
             }
-        </ul>
+        </>
     )
 }
 
@@ -125,21 +156,6 @@ export default function Comment(props: CommentProps & StylableProps & CommentCac
         return ( <> </> )
     }
 
-    const contextHandler = () => {
-        if (state === 'context') {
-            setState("view")
-        }
-        else {
-            setState("context")
-        }
-    }
-
-    const contextStyles = `
-        absolute top-0 right-0 m-2 bg-white dark:bg-blue-900 p-1 
-        rounded shadow-xl w-8 h-8 flex flex-col items-center align-center
-        ${getAuth().isAuthenticated() ? '' : 'hidden'}
-    `
-
     return (
         <div className={props.className}>
             <div className='bg-gray-100 dark:bg-gray-600 shadow-xl my-2 relative rounded'>
@@ -154,20 +170,12 @@ export default function Comment(props: CommentProps & StylableProps & CommentCac
                         />
                     : <p className='text-md p-2 dark:text-gray-300 break-words'>{model.content}</p>
                 }
-                
 
-                <div onClick={contextHandler}
-                     className={contextStyles}>
-                    <Hamburger className='h-6 w-6'/>
-                </div>
-
-                {state === 'context'
-                    ? <ContextMenu 
-                        model={props.model} 
-                        setState={setState}
-                     />
-                    : <> </>
-                }
+                <ContextMenu 
+                    model={props.model} 
+                    state={state}
+                    setState={setState}
+                />
             </div>
         </div>
     )

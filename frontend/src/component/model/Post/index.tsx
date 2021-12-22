@@ -11,6 +11,17 @@ import InlineButton from "../../InlineButton";
 import { WarningIcon } from "../../Factory";
 import { EntityIdentifier } from "../../../model/EntityIdentifier";
 import { Comment } from "../../../model/Comment";
+import {Hamburger} from '../../Icons';
+import { useSubscription } from "../../../backend/hook/useSubscription";
+import { User } from "../../../model/User";
+import { toLevel } from "../../../model/Permission";
+
+
+interface ContextMenuProps {
+    model: PostModel
+    setState: (newState: PostState) => void
+    state: PostState
+}
 
 interface CommentCacheProps {
     cache: Map<EntityIdentifier, Comment>
@@ -114,11 +125,83 @@ function AddCommentView(props: PostProps & AddCommentProps & CommentCacheProps) 
     )
 }
 
+function ContextMenu(props: ContextMenuProps) {
+    const user$$ = getAuth().observeUser$$
+
+    const [selfUser, setSelfUser] = useState<User>()
+    useSubscription(user$$, useCallback(newUser => setSelfUser(newUser), []))
+
+    if (!selfUser) {
+        return (
+            <> </>
+        )
+    }
+
+    const permLevel = toLevel(selfUser.permissions)
+
+    const isOwnPost = props.model.author.id === selfUser.id
+    const canDelete = permLevel === 'moderator' || isOwnPost
+    const canEdit = isOwnPost
+
+    const showMenu = canEdit || canDelete
+
+    if (!showMenu) {
+        return (
+            <> </>
+        )
+    }
+
+    const contextStyles = `
+        absolute top-0 right-0 m-2 bg-blue-800 p-1 
+        rounded shadow-xl w-8 h-8 flex flex-col items-center align-center
+        ${getAuth().isAuthenticated() ? '' : 'hidden'}
+    `
+
+    const contextHandler = () => {
+        if (props.state === 'context') {
+            props.setState("view")
+        }
+        else {
+            props.setState("context")
+        }
+    }
+
+    if (!showMenu) {
+        return (<> </> )
+    }
+
+    return (
+        <>
+        <div className={contextStyles} onClick={contextHandler}>
+                <Hamburger className='h-6 w-6 fill-white'/>
+            </div>
+            
+        <ul className='absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center'>
+            {canEdit
+                ? <button onClick={() => props.setState("edit")}>
+                    <li className='dark:text-gray-200 font-semibold'>Edit</li>
+                </button>
+                : <> </>
+            }
+
+            {canDelete
+                ? <button onClick={() => props.setState("delete")}>
+                    <li className='text-red-600 font-semibold'>Delete</li>
+                </button>
+                : <> </>
+            }
+        </ul>
+        </>
+    )
+}
+
+
+type PostState = "view" | "view_comments" | "add_comment" | "context" | "edit" | "delete"
+
 export default function Post(props: PostProps) {
     const post = props.post
-    const [isCommentsOpen, setCommentsOpen] = useState(false)
-    const [isAddingComment, setAddingComment] = useState(false)
     const [cache, setCache] = useState(new Map<EntityIdentifier, Comment>())
+    const [state, setState] = useState<PostState>("view")
     const apiRes = useAPI(() => getBackend().http.loadCommentsForPost(props.post.id))
 
     useEffect(() => {
@@ -141,8 +224,12 @@ export default function Post(props: PostProps) {
             <InlineButton
                 className='w-max text-sm'
                     onClick={() => {
-                        setCommentsOpen(!isCommentsOpen); 
-                        setAddingComment(false)
+                        if (state === 'view_comments') {
+                            setState('view')
+                        }
+                        else {
+                            setState("view_comments")
+                        }
                     }}
                 >
                 See comments
@@ -159,8 +246,12 @@ export default function Post(props: PostProps) {
             <InlineButton
                 className='w-max text-sm'
                 onClick={() => {
-                    setCommentsOpen(false); 
-                    setAddingComment(!isAddingComment)
+                    if (state === 'add_comment') {
+                        setState('view')
+                    }
+                    else {
+                        setState("add_comment")
+                    }
                 }}
                 >
                 Add comment
@@ -169,9 +260,11 @@ export default function Post(props: PostProps) {
     }
 
     return (
-        <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full'>
+        <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full relative'>
             <h1 className='text-3xl font-bold pb-2 dark:text-gray-100'>{post.title}</h1>
             <Separator className='mx-0'/>
+
+
             <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
             <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
 
@@ -180,18 +273,23 @@ export default function Post(props: PostProps) {
                     <AddCommentButton />
                 </div>
 
-                {isCommentsOpen
+                {state === 'view_comments'
                     ? <CommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes}/>
                     : <> </>
                 }
 
-                {isAddingComment
+                {state === 'add_comment'
                     ? <AddCommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes} done={() => {
-                        setAddingComment(false)
-                        setCommentsOpen(true)
+                        setState('view_comments')
                     }}/>
                     : <> </>
                 }
+
+                <ContextMenu 
+                    model={post} 
+                    state={state}
+                    setState={setState}
+                />
         </div>
     )
 }

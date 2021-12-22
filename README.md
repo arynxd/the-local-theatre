@@ -47,6 +47,7 @@
 - [ ] Loading spinner on submit buttons
 - [ ] Colour icons
 - [ ] Cache for blogs
+- [ ] Context menu component
 
 ## Feature List 
 - [x] Login
@@ -60,8 +61,8 @@
 - [x] User demotion
 - [x] Footer
 - [x] 404 Page
+- [x] Editing of comments
 - [ ] Moderation log
-- [ ] Editing of comments
 - [ ] Editing of post
 - [ ] Deletion of posts 
 
