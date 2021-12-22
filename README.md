@@ -45,6 +45,8 @@
 - [ ] Use useCallback for callback functions
 - [ ] Reactive cache implementation
 - [ ] Loading spinner on submit buttons
+- [ ] Colour icons
+- [ ] Cache for blogs
 
 ## Feature List 
 - [x] Login
