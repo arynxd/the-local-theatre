@@ -170,27 +170,32 @@ function ContextMenu(props: ContextMenuProps) {
         return (<> </> )
     }
 
+    const menu = <ul className='absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center'>
+                    {canEdit
+                        ? <button onClick={() => props.setState("edit")}>
+                            <li className='dark:text-gray-200 font-semibold'>Edit</li>
+                        </button>
+                        : <> </>
+                    }
+
+                    {canDelete
+                        ? <button onClick={() => props.setState("delete")}>
+                            <li className='text-red-600 font-semibold'>Delete</li>
+                        </button>
+                        : <> </>
+                    }
+                </ul>
     return (
         <>
-        <div className={contextStyles} onClick={contextHandler}>
+            <div onClick={contextHandler}
+                className={contextStyles}>
                 <Hamburger className='h-6 w-6 fill-white'/>
             </div>
             
-        <ul className='absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center'>
-            {canEdit
-                ? <button onClick={() => props.setState("edit")}>
-                    <li className='dark:text-gray-200 font-semibold'>Edit</li>
-                </button>
-                : <> </>
+            {props.state === 'context'
+                ? menu 
+                : <> </> 
             }
-
-            {canDelete
-                ? <button onClick={() => props.setState("delete")}>
-                    <li className='text-red-600 font-semibold'>Delete</li>
-                </button>
-                : <> </>
-            }
-        </ul>
         </>
     )
 }
