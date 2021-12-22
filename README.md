@@ -48,6 +48,7 @@
 - [ ] Colour icons
 - [ ] Cache for blogs
 - [ ] Context menu component
+- [ ] Changeable avatars
 
 ## Feature List 
 - [x] Login
