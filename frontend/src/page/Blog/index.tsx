@@ -117,7 +117,7 @@ export default function Blog() {
     const createPostButton = selfUser && hasPermission(selfUser.permissions,  "moderator")
         ? <InlineButton 
             onClick={handlePostClick} 
-            className="fixed bottom-0 right-0 m-2">
+            className="fixed bottom-0 right-0 m-2 z-20">
                 Create post
         </InlineButton>
         : <></>
