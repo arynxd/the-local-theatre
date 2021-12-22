@@ -1,13 +1,21 @@
 import {EntityIdentifier} from "../../model/EntityIdentifier";
-import {useParams} from "react-router";
+import {Redirect, useParams} from "react-router";
 import {useAPI} from "../../backend/hook/useAPI";
 import {getBackend} from "../../backend/global-scope/util/getters";
 import PostElement from "../../component/model/Post";
+import { useState } from "react";
+import { Paths } from "../../util/paths";
 
 export function Post() {
     const id = useParams<{ id: EntityIdentifier }>().id
     const post = useAPI(() => getBackend().http.loadPost(id))
+    const [isDeleted, setDeleted] = useState(false)
 
+    if (isDeleted) {
+        return (
+            <Redirect to={Paths.HOME}/>
+        )
+    }
     if (!post) {
         return (
             <div
@@ -29,7 +37,7 @@ export function Post() {
 
     return (
         <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>
-            <PostElement post={post}/>
+            <PostElement post={post} onDelete={() => setDeleted(true)} cache={new Map()} setCache={() => {}}/>
         </div>
     )
 }

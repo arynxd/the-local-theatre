@@ -7,6 +7,7 @@ import {BehaviorSubject} from "rxjs";
 import {getBackend} from "../util/getters";
 import {fromPromise, toJSON} from "../../request/mappers";
 import {User} from "../../../model/User";
+import { SelfUser } from "../../../model/SelfUser";
 
 export type AuthState = 'unauthenticated' | 'authenticated'
 export type AuthToken = string
@@ -16,20 +17,20 @@ const AUTH_KEY = "authorisation"
 export interface SignupObj {
     firstName: string,
     lastName: string,
-    username: string,
     email: string,
+    username: string,
     dob: Date,
     password: string
 }
 
 export class AuthContext extends Context {
     public readonly observeAuth$$: BehaviorSubject<AuthState>
-    public readonly observeUser$$: BehaviorSubject<User | undefined>
+    public readonly observeUser$$: BehaviorSubject<SelfUser | undefined>
 
     constructor() {
         super()
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-        this.observeUser$$ = new BehaviorSubject<User | undefined>(undefined)
+        this.observeUser$$ = new BehaviorSubject<SelfUser | undefined>(undefined)
 
         let currentState: AuthState = 'unauthenticated'
         if (this._token && this._token !== 'null') {
@@ -51,7 +52,7 @@ export class AuthContext extends Context {
         return this._token
     }
 
-    loadSelfUser(): BackendAction<User | undefined> {
+    loadSelfUser(): BackendAction<SelfUser | undefined> {
         return fromPromise(this.loadSelfUser0())
     }
 
@@ -127,7 +128,7 @@ export class AuthContext extends Context {
         return this.observeAuth$$.value === 'authenticated' && !!this._token
     }
 
-    private async loadSelfUser0(): Promise<User | undefined> {
+    private async loadSelfUser0(): Promise<SelfUser | undefined> {
         assert(() => this.isAuthenticated(),
             () => new BackendError('Tried to load self user without being authenticated')
         )

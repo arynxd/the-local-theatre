@@ -100,8 +100,8 @@ function UserList() {
     const selfUser = useSelfUser()
 
     const UserPlaceholders = () =>
-        createPlaceholders(() =>
-            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2'>
+        createPlaceholders((i) =>
+            <div key={i} className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2'>
                 <div className='w-1/3 h-3 bg-gray-300 animate-pulse rounded-xl m-2 mb-4'/>
 
                 <div className='w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2'/>

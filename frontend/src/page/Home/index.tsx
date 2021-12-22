@@ -121,7 +121,7 @@ function LatestShows() {
                 <Separator className='pt-4 w-2/3' />
                 <figcaption
                     className='text-bold text-xl text-gray-900 dark:text-gray-100 text-center'>{showProps.model.title}</figcaption>
-                <p className='text-gray-500 text-sm'>Showing on
+                <p className='text-gray-100 text-sm'>Showing on
                     <time dateTime={showDate.toUTCString()}> {showDate.toLocaleDateString()}</time>
                 </p>
             </figure>
@@ -162,7 +162,9 @@ function RecentActivity() {
 
     if (!posts.length) {
         return (
-            <Warning>"No posts found"</Warning>
+            <div className="flex flex-col items-center bg-gray-200 w-auto m-2 shadow-xl rounded-xl">
+                <Warning>No posts found</Warning>
+            </div>
         )
     }
 

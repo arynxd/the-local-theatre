@@ -50,6 +50,10 @@
 - [ ] Context menu component
 - [ ] Changeable avatars
 - [ ] Improve backend response api
+- [ ] Show 'No comments' when final comment is deleted
+- [ ] Input validation for edits
+- [ ] Moderator deleted comments do not update frontend cache
+  - [ ] Clear caches when we logout
 
 ## Feature List 
 - [x] Login
@@ -64,9 +68,9 @@
 - [x] Footer
 - [x] 404 Page
 - [x] Editing of comments
+- [x] Deletion of posts 
+- [x] Editing of post
 - [ ] Moderation log
-- [ ] Editing of post
-- [ ] Deletion of posts 
 
 ## Ideas
 

@@ -29,8 +29,15 @@ interface CommentCacheProps {
     loaded: boolean
 }
 
+interface PostCacheProps {
+    cache: Map<EntityIdentifier, PostModel>
+    setCache: (newCache: Map<EntityIdentifier, PostModel>) => void
+}
+
 interface PostProps {
     post: PostModel
+    onDelete?: (post: PostModel) => void
+    onEdit?: (newPost: PostModel) => void
 }
 
 interface AddCommentProps {
@@ -54,6 +61,7 @@ function CommentView(props: PostProps & CommentCacheProps) {
         newCache.delete(comment.id)
         props.setCache(new Map(newCache))
     }
+
     if (!props.loaded) {
         return (
             <>{
@@ -86,6 +94,75 @@ function CommentView(props: PostProps & CommentCacheProps) {
                     setCache={props.setCache}
                 />)
         }</>
+    )
+}
+
+function EditPost(props: PostProps) {
+    const [title, setTitle] = useState<string>(props.post.title)
+    const [content, setContent] = useState<string>(props.post.content)
+    const {post} = props
+
+    const formatDate = (unix: number): string => {
+        const d = toDate(unix)
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+    }
+
+    const handleSubmitClick = () => {
+        let err = false
+        if (!title) {
+            setTitle("Title is required")
+            err = true
+        }
+
+        if (!content) {
+            setContent("Content is required")
+            err = true
+        }
+
+        if (err) {
+            return
+        }
+
+        getBackend().http.updatePost(props.post.id, title, content)
+            .then((p) => {                
+                props.onEdit?.(p)
+            })
+    }
+
+    const titleChange = useCallback((ev: ChangeEvent<HTMLTextAreaElement>) => {        
+        setTitle(ev.target.value)
+    }, [])
+
+    const contentChange = useCallback((ev: ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(ev.target.value)
+    }, [])
+
+    if (!getAuth().isAuthenticated()) {
+        return (
+            <></>
+        )
+    }
+
+    return (
+        <>
+            <textarea minLength={1} 
+                maxLength={MAX_COMMENT_LENGTH} 
+                onChange={titleChange}
+                className='w-11/12 h-auto rounded-xl shadow-xl text-3xl font-bold p-2 dark:bg-gray-500 dark:text-gray-100'
+                defaultValue={title}
+            />
+            <Separator className='mx-0'/>
+
+            
+            <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
+            <textarea minLength={1} 
+                maxLength={MAX_COMMENT_LENGTH} 
+                onChange={contentChange}
+                className='w-full h-auto rounded-xl shadow-xl text-md font-medium p-2 dark:bg-gray-500 dark:text-gray-200 text-black'
+                defaultValue={content}
+            />
+            <InlineButton onClick={handleSubmitClick} className='mt-2 w-full'>Submit</InlineButton>
+        </>
     )
 }
 
@@ -203,7 +280,7 @@ function ContextMenu(props: ContextMenuProps) {
 
 type PostState = "view" | "view_comments" | "add_comment" | "context" | "edit" | "delete"
 
-export default function Post(props: PostProps) {
+export default function Post(props: PostProps & PostCacheProps) {
     const post = props.post
     const [cache, setCache] = useState(new Map<EntityIdentifier, Comment>())
     const [state, setState] = useState<PostState>("view")
@@ -218,6 +295,13 @@ export default function Post(props: PostProps) {
             setCache(map)
         }
     }, [apiRes])
+
+    if (state === 'delete') {
+        getBackend().http.deletePost(post.id)
+            .then(p => {
+                props.onDelete?.(p)
+            })
+    }
     
     const formatDate = (unix: number): string => {
         const d = toDate(unix)
@@ -264,37 +348,52 @@ export default function Post(props: PostProps) {
         )
     }
 
+    const editHandler = (newPost: PostModel) => {
+        const postCache = props.cache
+        postCache.set(newPost.id, newPost)
+        props.setCache(new Map(postCache))
+        setState("view")
+    }
+
     return (
         <div className='m-5 p-4 bg-gray-200 dark:bg-gray-600 rounded shadow-xl w-full relative'>
-            <h1 className='text-3xl font-bold pb-2 dark:text-gray-100'>{post.title}</h1>
-            <Separator className='mx-0'/>
+            {state === 'edit'
+                ? <EditPost post={post} onEdit={editHandler}/>
+                : <>
+                    <h1 className='text-3xl font-bold pb-2 dark:text-gray-100'>{post.title}</h1>
+                    <Separator className='mx-0'/>
 
 
-            <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
-            <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
+                    <h3 className='text-gray-600 dark:text-gray-300 text-sm pb-6 mt-2'>{formatDate(post.createdAt)}</h3>
+                    <p className='text-md dark:text-gray-200 text-black font-medium pb-6 text-justify'>{post.content}</p>
+                </>
+            }
 
-            <div className='flex flex-col gap-4 md:flex-row w-full'>
+            {state !== 'edit'
+                ? <div className='flex flex-col gap-4 md:flex-row w-full'>
                     <SeeCommentsButton />
                     <AddCommentButton />
                 </div>
+                :<></>
+            }
 
-                {state === 'view_comments'
-                    ? <CommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes}/>
-                    : <> </>
-                }
+            {state === 'view_comments'
+                ? <CommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes}/>
+                : <> </>
+            }
 
-                {state === 'add_comment'
-                    ? <AddCommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes} done={() => {
-                        setState('view_comments')
-                    }}/>
-                    : <> </>
-                }
+            {state === 'add_comment'
+                ? <AddCommentView post={post} cache={cache} setCache={setCache} loaded={!!apiRes} done={() => {
+                    setState('view_comments')
+                }}/>
+                : <> </>
+            }
 
-                <ContextMenu 
-                    model={post} 
-                    state={state}
-                    setState={setState}
-                />
+            <ContextMenu 
+                model={post} 
+                state={state}
+                setState={setState}
+            />
         </div>
     )
 }

@@ -37,7 +37,7 @@ function ProfileMenu() {
             </button>
 
             <div className={imageStyles}>
-                <div className='grid grid-cols-1 gap-3 p-4 pt-2 place-items-center w-full h-full'>
+                <div className='grid grid-cols-1 gap-3 p-4 pt-2 place-items-center w-auto h-full'>
                     <h2 className='font-semibold text-xl dark:text-gray-200'>Profile ({selfUser.firstName} {selfUser.lastName})</h2>
                     <Separator className='w-2/3'/>
 

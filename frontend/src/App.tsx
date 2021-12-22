@@ -13,8 +13,6 @@ import { Post } from './page/Post'
 import { Paths } from "./util/paths";
 import UserSettings from "./page/UserSettings";
 import Moderation from "./page/Moderation";
-import ThemeToggle from './component/ThemeToggle';
-
 
 function Body() {
     return (

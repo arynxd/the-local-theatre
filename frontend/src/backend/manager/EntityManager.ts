@@ -6,11 +6,20 @@ import {isPost, Post} from "../../model/Post";
 import {Comment, isComment} from "../../model/Comment";
 import {isShow, Show} from "../../model/Show";
 import {getBackend} from "../global-scope/util/getters";
+import { SelfUser, isSelfUser } from "../../model/SelfUser";
 
 /**
  * Manages the creation of entities, primarily used in HttpManager for transformation of JSON responses
  */
 export class EntityManager extends Manager {
+    createSelfUser(json: JSONObject): SelfUser {
+        if (!isSelfUser(json)) {
+            this.err("SelfUser", json)
+        }
+
+        getBackend().cache.user.set(json.id, json)
+        return json
+    }
     public createUser(json: JSONObject): User {
         if (!isUser(json)) {
             this.err("User", json)

@@ -37,7 +37,7 @@ class PostRoute extends BaseRoute {
 
             Assertions ::assertSet($id);
 
-            $model = $this -> getById($sess, $id);
+            $model = $this -> getById($id, $sess);
 
             if (!isset($model)) {
                 $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
@@ -61,11 +61,10 @@ class PostRoute extends BaseRoute {
                 'editedAt' => $body -> orDefault("editedAt", null)
             ]);
 
+            Logger::getInstance()->error($data);
             if (isset($body['id'])) {
                 $data['id'] = $body['id'];
-                if (!$this -> updateById($data, $sess)) {
-                    $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
-                }
+                $this -> updateById($data, $sess);
             }
             else { 
                 $data['id'] = StringUtil ::newID();
@@ -74,7 +73,7 @@ class PostRoute extends BaseRoute {
 
             $id = $data['id'];
             Assertions ::assertSet($id);
-            $model = $this -> getById($sess, $id);
+            $model = $this -> getById($id, $sess);
             Assertions ::assertSet($model);
 
             $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
@@ -86,12 +85,9 @@ class PostRoute extends BaseRoute {
             $id = $sess -> queryParams()['id'];
             Assertions ::assertSet($id);
 
-            if ($this -> deleteById($id, $sess)) {
-                $res -> sendJSON("{}", [StatusCode::OK]);
-            }
-            else {
-                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
-            }
+            $model = $this -> getById($id, $sess);
+            $this -> deleteById($id, $sess);
+            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
         }
         else {
             Logger::getInstance() -> fatal("Unknown method $method");
@@ -114,7 +110,6 @@ class PostRoute extends BaseRoute {
     /**
      * @param Map $data
      * @param Session $sess
-     * @return boolean whether any data was updated
      */
     private function updateById($data, $sess) {
         $query = "INSERT INTO post (id, content, title, authorId, createdAt, editedAt)
@@ -122,11 +117,12 @@ class PostRoute extends BaseRoute {
                     :id, :content, :title, :authorId, :createdAt, :editedAt
                 )ON DUPLICATE KEY UPDATE
                     content=:content,
+                    title=:title,
                     editedAt=:editedAt
                 ;
         ";
 
-        $res = $sess -> db -> query($query, [
+        $sess -> db -> query($query, [
             'id' => $data['id'],
             'title' => $data['title'],
             'authorId' => $data['authorId'],
@@ -134,8 +130,6 @@ class PostRoute extends BaseRoute {
             'createdAt' => $data['createdAt'],
             'editedAt' => $data['editedAt']
         ]);
-
-        return $res -> rowCount() > 0;
     }
 
 
@@ -168,7 +162,7 @@ class PostRoute extends BaseRoute {
      * @param string $id
      * @return PostModel|null The model, or null if not found
      */
-    private function getById($sess, $id) {
+    private function getById($id, $sess) {
         $st = $sess -> db -> query("SELECT * FROM post p 
                 LEFT JOIN user u on u.id = p.authorId
             WHERE p.id = :id", 

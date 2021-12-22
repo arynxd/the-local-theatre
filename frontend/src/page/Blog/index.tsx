@@ -1,16 +1,18 @@
 import {useAPI} from "../../backend/hook/useAPI";
 import {getAuth, getBackend} from "../../backend/global-scope/util/getters";
-import Post from "../../component/model/Post";
+import PostElement from "../../component/model/Post";
 import {createPlaceholders} from "../../util/factory";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Separator from "../../component/Separator";
 import InlineButton from "../../component/InlineButton";
 import { Error, Warning } from "../../component/Factory";
 import { useSelfUser } from "../../backend/hook/useSelfUser";
 import { hasPermission } from "../../model/Permission";
+import { Post } from "../../model/Post";
+import { EntityIdentifier } from "../../model/EntityIdentifier";
 
 interface CreatePostProps {
-    done: () => void
+    onComplete: (post: Post) => void
 }
 
 function CreatePostView(props: CreatePostProps) {
@@ -34,8 +36,8 @@ function CreatePostView(props: CreatePostProps) {
         }
 
         getBackend().http.addPost(title, content)
-            .then(() => {
-                props.done()
+            .then((p) => {
+                props.onComplete(p)
             })
     }
 
@@ -67,6 +69,7 @@ type BlogState = 'view_posts' | 'create_post' | "error"
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
+    const [posts, setPosts] = useState<Map<EntityIdentifier, Post>>(new Map())
     const selfUser = useSelfUser()
 
     const PostPlaceholders = () =>
@@ -82,26 +85,30 @@ export default function Blog() {
         )
 
 
-    const posts = useAPI(
+    const apiRes = useAPI(
         () => getBackend().http.loadAllPosts(), 
         () => setState('error')
     )
+
+    useEffect(() => {
+        if (apiRes) {
+            setPosts(new Map(apiRes.map(p => [p.id, p])))
+        }
+    }, [apiRes])
 
     if (state === 'error') {
         return (
             <>{<Error>An error occurred</Error>}</>
         )
     }
-
     
-    if (!posts || (!selfUser && getAuth().isAuthenticated())) {
+    if (!apiRes || (!selfUser && getAuth().isAuthenticated())) {
         return (
             <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
                 PostPlaceholders()
             }</div>
         )
     }
-
 
     const handlePostClick = () => {
         setState('create_post')
@@ -115,7 +122,14 @@ export default function Blog() {
         </InlineButton>
         : <></>
 
-    const sorted = [...posts]
+    const deleteHandler = (post: Post) => {
+        const newPosts = posts
+        newPosts.delete(post.id)
+        setPosts(new Map(newPosts))
+        setState('view_posts')
+    }
+
+    const sorted = Array.from(posts.values())
         .sort((a, b) => b.createdAt - a.createdAt)
 
     if (state === 'view_posts') {
@@ -124,10 +138,18 @@ export default function Blog() {
             {createPostButton}
             {sorted.length
                 ? <div className='flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44'>{
-                    sorted.map(post => <Post key={post.id} post={post}/>)
+                    sorted.map(post => 
+                        <PostElement 
+                            key={post.id} 
+                            post={post} 
+                            onDelete={deleteHandler}
+                            cache={posts}
+                            setCache={setPosts}
+                        />
+                    )
                 }</div>
-                : <div className='w-full m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center'>
-                    {<Warning>No posts found</Warning>}
+                : <div className='w-auto m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center'>
+                    <Warning>No posts found</Warning>
                 </div>
             }
             </>
@@ -135,7 +157,12 @@ export default function Blog() {
     }
     else if (state === 'create_post') {
         return (
-            <CreatePostView done={() => setState('view_posts')}/>
+            <CreatePostView onComplete={(p) => {
+                const newPosts = posts
+                newPosts.set(p.id, p)
+                setPosts(new Map(newPosts))
+                setState('view_posts')
+            }}/>
         )
     }
     else {

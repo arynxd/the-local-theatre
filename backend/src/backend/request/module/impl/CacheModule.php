@@ -2,7 +2,7 @@
 
 namespace TLT\Request\Module\Impl;
 
-use TLT\Model\Impl\UserModel;
+use TLT\Model\Impl\SelfUserModel;
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Data\Map;
 
@@ -14,7 +14,7 @@ class CacheModule extends BaseModule {
      *
      * If the token is not set, or the user is not found, this method returns null
      *
-     * @return UserModel|null
+     * @return SelfUserModel|null
      */
     public function user() {
         if (isset($this -> user)) {
@@ -27,12 +27,12 @@ class CacheModule extends BaseModule {
             return null;
         }
 
-        $query = "SELECT u.* FROM credential c
-                    LEFT JOIN user u on u.id = c.userId
+        $query = "SELECT * FROM credential c
+                    LEFT JOIN user u ON u.id = c.userId
                   WHERE token = :token";
 
         $selfUser = $this -> sess -> db -> query($query, ['token' => $auth -> token]) -> fetch();
-        $model = UserModel ::fromJSON(Map ::from($selfUser));
+        $model = SelfUserModel ::fromJSON(Map ::from($selfUser));
         $this -> user = $model;
         return $model;
     }

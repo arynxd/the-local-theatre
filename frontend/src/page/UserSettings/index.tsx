@@ -17,12 +17,12 @@ export default function UserSettings() {
     const [firstName, setFirstName] = useState<string | undefined>(selfUser?.firstName)
     const [lastName, setLastName] = useState<string | undefined>(selfUser?.lastName)
     const [username, setUsername] = useState<string | undefined>(selfUser?.username)
-    const [email, setEmail] = useState<string | undefined>(selfUser?.username)
+    const [email, setEmail] = useState<string | undefined>(selfUser?.email)
     const [password, setPassword] = useState<string | undefined>()
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        //TODO submit API request here
+        //TODO: submit API request here
 
         const newErrors: ErrorState = {
             password: []
@@ -46,7 +46,8 @@ export default function UserSettings() {
     }
 
     if (state === 'attempting') {
-        setState('success')
+        throw new TypeError("Unimplemented")
+        // setState('success')
     }
 
     if (state === 'success') {
@@ -73,7 +74,8 @@ export default function UserSettings() {
                     <FormElement initialState={username} onChange={setUsername} name='username' placeholder='Username'
                                  type='text'
                                  errors={errors}/>
-                    <FormElement initialState={email} onChange={setEmail} name='email' placeholder='Email' type='email'
+                    <FormElement initialState={email} onChange={setEmail} name='emal' placeholder='Email'
+                                 type='email'
                                  errors={errors}/>
                     <FormElement onChange={setPassword} name='password' placeholder='Password' type='password'
                                  errors={errors}/>
@@ -82,7 +84,7 @@ export default function UserSettings() {
                     <button
                         className='p-2 m-2 w-10/12 inline-flex items-center justify-center text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl'
                         type='submit'>
-                        {state === 'attempting'
+                        {/* {state === 'attempting'
                             ? <svg className="animate-spin mx-2 h-5 w-5 text-white"
                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -91,7 +93,7 @@ export default function UserSettings() {
                                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                             </svg>
                             : <> </>
-                        }
+                        } */}
                         Submit
                     </button>
                 </form>

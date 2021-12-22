@@ -23,6 +23,8 @@ export default class Routes {
         public static readonly FETCH = new Route('api/post', 'GET', ['id'], [], false)
         public static readonly LIST = new Route('api/post/list', 'GET', [], [], false)
         public static readonly ADD = new Route('api/post', 'POST', [], ['content', 'title'], true)
+        public static readonly DELETE = new Route('api/post', 'DELETE', [], [], true)
+        public static readonly UPDATE = new Route('api/post', 'POST', [], [], true)
     }
 
     public static readonly Comment = class {

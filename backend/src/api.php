@@ -46,7 +46,7 @@ if ($routeResult -> isError()) {
     $sess -> res -> sendError($routeResult -> error, $routeResult -> httpCode, $routeResult -> headers);
 }
 else {
-    Logger::getInstance() -> info("Starting route " . $route -> path);
+    Logger::getInstance() -> info("Starting route " . $route -> path . " (" . $sess -> http -> method . ")");
     try {
         $route -> handle($sess, $sess -> res);
         $sess -> res -> sendInternalError("No output received from the route");

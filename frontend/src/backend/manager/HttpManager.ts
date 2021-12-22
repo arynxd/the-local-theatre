@@ -8,13 +8,36 @@ import {Comment} from "../../model/Comment";
 import {Show} from "../../model/Show";
 import {getAuth, getBackend} from "../global-scope/util/getters";
 import {fromPromise, toJSON, toModel, toModelArray} from "../request/mappers";
+import { SelfUser } from "../../model/SelfUser";
 
 /**
  * Manages all HTTP duties for the backend
  * **ALL** requests should go through this manager
  */
 export class HttpManager extends Manager {
-    updateComment(id: string, content: string): BackendAction<Comment> {
+    updatePost(id: EntityIdentifier, title: string, content: string) {
+        const route = Routes.Post.UPDATE.compile()
+            .withBody({
+                id,
+                title,
+                content
+            })
+        
+        return BackendAction.new(route)
+            .flatMap(toJSON)
+            .map(v => toModel(v, this.backend().entity.createPost))
+    }
+    deletePost(id: EntityIdentifier) {
+        const route = Routes.Post.DELETE.compile()
+            .withQueryParam('id', id)
+
+        return BackendAction
+            .new(route)
+            .flatMap(toJSON)
+            .map(v => toModel(v, this.backend().entity.createPost))
+    }
+
+    updateComment(id: EntityIdentifier, content: string): BackendAction<Comment> {
         const route = Routes.Comment.UPDATE.compile()
             .withBody({
                 id,
@@ -118,13 +141,13 @@ export class HttpManager extends Manager {
         )
     }
 
-    loadSelfUser(): BackendAction<User> {
+    loadSelfUser(): BackendAction<SelfUser> {
         const route = Routes.Self.FETCH.compile()
 
         // this cannot be cached as we do not know our ID
         return BackendAction.new(route)
             .flatMap(toJSON)
-            .map(v => this.backend().entity.createUser(v))
+            .map(v => this.backend().entity.createSelfUser(v))
     }
 
     loadPing(): BackendAction<number> {

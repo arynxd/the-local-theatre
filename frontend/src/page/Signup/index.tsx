@@ -94,11 +94,6 @@ export default function Signup() {
                     general: ["An error occurred whilst logging in, please try again"]
                 })
                 setState("signup_failed")
-                setFirstName(undefined)
-                setLastName(undefined)
-                setUsername(undefined)
-                setDob(undefined)
-                setPassword(undefined)
                 logger.error(err)
             })
     }
