@@ -53,7 +53,7 @@
 - [ ] Input validation for edits
 - [ ] Moderator deleted comments do not update frontend cache
   - [ ] Clear caches when we logout
-
+- [ ] Cache images by md5 (or similar) => b64
 ## Feature List 
 - [x] Login
 - [x] Logout
