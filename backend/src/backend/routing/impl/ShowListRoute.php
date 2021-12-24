@@ -29,7 +29,9 @@ class ShowListRoute extends BaseRoute {
         });
 
 
-        $res -> sendJSON($maps, [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json($maps);
     }
 
     public function validateRequest($sess, $res) {

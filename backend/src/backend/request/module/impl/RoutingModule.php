@@ -30,7 +30,10 @@ class RoutingModule extends BaseModule {
         $result = $this -> router -> getRouteForPath($uri);
 
         if (!$result) {
-            $this -> sess -> res -> sendError("Route $rawUri not found", [StatusCode::NOT_FOUND]);
+            $this -> sess -> 
+                res -> status(404)
+                    -> cors("all")
+                    -> error("Route $rawUri not found");
         }
 
         return $result;

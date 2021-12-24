@@ -50,7 +50,9 @@ class PostListRoute extends BaseRoute {
             $posts -> push($model -> toMap());
         }
 
-        $res -> sendJSON($posts, [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json($posts);
     }
 
     public function validateRequest($sess, $res) {

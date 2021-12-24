@@ -22,12 +22,13 @@ class ShowImageRoute extends BaseRoute {
 
         Assertions ::assertSet($id);
 
-        DataUtil ::readOrDefault(
-            "shows/$id.png",
-            "shows/show.png",
-            [ContentType::PNG, CORS::ALL, StatusCode::OK]
-        );
-        exit; // exit after reading, since the output has been sent
+        $res -> content("png")
+             -> cors("all")
+             -> status(200)
+             -> data(
+                 "shows/$id.png",
+                 "shows/show.png"
+             );
     }
 
     public function validateRequest($sess, $res) {

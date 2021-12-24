@@ -21,12 +21,13 @@ class AvatarRoute extends BaseRoute {
 
         Assertions ::assertSet($id);
 
-        DataUtil ::readOrDefault(
-            "avatars/$id.png",
-            "avatars/avatar.png",
-            [ContentType::PNG, CORS::ALL, StatusCode::OK]
-        );
-        exit;
+        $res -> status(200)
+             -> content("png")
+             -> cors("all")
+             -> data(
+                "avatars/$id.png",
+                "avatars/avatar.png"
+             );
     }
 
     public function validateRequest($sess, $res) {

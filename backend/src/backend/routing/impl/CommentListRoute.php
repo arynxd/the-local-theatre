@@ -57,7 +57,12 @@ class CommentListRoute extends BaseRoute {
             $items -> push($model -> toMap());
         }
 
-        $res -> sendJSON(Map ::from(['comments' => $items, 'count' => $items -> length()]), [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json([
+                 'comments' => $items,
+                 'count' => $item -> length()
+             ]);
     }
 
     public function validateRequest($sess, $res) {

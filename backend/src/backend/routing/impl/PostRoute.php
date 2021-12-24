@@ -40,7 +40,9 @@ class PostRoute extends BaseRoute {
             $model = $this -> getById($id, $sess);
 
             if (!isset($model)) {
-                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
+                $res -> status(404)
+                     -> cors("all")
+                     -> error("Post not found");
             }
 
             $res -> sendJSON($model -> toMap(), [StatusCode::OK]);

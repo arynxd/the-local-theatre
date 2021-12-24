@@ -2,7 +2,8 @@
 
 namespace TLT\Request;
 
-use RuntimeException;
+use TLT\Util\Assert\Assertions;
+use TLT\Util\Data\DataUtil;
 use TLT\Util\Data\Map;
 use TLT\Util\Data\MapUtil;
 use TLT\Util\Enum\ContentType;
@@ -13,36 +14,60 @@ use TLT\Util\HttpUtil;
 use TLT\Util\Log\Logger;
 use UnexpectedValueException;
 
-/**
- * Utility object for sending responses to the client
- * This can be freely constructed wherever needed however the Session
- * always holds an instance (Session::$res)
- *
- * @see Session
- */
 class Response {
     /**
-     * Sends JSON to the client
-     *
-     * This function will end the program exit code 0, stopping execution
-     *
-     * @param Map|string $data a Map, or string, representing the JSON to send in the response
-     * @param string[] $headers the headers to include in the response
-     *
-     * @return never-return This function never returns
+     * @var Session|null $sess
      */
-    public function sendJSON($data, $headers = []) {
+    private $sess;
+
+    private $headers;
+
+    /**
+     * Constructs a new Response based on a Session
+     * 
+     * If $sess is null, some features will be unavailable
+     * 
+     * @param Session|null $sess
+     */
+    public function __construct($sess = null) {
+        $this -> sess = $sess;
+        $this -> headers = Map::none();
+    }
+
+    private function requireSession() {
+        Assertions::assertSet($this -> sess);
+    }
+
+    private function send($data) {
+        Assertions::assertSet($data);
+        if ($this -> headers -> length() == 0) {
+            Logger ::getInstance() -> warn("No headers set, this is probably a bug");
+        }
+
+        HttpUtil ::applyHeaders($this -> headers -> raw());
+
         Logger ::getInstance() -> info("Sending response..");
         Logger ::getInstance() -> debug("\t$data");
 
-        if (MapUtil ::is_map($data)) {
-            $this -> send(json_encode($data), array_merge([ContentType::JSON, CORS::ALL], $headers));
+        echo $data;
+        exit(0);
+    }
+
+    /**
+     * Sends a JSON response to the client
+     * 
+     * If a string is passed, it must be a valid JSON string
+     * 
+     * @param string|Map|array
+     */
+    public function json($msg) {
+        $this -> content("json");
+        
+        if (MapUtil ::is_map($msg)) {
+            $this -> send(json_encode($msg));
         }
-        else if (is_string($data)) {
-            $this -> send(json_encode(json_decode($data)), array_merge([ContentType::JSON, CORS::ALL], $headers)); // encode/decode for validation
-        }
-        else if (is_array($data)) {
-            throw new UnexpectedValueException("Got array passed to sendJSON, did you forget to call Map::from()?");
+        else if (is_string($msg)) {
+            $this -> send(json_encode(json_decode($msg))); // encode/decode for validation
         }
         else {
             throw new UnexpectedValueException("Expected JSON-like data");
@@ -50,54 +75,118 @@ class Response {
     }
 
     /**
-     * Sends arbitrary data to the client.
-     * This method performs NO validation on the input, use it with caution.
-     *
-     * This function will end the program exit code 0, stopping execution
-     *
-     * @param mixed $data the data to send in the response
-     * @param string[] $headers the headers to send in the response
-     *
-     * @return never-return This function never returns
+     * Sets a status code
+     * 
+     * @param int $code
+     * @return Response The current instance
      */
-    public function send($data, $headers = []) {
-        Logger ::getInstance() -> debug("Sending output {$data}");
-        HttpUtil::applyHeaders($headers);
+    public function status($code) {
+        $header = StatusCode::MAP()[$code];
 
-        echo $data;
+        if (!isset($header)) {
+            throw new UnexpectedValueException("Unknown StatusCode $code");
+        }
+
+        if (isset($this -> headers['status'])) {
+            throw new UnexpectedValueException("Status already set");
+        }
+
+        $this -> headers['status'] = $header;
+        return $this;
+    }
+
+    /**
+     * Sets a header
+     * 
+     * @param string $header
+     */
+    public function header($header) {
+        $this -> headers -> push($header);
+        return $this;
+    }
+
+    /**
+     * Reads from the data directory
+     * 
+     * @param string $path
+     * @param string|null $default
+     */
+    public function data($path, $default = null) {
+        if (isset($default)) {
+            DataUtil::readOrDefault($path, $default, $this -> headers -> raw());
+        }
+        else {
+            DataUtil::read($path, $this -> headers -> raw());
+        }
         exit(0);
     }
 
     /**
-     * Sends a generic internal error response
-     *
-     * This function will kill the program, stopping execution
-     *
-     * @param Exception|string $msg The message / exception to log, will not be sent to the client
-     * @return never-return This function never returns
+     * Sets the cors policy
+     * 
+     * @param string $policy
+     * @return Response The current instance
      */
-    public function sendInternalError($msg = "No message set") {
-        Logger ::getInstance() -> error("An internal error has occurred:");
-        Logger ::getInstance() -> error("\t" . $msg);
+    public function cors($policy) {
+        $header = CORS::MAP()[$policy];
 
-        $this -> sendError(ErrorStrings::INTERNAL_ERROR, [StatusCode::INTERNAL_ERROR]);
+        if (!isset($header)) {
+            throw new UnexpectedValueException("Unknown CORS policy $policy");
+        }
+
+        if (isset($this -> headers['cors'])) {
+            throw new UnexpectedValueException("CORS policy already set");
+        }
+
+        $this -> headers['cors'] = $header;
+        return $this;
     }
 
     /**
-     * Sends an error message to the client
-     *
-     * This function will kill the program, stopping execution
-     *
-     * @param string $message the message to send in the response, must be JSON serializable
-     * @param string[] $headers the headers to send in the response
-     *
-     * @return never-return This function never returns
+     * Sets the content type
+     * 
+     * @param string $type
+     * @return Response The current instance
      */
-    public function sendError($message, $headers = []) {
-        Logger ::getInstance() -> error("Route returned error => " . $message);
-        $this -> send(json_encode([
+    public function content($type) {
+        $header = ContentType::MAP()[$type];
+
+        if (!isset($header)) {
+            throw new UnexpectedValueException("Unknown ContentType $type");
+        }
+
+        if (isset($this -> headers['content'])) {
+            throw new UnexpectedValueException("Content type already set");
+        }
+
+        $this -> headers['content'] = $header;
+        return $this;
+    }
+
+    /**
+     * Sends an internal error, $ex will NOT be sent to the client
+     * 
+     * @param Exception|string $ex
+     */
+    public function internal($ex = "No message set") {
+        Logger ::getInstance() -> error("An internal error has occurred:");
+        Logger ::getInstance() -> error("\t" . $ex);
+
+        $this -> status(500);
+        $this -> error(ErrorStrings::INTERNAL_ERROR);
+    }
+    
+    /**
+     * Sends an error message to the client
+     * 
+     * @param string $msg
+     */
+    public function error($msg) {
+        Logger ::getInstance() -> error("Route returned error => " . $msg);
+    
+        $this -> json(Map::from([
             "error" => true,
-            "message" => $message
-        ]), array_merge([ContentType::JSON, CORS::ALL], $headers));
+            "message" => $msg
+        ]));
     }
 }

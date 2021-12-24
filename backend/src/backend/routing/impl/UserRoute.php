@@ -38,11 +38,15 @@ class UserRoute extends BaseRoute {
             $isEditingPerms = $selfUser -> permissions != $data['permissions'];
 
             if (!$isModifyingSelf && !$isSelfAdmin) {
-                $res -> sendError("You may only modify your own user account", [StatusCode::UNAUTHORIZED]);
+                $res -> status(401)
+                     -> cors("all")
+                     -> error("You may only modify your own user account");
             }
 
             if ($isModifyingSelf && $isEditingPerms) {
-                $res -> sendError("You cannot change your own permissions", [StatusCode::UNAUTHORIZED]);
+                $res -> status(401)
+                     -> cors("all")
+                     -> error("You cannot change your own permissions");
             }
 
             $this -> updateUser($sess, $data);
@@ -53,7 +57,9 @@ class UserRoute extends BaseRoute {
                 $selfUser[$k] = $v;
             }
 
-            $res -> sendJSON($selfUser);
+            $res -> status(200) 
+                 -> cors("all")
+                 -> json($selfUser);
         }
     }
 
@@ -67,7 +73,9 @@ class UserRoute extends BaseRoute {
         $dbRes = Map ::from($st -> fetchAll());
 
         if ($dbRes -> length() == 0) {
-            $res -> sendError("User not found", [StatusCode::NOT_FOUND]);
+            $res -> status(404)
+                 -> cors("all")
+                 -> error("User not found");
         }
 
         $dbRes = Map ::from($dbRes -> first()); // we get arrays back from the db, convert it to a map

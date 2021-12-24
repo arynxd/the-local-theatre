@@ -40,21 +40,29 @@ class LoginRoute extends BaseRoute {
         $accountDetails = $accountDetails -> fetch();
 
         if (!$accountDetails) {
-            $res -> sendError($ERR, [StatusCode::UNAUTHORIZED]);
+            $res -> status(401)
+                 -> cors("all")
+                 -> error($ERR);
         }
 
         $accountDetails = Map ::from($accountDetails);
         if ($accountDetails -> length() == 0) {
-            $res -> sendError($ERR, [StatusCode::UNAUTHORIZED]);
+            $res -> status(401)
+                 -> cors("all")
+                 -> error($ERR);
         }
 
         if (!AuthUtil ::verifyPassword($password, $accountDetails['password'])) {
-            $res -> sendError($ERR, [StatusCode::UNAUTHORIZED]);
+            $res -> status(401)
+                 -> cors("all")
+                 -> error($ERR);
         }
 
-        $res -> sendJSON(Map ::from([
-            "token" => $accountDetails['token']
-        ]), [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json([
+                "token" => $accountDetails['token']
+             ]);
     }
 
     public function validateRequest($sess, $res) {

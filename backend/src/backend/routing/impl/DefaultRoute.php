@@ -15,10 +15,12 @@ class DefaultRoute extends BaseRoute {
     }
 
     public function handle($sess, $res) {
-        $res -> sendJSON(Map ::from([
-            "ok" => true,
-            "log_path" => Logger ::getInstance() -> getLogFile()
-        ]), [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json([
+                "ok" => true,
+                "log_path" => Logger ::getInstance() -> getLogFile()
+             ]);
     }
 
     public function validateRequest($sess, $res) {

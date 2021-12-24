@@ -147,10 +147,14 @@ class CommentRoute extends BaseRoute {
             $model = $this -> getById($commentId, $sess);
 
             if (!isset($model)) {
-                $res -> sendError("Post not found", [StatusCode::NOT_FOUND]);
+                $res -> status(404)
+                     -> cors("all")
+                     -> error("Post not found");
             }
             else {
-                $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
+                $res -> status(200)
+                     -> cors("all")
+                     -> json($model -> toMap());
             }
         } 
         else if ($method == RequestMethod::POST) {

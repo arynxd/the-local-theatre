@@ -53,7 +53,7 @@ class DatabaseModule extends BaseModule {
         }
         catch (PDOException $ex) {
             Logger ::getInstance() -> error("PDO connection failed");
-            $this -> sess -> res -> sendInternalError($ex);
+            $this -> sess -> res -> internal($ex);
         }
 
         if ($this -> sess -> cfg -> env !== "PRODUCTION") {

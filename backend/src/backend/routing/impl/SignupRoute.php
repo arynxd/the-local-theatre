@@ -29,14 +29,17 @@ class SignupRoute extends BaseRoute {
         $userHasAccount = $this -> userHasAccount($sess, $data['email']);
 
         if ($userHasAccount) {
-            $res -> sendError("Account already exists", [StatusCode::CONFLICT]);
+            $res -> status(409)
+                 -> error("Account already exists");
         }
         else {
             $newToken = $this -> createAccount($sess, $data);
 
-            $res -> sendJSON(Map ::from([
-                'token' => $newToken
-            ]));
+            $res -> status(200)
+                 -> cors("all")
+                 -> json([
+                    'token' => $newToken
+                 ]);
         }
     }
 

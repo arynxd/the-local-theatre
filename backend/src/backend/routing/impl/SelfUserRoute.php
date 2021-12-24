@@ -28,7 +28,9 @@ class SelfUserRoute extends BaseRoute {
         $selfUser['joinDate'] = (int)$selfUser['joinDate'];
         $selfUser['dob'] = (int)$selfUser['dob'];
 
-        $res -> sendJSON($selfUser, [StatusCode::OK]);
+        $res -> status(200)
+             -> cors("all")
+             -> json($selfUser);
     }
 
     public function validateRequest($sess, $res) {

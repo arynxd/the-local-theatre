@@ -85,7 +85,7 @@ class Session {
 
     public function __construct() {
         Logger ::getInstance() -> info("Loading modules...");
-        $this -> res = new Response();
+        $this -> res = new Response($this);
 
         // init modules
         $this -> cfg = new ConfigModule($this);
@@ -114,7 +114,7 @@ class Session {
             }
             catch (Exception $ex) {
                 Logger ::getInstance() -> error("Module " . get_class($mod) . " encountered an error whilst enabling");
-                $this -> res -> sendInternalError($ex);
+                $this -> res -> internal($ex);
             }
         }
         Logger ::getInstance() -> info("Modules loaded");
@@ -182,11 +182,13 @@ class Session {
         }
         catch (Exception $ex) {
             Logger ::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
-            $this -> res -> sendInternalError($ex);
+            $this -> res -> internal($ex);
         }
 
         if ($wareResult -> isError()) {
-            $this -> res -> sendError($wareResult -> error, array_merge([$wareResult -> httpCode], $wareResult -> headers));
+            $this -> res -> status($wareResult -> httpCode)
+                         -> cors("all")
+                         -> error($wareResult -> error);
         }
         Logger ::getInstance() -> info("Middleware applied without error");
     }
