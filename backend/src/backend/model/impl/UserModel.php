@@ -37,14 +37,22 @@ class UserModel extends Model {
      */
     public $username;
 
-    public function __construct($id, $firstName, $lastName, $permissions, $dob, $joinDate, $username) {
-        $this -> id = $id;
-        $this -> firstName = $firstName;
-        $this -> lastName = $lastName;
-        $this -> permissions = $permissions;
-        $this -> dob = $dob;
-        $this -> joinDate = $joinDate;
-        $this -> username = $username;
+    public function __construct(
+        $id,
+        $firstName,
+        $lastName,
+        $permissions,
+        $dob,
+        $joinDate,
+        $username
+    ) {
+        $this->id = $id;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->permissions = $permissions;
+        $this->dob = $dob;
+        $this->joinDate = $joinDate;
+        $this->username = $username;
     }
 
     /**
@@ -66,20 +74,18 @@ class UserModel extends Model {
     }
 
     public function avatar() {
-        return Constants ::AVATAR_URL_PREFIX() . "?id=" . $this -> id;
+        return Constants::AVATAR_URL_PREFIX() . '?id=' . $this->id;
     }
 
     public function toMap() {
-        return Map ::from(
-            [
-                'id' => $this -> id,
-                'firstName' => $this -> firstName,
-                'lastName' => $this -> lastName,
-                'permissions' => (int)$this -> permissions,
-                'dob' => (int)$this -> dob,
-                'joinDate' => (int)$this -> joinDate,
-                'username' => $this -> username
-            ]
-        );
+        return Map::from([
+            'id' => $this->id,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'permissions' => (int) $this->permissions,
+            'dob' => (int) $this->dob,
+            'joinDate' => (int) $this->joinDate,
+            'username' => $this->username,
+        ]);
     }
 }

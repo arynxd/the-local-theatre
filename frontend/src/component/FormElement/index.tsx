@@ -1,4 +1,4 @@
-import {ChangeEvent, HTMLInputTypeAttribute, useState} from "react";
+import { ChangeEvent, HTMLInputTypeAttribute, useState } from 'react'
 
 interface ErrorProps {
     errors: ErrorState
@@ -18,17 +18,18 @@ export type ErrorState = {
 
 export function ErrorElement(props: { error?: string[] }) {
     if (!props.error) {
-        return (
-            <></>
-        )
+        return <></>
     }
     return (
-        <>{
-            props.error.map(err => {
-                return <span
-                    className='bg-gray-300 dark:bg-gray-600 dark:text-red-200 text-red-800 p-2 m-1 rounded shadow-xl'>{err}</span>
-            })
-        }</>
+        <>
+            {props.error.map((err) => {
+                return (
+                    <span className="bg-gray-300 dark:bg-gray-600 dark:text-red-200 text-red-800 p-2 m-1 rounded shadow-xl">
+                        {err}
+                    </span>
+                )
+            })}
+        </>
     )
 }
 
@@ -37,7 +38,7 @@ export function FormElement(props: FormElementProps & ErrorProps) {
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         props.onChange(event.target.value)
-        setState(event.target.value);
+        setState(event.target.value)
     }
 
     const error = props.errors[props.name]
@@ -48,10 +49,11 @@ export function FormElement(props: FormElementProps & ErrorProps) {
         placeholder-opacity-60  placeholder-gray-800 dark:placeholder-gray-400 
         transition duration-300 ease-in-out transform focus:-translate-y-1 
        
-        ${hasError
-        ? 'focus:scale-110 focus:outline-none ring-red-900 ring-2'
-        : 'ring-0 focus:scale-110 focus:outline-none focus:ring-blue-900 focus:ring-2'
-    }
+        ${
+            hasError
+                ? 'focus:scale-110 focus:outline-none ring-red-900 ring-2'
+                : 'ring-0 focus:scale-110 focus:outline-none focus:ring-blue-900 focus:ring-2'
+        }
         
         focus:placeholder-gray-900 dark:focus:placeholder-gray-100 
         text-gray-800 dark:text-gray-100
@@ -59,14 +61,16 @@ export function FormElement(props: FormElementProps & ErrorProps) {
 
     return (
         <>
-            <input className={styles} placeholder={props.placeholder} type={props.type} value={state}
-                   onChange={handleChange}/>
+            <input
+                className={styles}
+                placeholder={props.placeholder}
+                type={props.type}
+                value={state}
+                onChange={handleChange}
+            />
 
-            <div className='flex flex-row'>
-                {hasError
-                    ? <ErrorElement error={error}/>
-                    : <></>
-                }
+            <div className="flex flex-row">
+                {hasError ? <ErrorElement error={error} /> : <></>}
             </div>
         </>
     )

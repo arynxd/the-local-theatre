@@ -1,6 +1,6 @@
-import {JSONObject} from "../../JSONObject";
-import BackendError from "../../error/BackendError";
-import {Route} from "./Route";
+import { JSONObject } from '../../JSONObject'
+import BackendError from '../../error/BackendError'
+import { Route } from './Route'
 
 /**
  * A stateful class used per-request to hold metadata about the request
@@ -15,16 +15,15 @@ export class CompiledRoute {
     private readonly headers = new Map<string, string>()
     private body: JSONObject = {}
 
-    constructor(public readonly routeData: Route) {
-
-    }
+    constructor(public readonly routeData: Route) {}
 
     get url(): string {
         // me being lazy, just gonna use this object for string[][] to x=x&y=y conversion
         let res = this.routeData.path
 
-        if (this.queryParams.size) { // append '?' if there are args present
-            res += "?"
+        if (this.queryParams.size) {
+            // append '?' if there are args present
+            res += '?'
         }
 
         res += new URLSearchParams(this.flattenQueryParams()).toString()
@@ -67,13 +66,19 @@ export class CompiledRoute {
     }
 
     validate() {
-        const hasAllQueryParams = this.routeData.requiredQueryParams?.every(p => this.queryParams.has(p), this) ?? true
+        const hasAllQueryParams =
+            this.routeData.requiredQueryParams?.every(
+                (p) => this.queryParams.has(p),
+                this
+            ) ?? true
 
         if (!hasAllQueryParams) {
             throw new BackendError(
                 'Route failed validation. Missing query params. \n' +
-                'Expected \n' + this.routeData.requiredQueryParams +
-                'Received ' + this.flattenQueryParams()
+                    'Expected \n' +
+                    this.routeData.requiredQueryParams +
+                    'Received ' +
+                    this.flattenQueryParams()
             )
         }
     }

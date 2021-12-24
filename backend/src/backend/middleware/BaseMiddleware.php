@@ -23,5 +23,5 @@ abstract class BaseMiddleware {
      * @param Session $sess the current session
      * @return HttpResult  the result of this middleware
      */
-    public abstract function apply($sess);
+    abstract public function apply($sess);
 }

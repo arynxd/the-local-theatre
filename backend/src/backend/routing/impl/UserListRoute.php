@@ -12,24 +12,24 @@ use TLT\Util\HttpResult;
 
 class UserListRoute extends BaseRoute {
     public function __construct() {
-        parent ::__construct("user/list", [RequestMethod::GET]);
+        parent::__construct('user/list', [RequestMethod::GET]);
     }
 
     public function handle($sess, $res) {
-        $users = $sess -> data -> user -> getAll();
+        $users = $sess->data->user->getAll();
 
-        $users = $users -> map(function ($_, $value) {
-            return $value -> toMap();
+        $users = $users->map(function ($_, $value) {
+            return $value->toMap();
         });
 
-        $res -> status(200)
-             -> cors("all")
-             -> json($users);
+        $res->status(200)
+            ->cors('all')
+            ->json($users);
     }
 
     public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(new DatabaseMiddleware());
+        $sess->applyMiddleware(new DatabaseMiddleware());
 
-        return HttpResult ::Ok();
+        return HttpResult::Ok();
     }
 }

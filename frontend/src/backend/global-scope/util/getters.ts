@@ -1,8 +1,8 @@
-import {ThemeContext} from "../context/ThemeContext";
-import {ManagerController} from "../../manager/ManagerController";
-import {AuthContext} from "../context/AuthContext";
-import {BehaviorSubject} from "rxjs";
-import {Globals, GlobalScope} from "../GlobalScope";
+import { ThemeContext } from '../context/ThemeContext'
+import { ManagerController } from '../../manager/ManagerController'
+import { AuthContext } from '../context/AuthContext'
+import { BehaviorSubject } from 'rxjs'
+import { Globals, GlobalScope } from '../GlobalScope'
 
 export function getGlobals(): Globals {
     return getGlobalScope().getValue()

@@ -1,5 +1,5 @@
-import {NIL, parse} from 'uuid'
-import {JSONValue} from "../backend/JSONObject";
+import { NIL, parse } from 'uuid'
+import { JSONValue } from '../backend/JSONObject'
 
 export type EntityIdentifier = string
 
@@ -7,7 +7,9 @@ export function emptyIdentifier(): EntityIdentifier {
     return NIL
 }
 
-export function isEntityIdentifier(id: JSONValue | EntityIdentifier): id is EntityIdentifier {
+export function isEntityIdentifier(
+    id: JSONValue | EntityIdentifier
+): id is EntityIdentifier {
     if (typeof id !== 'string') {
         return false
     }
@@ -15,8 +17,7 @@ export function isEntityIdentifier(id: JSONValue | EntityIdentifier): id is Enti
     try {
         parse(id)
         return true
-    }
-    catch (ex) {
+    } catch (ex) {
         return false
     }
 }

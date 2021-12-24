@@ -19,21 +19,21 @@ class RoutingModule extends BaseModule {
     public $route;
 
     public function onEnable() {
-        $this -> router = new Router();
-        $this -> route = $this -> parseRoute();
+        $this->router = new Router();
+        $this->route = $this->parseRoute();
     }
 
     private function parseRoute() {
-        $uri = $this -> sess -> http -> uri;
-        $rawUri = $this -> sess -> http -> rawUri;
+        $uri = $this->sess->http->uri;
+        $rawUri = $this->sess->http->rawUri;
 
-        $result = $this -> router -> getRouteForPath($uri);
+        $result = $this->router->getRouteForPath($uri);
 
         if (!isset($result)) {
-            $this -> sess -> 
-                res -> status(404)
-                    -> cors("all")
-                    -> error("Route $rawUri not found");
+            $this->sess->res
+                ->status(404)
+                ->cors('all')
+                ->error("Route $rawUri not found");
         }
 
         return $result;

@@ -26,73 +26,73 @@ use TLT\Util\StringUtil;
 
 class PostRoute extends BaseRoute {
     public function __construct() {
-        parent ::__construct("post", [RequestMethod::GET, RequestMethod::POST, RequestMethod::DELETE]);
+        parent::__construct('post', [
+            RequestMethod::GET,
+            RequestMethod::POST,
+            RequestMethod::DELETE,
+        ]);
     }
 
     public function handle($sess, $res) {
-        $method = $sess -> http -> method;
+        $method = $sess->http->method;
 
         if ($method == RequestMethod::GET) {
-            $id = $sess -> queryParams()['id'];
+            $id = $sess->queryParams()['id'];
 
-            Assertions ::assertSet($id);
+            Assertions::assertSet($id);
 
-            $model = $this -> getById($id, $sess);
+            $model = $this->getById($id, $sess);
 
             if (!isset($model)) {
-                $res -> status(404)
-                     -> cors("all")
-                     -> error("Post not found");
+                $res->status(404)
+                    ->cors('all')
+                    ->error('Post not found');
             }
 
-            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
-        }
-        else if ($method == RequestMethod::POST) {
-            Assertions ::assert($sess -> auth -> isAuthenticated());
-            Assertions ::assert($this -> isModMakingRequest($sess));
-            $selfUser = $sess -> cache -> user();
-            Assertions ::assertSet($selfUser);
+            $res->sendJSON($model->toMap(), [StatusCode::OK]);
+        } elseif ($method == RequestMethod::POST) {
+            Assertions::assert($sess->auth->isAuthenticated());
+            Assertions::assert($this->isModMakingRequest($sess));
+            $selfUser = $sess->cache->user();
+            Assertions::assertSet($selfUser);
 
-            $body = $sess -> jsonParams();
-            
-            $data = Map ::from([
-                'authorId' => $selfUser -> id,
+            $body = $sess->jsonParams();
+
+            $data = Map::from([
+                'authorId' => $selfUser->id,
                 'content' => $body['content'],
                 'title' => $body['title'],
-                'createdAt' => DBUtil ::currentTime(),
-                'editedAt' => $body -> orDefault("editedAt", null)
+                'createdAt' => DBUtil::currentTime(),
+                'editedAt' => $body->orDefault('editedAt', null),
             ]);
 
             Logger::getInstance()->error($data);
             if (isset($body['id'])) {
                 $data['id'] = $body['id'];
-                $this -> updateById($data, $sess);
-            }
-            else { 
-                $data['id'] = StringUtil ::newID();
-                $this -> insertNew($data, $sess);
+                $this->updateById($data, $sess);
+            } else {
+                $data['id'] = StringUtil::newID();
+                $this->insertNew($data, $sess);
             }
 
             $id = $data['id'];
-            Assertions ::assertSet($id);
-            $model = $this -> getById($id, $sess);
-            Assertions ::assertSet($model);
+            Assertions::assertSet($id);
+            $model = $this->getById($id, $sess);
+            Assertions::assertSet($model);
 
-            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
-        }
-        else if ($method == RequestMethod::DELETE) {
-            Assertions ::assert($sess -> auth -> isAuthenticated());
-            Assertions ::assert($this -> isModMakingRequest($sess));
+            $res->sendJSON($model->toMap(), [StatusCode::OK]);
+        } elseif ($method == RequestMethod::DELETE) {
+            Assertions::assert($sess->auth->isAuthenticated());
+            Assertions::assert($this->isModMakingRequest($sess));
 
-            $id = $sess -> queryParams()['id'];
-            Assertions ::assertSet($id);
+            $id = $sess->queryParams()['id'];
+            Assertions::assertSet($id);
 
-            $model = $this -> getById($id, $sess);
-            $this -> deleteById($id, $sess);
-            $res -> sendJSON($model -> toMap(), [StatusCode::OK]);
-        }
-        else {
-            Logger::getInstance() -> fatal("Unknown method $method");
+            $model = $this->getById($id, $sess);
+            $this->deleteById($id, $sess);
+            $res->sendJSON($model->toMap(), [StatusCode::OK]);
+        } else {
+            Logger::getInstance()->fatal("Unknown method $method");
         }
     }
 
@@ -102,11 +102,11 @@ class PostRoute extends BaseRoute {
      * @return boolean if the deletion succeeded or not
      */
     private function deleteById($id, $sess) {
-        $query = "DELETE FROM post WHERE id = :id";
+        $query = 'DELETE FROM post WHERE id = :id';
 
-        $res = $sess -> db -> query($query, ['id' => $id]);
+        $res = $sess->db->query($query, ['id' => $id]);
 
-        return $res -> rowCount() > 0; // true if it was modified, false otherwise
+        return $res->rowCount() > 0; // true if it was modified, false otherwise
     }
 
     /**
@@ -124,16 +124,15 @@ class PostRoute extends BaseRoute {
                 ;
         ";
 
-        $sess -> db -> query($query, [
+        $sess->db->query($query, [
             'id' => $data['id'],
             'title' => $data['title'],
             'authorId' => $data['authorId'],
             'content' => $data['content'],
             'createdAt' => $data['createdAt'],
-            'editedAt' => $data['editedAt']
+            'editedAt' => $data['editedAt'],
         ]);
     }
-
 
     /**
      * @param Map $data
@@ -147,13 +146,13 @@ class PostRoute extends BaseRoute {
                 );
         ";
 
-        $sess -> db -> query($query, [
+        $sess->db->query($query, [
             'id' => $data['id'],
             'title' => $data['title'],
             'authorId' => $data['authorId'],
             'content' => $data['content'],
             'createdAt' => $data['createdAt'],
-            'editedAt' => $data['editedAt']
+            'editedAt' => $data['editedAt'],
         ]);
     }
 
@@ -165,13 +164,14 @@ class PostRoute extends BaseRoute {
      * @return PostModel|null The model, or null if not found
      */
     private function getById($id, $sess) {
-        $st = $sess -> db -> query("SELECT * FROM post p 
+        $st = $sess->db->query(
+            "SELECT * FROM post p 
                 LEFT JOIN user u on u.id = p.authorId
-            WHERE p.id = :id", 
+            WHERE p.id = :id",
             ['id' => $id]
         );
 
-        $res = $st -> fetch(PDO::FETCH_NAMED);
+        $res = $st->fetch(PDO::FETCH_NAMED);
 
         if (!$res) {
             return null;
@@ -185,15 +185,15 @@ class PostRoute extends BaseRoute {
                 $ids[1],
                 $res['firstName'],
                 $res['lastName'],
-                (int)$res['permissions'],
-                (int)$res['dob'],
-                (int)$res['joinDate'],
+                (int) $res['permissions'],
+                (int) $res['dob'],
+                (int) $res['joinDate'],
                 $res['username']
             ),
             $res['content'],
             $res['title'],
-            (int)$res['createdAt'],
-            (int)$res['editedAt']
+            (int) $res['createdAt'],
+            (int) $res['editedAt']
         );
     }
 
@@ -202,49 +202,54 @@ class PostRoute extends BaseRoute {
      * @return boolean whether a mod is making this request
      */
     private function isModMakingRequest($sess) {
-        $self = $sess -> cache -> user();
+        $self = $sess->cache->user();
         if (!isset($self)) {
             return false;
         }
-        return $self -> permissions >= PermissionLevel ::MODERATOR;
+        return $self->permissions >= PermissionLevel::MODERATOR;
     }
 
     public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(new DatabaseMiddleware());
+        $sess->applyMiddleware(new DatabaseMiddleware());
 
-        $method = $sess -> http -> method;
+        $method = $sess->http->method;
 
-        if ($method == RequestMethod ::GET) {
-            if (!isset($sess -> queryParams()['id'])) {
-                return HttpResult ::BadRequest("No id provided");
+        if ($method == RequestMethod::GET) {
+            if (!isset($sess->queryParams()['id'])) {
+                return HttpResult::BadRequest('No id provided');
             }
-        }
-        else if ($method == RequestMethod ::POST) {
-            $body = $sess -> jsonParams();
-            $sess -> applyMiddleware(
-                new ModelValidatorMiddleware(ModelKeys::POST_MODEL(), $body, "Invalid data provided"),
+        } elseif ($method == RequestMethod::POST) {
+            $body = $sess->jsonParams();
+            $sess->applyMiddleware(
+                new ModelValidatorMiddleware(
+                    ModelKeys::POST_MODEL(),
+                    $body,
+                    'Invalid data provided'
+                ),
                 new AuthenticationMiddleware()
             );
 
-            if (!$this -> isModMakingRequest($sess)) {
-                return HttpResult:: BadRequest("You do not have permission to create this post");
+            if (!$this->isModMakingRequest($sess)) {
+                return HttpResult::BadRequest(
+                    'You do not have permission to create this post'
+                );
             }
-        }
-        else if ($method == RequestMethod ::DELETE) {
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
+        } elseif ($method == RequestMethod::DELETE) {
+            $sess->applyMiddleware(new AuthenticationMiddleware());
 
-            if (!isset($sess -> queryParams()['id'])) {
-                return HttpResult ::BadRequest("No id provided");
+            if (!isset($sess->queryParams()['id'])) {
+                return HttpResult::BadRequest('No id provided');
             }
 
-            if (!$this -> isModMakingRequest($sess)) {
-                return HttpResult:: BadRequest("You do not have permission to create this post");
+            if (!$this->isModMakingRequest($sess)) {
+                return HttpResult::BadRequest(
+                    'You do not have permission to create this post'
+                );
             }
-        }
-        else {
-            Logger::getInstance() -> fatal("Unknown method $method");
+        } else {
+            Logger::getInstance()->fatal("Unknown method $method");
         }
 
-        return HttpResult ::Ok();
+        return HttpResult::Ok();
     }
 }

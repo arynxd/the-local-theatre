@@ -1,5 +1,5 @@
-import {Context} from "./Context";
-import {BehaviorSubject} from "rxjs";
+import { Context } from './Context'
+import { BehaviorSubject } from 'rxjs'
 
 export type Theme = 'dark' | 'light'
 
@@ -12,7 +12,7 @@ export class ThemeContext extends Context {
         super()
         this.observable$$ = new BehaviorSubject(this.currentTheme())
 
-        this.observable$$.subscribe(theme => {
+        this.observable$$.subscribe((theme) => {
             localStorage.theme = theme
             this.setThemeOnDOM(theme)
         })
@@ -24,7 +24,9 @@ export class ThemeContext extends Context {
      * @returns Theme the currently selected theme
      */
     private currentTheme(): Theme {
-        return localStorage[THEME_KEY] === 'dark' || (!(THEME_KEY in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        return localStorage[THEME_KEY] === 'dark' ||
+            (!(THEME_KEY in localStorage) &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? 'dark'
             : 'light'
     }
@@ -34,7 +36,7 @@ export class ThemeContext extends Context {
      * This will trigger a re-render and thus, tailwind will load the appropriate theme styles.
      */
     private setThemeOnDOM(theme: Theme) {
-        theme === "dark"
+        theme === 'dark'
             ? document.documentElement.classList.add('dark')
             : document.documentElement.classList.remove('dark')
     }

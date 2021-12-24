@@ -13,7 +13,7 @@ class ContentType {
         return Map::from([
             'json' => self::JSON,
             'png' => self::PNG,
-            'text' => self::TEXT
+            'text' => self::TEXT,
         ]);
     }
 }

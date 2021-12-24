@@ -1,18 +1,18 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import Navbar from "./component/Navbar";
+import Navbar from './component/Navbar'
 import Blog from './page/Blog'
-import Home from "./page/Home";
-import Contact from "./page/Contact";
-import Login from "./page/Login";
-import Signup from "./page/Signup";
-import { logger } from "./util/log";
-import { getPrefix } from "./util/url";
-import { NotFound } from "./page/NotFound";
-import Footer from "./component/Footer";
+import Home from './page/Home'
+import Contact from './page/Contact'
+import Login from './page/Login'
+import Signup from './page/Signup'
+import { logger } from './util/log'
+import { getPrefix } from './util/url'
+import { NotFound } from './page/NotFound'
+import Footer from './component/Footer'
 import { Post } from './page/Post'
-import { Paths } from "./util/paths";
-import UserSettings from "./page/UserSettings";
-import Moderation from "./page/Moderation";
+import { Paths } from './util/paths'
+import UserSettings from './page/UserSettings'
+import Moderation from './page/Moderation'
 
 function Body() {
     return (

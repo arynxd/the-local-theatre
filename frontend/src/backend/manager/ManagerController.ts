@@ -1,6 +1,6 @@
-import {HttpManager} from "./HttpManager";
-import {CacheManager} from "./CacheManager";
-import {EntityManager} from "./EntityManager";
+import { HttpManager } from './HttpManager'
+import { CacheManager } from './CacheManager'
+import { EntityManager } from './EntityManager'
 
 /**
  * Primary class for all backend operations
@@ -19,4 +19,3 @@ export class ManagerController {
         this.entity = new EntityManager()
     }
 }
-

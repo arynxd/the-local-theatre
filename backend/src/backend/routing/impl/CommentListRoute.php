@@ -20,22 +20,23 @@ use TLT\Util\StringUtil;
 
 class CommentListRoute extends BaseRoute {
     public function __construct() {
-        parent ::__construct("comment/list", [RequestMethod::GET]);
+        parent::__construct('comment/list', [RequestMethod::GET]);
     }
 
     public function handle($sess, $res) {
-        $id = $sess -> queryParams()['id'];
+        $id = $sess->queryParams()['id'];
         Assertions::assertSet($id);
 
-        $st = $sess -> db -> query("SELECT * FROM comment c 
+        $st = $sess->db->query(
+            "SELECT * FROM comment c 
                 LEFT JOIN user u on u.id = c.authorId
-            WHERE c.postId = :id", 
+            WHERE c.postId = :id",
             ['id' => $id]
         );
 
-        $db = $st -> fetchAll(PDO::FETCH_NAMED);
+        $db = $st->fetchAll(PDO::FETCH_NAMED);
 
-        $items = Map ::none();
+        $items = Map::none();
 
         foreach ($db as $item) {
             $model = new CommentModel(
@@ -44,32 +45,32 @@ class CommentListRoute extends BaseRoute {
                     $item['id'][1],
                     $item['firstName'],
                     $item['lastName'],
-                    (int)$item['permissions'],
-                    (int)$item['dob'],
-                    (int)$item['joinDate'],
+                    (int) $item['permissions'],
+                    (int) $item['dob'],
+                    (int) $item['joinDate'],
                     $item['username']
                 ),
                 $item['postId'],
                 $item['content'],
-                (int)$item['createdAt'],
-                (int)$item['editedAt']
+                (int) $item['createdAt'],
+                (int) $item['editedAt']
             );
-            $items -> push($model -> toMap());
+            $items->push($model->toMap());
         }
 
-        $res -> status(200)
-             -> cors("all")
-             -> json([
-                 'comments' => $items,
-                 'count' => $item -> length()
-             ]);
+        $res->status(200)
+            ->cors('all')
+            ->json([
+                'comments' => $items,
+                'count' => $item->length(),
+            ]);
     }
 
     public function validateRequest($sess, $res) {
-        if (!isset($sess -> queryParams()['id'])) {
-            return HttpResult::BadRequest("No ID provided");
+        if (!isset($sess->queryParams()['id'])) {
+            return HttpResult::BadRequest('No ID provided');
         }
-        $sess -> applyMiddleware(new DatabaseMiddleware());
-        return HttpResult ::Ok();
+        $sess->applyMiddleware(new DatabaseMiddleware());
+        return HttpResult::Ok();
     }
 }

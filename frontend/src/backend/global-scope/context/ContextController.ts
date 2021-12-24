@@ -1,5 +1,5 @@
-import {AuthContext} from "./AuthContext";
-import {ThemeContext} from "./ThemeContext";
+import { AuthContext } from './AuthContext'
+import { ThemeContext } from './ThemeContext'
 
 export class ContextController {
     public readonly auth: AuthContext

@@ -13,13 +13,13 @@ class LogLevel {
 
     public static function LEVEL_TO_DISPLAY_NAME() {
         return [
-            self::DISABLED => "DISABLED",
-            self::FATAL => "FATAL",
-            self::ERROR => "ERROR",
-            self::WARN  => "WARN",
-            self::INFO  => "INFO",
-            self::DEBUG => "DEBUG",
-            self::ALL   => "ALL",
+            self::DISABLED => 'DISABLED',
+            self::FATAL => 'FATAL',
+            self::ERROR => 'ERROR',
+            self::WARN => 'WARN',
+            self::INFO => 'INFO',
+            self::DEBUG => 'DEBUG',
+            self::ALL => 'ALL',
         ];
     }
 

@@ -2,7 +2,6 @@
 
 namespace TLT\Routing;
 
-
 use TLT\Request\Response;
 use TLT\Request\Session;
 use TLT\Util\Enum\RequestMethod;
@@ -22,8 +21,8 @@ abstract class BaseRoute {
      * @param RequestMethod[] $methods the request methods this route accepts
      */
     protected function __construct($path, $methods) {
-        $this -> path = $path;
-        $this -> methods = $methods;
+        $this->path = $path;
+        $this->methods = $methods;
     }
 
     /**
@@ -33,7 +32,7 @@ abstract class BaseRoute {
      * @param Session $sess the current session
      * @param Response $res the response to send data to
      */
-    public abstract function handle($sess, $res);
+    abstract public function handle($sess, $res);
 
     /**
      * Validates this routing based on an incoming request.
@@ -45,7 +44,7 @@ abstract class BaseRoute {
      * @param Response $res the response to send data to
      * @return HttpResult  the result of the validation
      */
-    public abstract function validateRequest($sess, $res);
+    abstract public function validateRequest($sess, $res);
 
     /**
      * Validates this route based on an incoming request's methods.
@@ -54,6 +53,6 @@ abstract class BaseRoute {
      * @return  boolean     true, if the validation passed, false otherwise
      */
     public function validateMethod($sess) {
-        return in_array($sess -> http -> method, $this -> methods);
+        return in_array($sess->http->method, $this->methods);
     }
 }

@@ -35,35 +35,39 @@ class HttpModule extends BaseModule {
     public $headers;
 
     public function onEnable() {
-        $this -> method = $_SERVER["REQUEST_METHOD"];
-        $this -> headers = $this -> parseHeaders();
-        $this -> handleCors();
-        $this -> rawUri = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        $this -> uri = $this -> parseURI();
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->headers = $this->parseHeaders();
+        $this->handleCors();
+        $this->rawUri = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $this->uri = $this->parseURI();
     }
 
     /**
      * Handle CORS OPTIONS request and respond appropriately
      */
     private function handleCors() {
-        if ($this -> method == RequestMethod::OPTIONS) {
-            Logger ::getInstance() -> info("CORS OPTIONS request received, sending headers and exiting");
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Access-Control-Allow-Origin: *");
+        if ($this->method == RequestMethod::OPTIONS) {
+            Logger::getInstance()->info(
+                'CORS OPTIONS request received, sending headers and exiting'
+            );
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+            header('Access-Control-Allow-Origin: *');
             die(0);
         }
     }
 
     private function parseHeaders() {
         if (!function_exists('getallheaders')) {
-            Logger ::getInstance() -> fatal("getallheaders function did not exist? are we actually running under Apache?");
+            Logger::getInstance()->fatal(
+                'getallheaders function did not exist? are we actually running under Apache?'
+            );
         }
 
         $h = getallheaders();
 
         Assertions::assertNotFalse($h);
-        return Map ::from($h);
+        return Map::from($h);
     }
 
     /**
@@ -73,15 +77,21 @@ class HttpModule extends BaseModule {
      * @return array The parsed URI
      */
     private function parseURI() {
-        $map = parse_url($this -> rawUri, PHP_URL_PATH); // get the URI from the request
+        $map = parse_url($this->rawUri, PHP_URL_PATH); // get the URI from the request
         $map = explode('/', $map); // split it into an array
         $map = array_slice($map, 1); // remove weird empty argument at the start
 
-        if (isset($map[0]) && StringUtil ::startsWith($map[0], Constants::URI_PREFIX)) {
+        if (
+            isset($map[0]) &&
+            StringUtil::startsWith($map[0], Constants::URI_PREFIX)
+        ) {
             $map = array_slice($map, 1);
         }
 
-        if (isset($map[0]) && StringUtil ::startsWith($map[0], Constants::API_PREFIX)) {
+        if (
+            isset($map[0]) &&
+            StringUtil::startsWith($map[0], Constants::API_PREFIX)
+        ) {
             $map = array_slice($map, 1);
         }
 

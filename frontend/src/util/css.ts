@@ -10,8 +10,7 @@ export function getDevice(): Device {
 
     if (width <= 640) {
         return 'sm'
-    }
-    else if (width <= 768) {
+    } else if (width <= 768) {
         return 'md'
     }
     return 'lg'

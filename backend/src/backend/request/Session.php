@@ -59,7 +59,6 @@ class Session {
      */
     public $cache;
 
-
     /**
      * The config module for this session
      *
@@ -82,88 +81,96 @@ class Session {
      */
     public $db;
 
-
     public function __construct() {
-        Logger ::getInstance() -> info("Loading modules...");
-        $this -> res = new Response($this);
+        Logger::getInstance()->info('Loading modules...');
+        $this->res = new Response($this);
 
         // init modules
-        $this -> cfg = new ConfigModule($this);
-        $this -> http = new HttpModule($this);
-        $this -> routing = new RoutingModule($this);
-        $this -> data = new DataModule($this);
-        $this -> cache = new CacheModule($this);
-        $this -> auth = new AuthModule($this);
-        $this -> db = new DatabaseModule($this);
-        Logger ::getInstance() -> info("Modules constructed without error, enabling");
+        $this->cfg = new ConfigModule($this);
+        $this->http = new HttpModule($this);
+        $this->routing = new RoutingModule($this);
+        $this->data = new DataModule($this);
+        $this->cache = new CacheModule($this);
+        $this->auth = new AuthModule($this);
+        $this->db = new DatabaseModule($this);
+        Logger::getInstance()->info(
+            'Modules constructed without error, enabling'
+        );
 
         $all = [
-            $this -> cfg,
-            $this -> http,
-            $this -> routing,
-            $this -> data,
-            $this -> cache,
-            $this -> db,
-            $this -> auth
+            $this->cfg,
+            $this->http,
+            $this->routing,
+            $this->data,
+            $this->cache,
+            $this->db,
+            $this->auth,
         ];
 
         foreach ($all as $mod) {
             try {
-                Logger ::getInstance() -> debug("\tEnabling module " . get_class($mod));
-                $mod -> onEnable();
-            }
-            catch (Exception $ex) {
-                Logger ::getInstance() -> error("Module " . get_class($mod) . " encountered an error whilst enabling");
-                $this -> res -> internal($ex);
+                Logger::getInstance()->debug(
+                    "\tEnabling module " . get_class($mod)
+                );
+                $mod->onEnable();
+            } catch (Exception $ex) {
+                Logger::getInstance()->error(
+                    'Module ' .
+                        get_class($mod) .
+                        ' encountered an error whilst enabling'
+                );
+                $this->res->internal($ex);
             }
         }
-        Logger ::getInstance() -> info("Modules loaded");
+        Logger::getInstance()->info('Modules loaded');
     }
 
     public function jsonParams() {
-        return $this -> parseParams(ParamSource::JSON);
+        return $this->parseParams(ParamSource::JSON);
     }
 
     private function parseParams($source) {
-        Logger ::getInstance() -> info("Parsing params from source $source");
+        Logger::getInstance()->info("Parsing params from source $source");
         if ($source == ParamSource::QUERY) {
-            Logger ::getInstance() -> debug('Query params selected, returning $_GET');
-            return Map ::from($_GET);
-        }
-        else if ($source == ParamSource::JSON) {
-            Logger ::getInstance() -> debug("Attempting JSON parse..");
+            Logger::getInstance()->debug(
+                'Query params selected, returning $_GET'
+            );
+            return Map::from($_GET);
+        } elseif ($source == ParamSource::JSON) {
+            Logger::getInstance()->debug('Attempting JSON parse..');
             $raw = file_get_contents('php://input');
-            
+
             if (!$raw) {
-                $raw = "{}"; //  if no body is passed, default to empty obj
+                $raw = '{}'; //  if no body is passed, default to empty obj
             }
-            
+
             $result = json_decode($raw, true);
 
             if (!isset($result)) {
-                Logger ::getInstance() -> warn("JSON parse failed for input, falling back to empty map");
-                Logger ::getInstance() -> warn($raw);
-                return Map ::none();
+                Logger::getInstance()->warn(
+                    'JSON parse failed for input, falling back to empty map'
+                );
+                Logger::getInstance()->warn($raw);
+                return Map::none();
             }
 
-            Logger ::getInstance() -> debug("JSON parse succeeded!");
+            Logger::getInstance()->debug('JSON parse succeeded!');
 
-            $result = Map ::from($result);
+            $result = Map::from($result);
 
-            return $result -> mapRecursive(function ($_, $value) {
+            return $result->mapRecursive(function ($_, $value) {
                 if (is_array($value)) {
-                    return Map ::from($value);
+                    return Map::from($value);
                 }
                 return $value;
             });
-
         }
 
-        Logger ::getInstance() -> fatal("Unexpected ParamSource $source");
+        Logger::getInstance()->fatal("Unexpected ParamSource $source");
     }
 
     public function queryParams() {
-        return $this -> parseParams(ParamSource::QUERY);
+        return $this->parseParams(ParamSource::QUERY);
     }
 
     /**
@@ -175,21 +182,26 @@ class Session {
      */
     public function applyMiddleware($middleware) {
         $wareResult = null;
-        Logger ::getInstance() -> debug("Applying middleware " . get_class($middleware));
+        Logger::getInstance()->debug(
+            'Applying middleware ' . get_class($middleware)
+        );
 
         try {
-            $wareResult = $middleware -> apply($this);
-        }
-        catch (Exception $ex) {
-            Logger ::getInstance() -> error("An error occurred whilst applying middleware " . get_class($middleware));
-            $this -> res -> internal($ex);
+            $wareResult = $middleware->apply($this);
+        } catch (Exception $ex) {
+            Logger::getInstance()->error(
+                'An error occurred whilst applying middleware ' .
+                    get_class($middleware)
+            );
+            $this->res->internal($ex);
         }
 
-        if ($wareResult -> isError()) {
-            $this -> res -> status($wareResult -> httpCode)
-                         -> cors("all")
-                         -> error($wareResult -> error);
+        if ($wareResult->isError()) {
+            $this->res
+                ->status($wareResult->httpCode)
+                ->cors('all')
+                ->error($wareResult->error);
         }
-        Logger ::getInstance() -> info("Middleware applied without error");
+        Logger::getInstance()->info('Middleware applied without error');
     }
 }

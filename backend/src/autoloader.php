@@ -8,8 +8,10 @@ function startsWith($haystack, $needle) {
 // It will take the incoming class (namespace) and extract the file path from it.
 // It achieves this by assuming the namespace name matches the fs layout.
 spl_autoload_register(function ($class) {
-    if (!startsWith($class, "TLT")) {
-        throw new UnexpectedValueException("Tried to autoload class $class which was not a part of our namespace");
+    if (!startsWith($class, 'TLT')) {
+        throw new UnexpectedValueException(
+            "Tried to autoload class $class which was not a part of our namespace"
+        );
     }
 
     $parts = explode('\\', $class);
@@ -20,8 +22,8 @@ spl_autoload_register(function ($class) {
         $lowered[$i] = strtolower($elem);
     }
 
-    $srcPath = join("/", $lowered) . "/" . $parts[count($parts) - 1];
-    $backendPrefix = __DIR__ . "/backend/";
+    $srcPath = join('/', $lowered) . '/' . $parts[count($parts) - 1];
+    $backendPrefix = __DIR__ . '/backend/';
 
-    require_once($backendPrefix . $srcPath . '.php');
+    require_once $backendPrefix . $srcPath . '.php';
 });

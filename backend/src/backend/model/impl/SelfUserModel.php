@@ -7,11 +7,27 @@ use TLT\Util\Data\Map;
 use TLT\Util\Enum\Constants;
 
 class SelfUserModel extends UserModel {
-
     public $email;
-    public function __construct($id, $firstName, $lastName, $email, $permissions, $dob, $joinDate, $username) {
-        parent::__construct($id, $firstName, $lastName, $permissions, $dob, $joinDate, $username);
-        $this -> email = $email;
+    public function __construct(
+        $id,
+        $firstName,
+        $lastName,
+        $email,
+        $permissions,
+        $dob,
+        $joinDate,
+        $username
+    ) {
+        parent::__construct(
+            $id,
+            $firstName,
+            $lastName,
+            $permissions,
+            $dob,
+            $joinDate,
+            $username
+        );
+        $this->email = $email;
     }
 
     /**
@@ -34,17 +50,15 @@ class SelfUserModel extends UserModel {
     }
 
     public function toMap() {
-        return Map ::from(
-            [
-                'id' => $this -> id,
-                'firstName' => $this -> firstName,
-                'lastName' => $this -> lastName,
-                'email' => $this -> email,
-                'permissions' => (int)$this -> permissions,
-                'dob' => (int)$this -> dob,
-                'joinDate' => (int)$this -> joinDate,
-                'username' => $this -> username
-            ]
-        );
+        return Map::from([
+            'id' => $this->id,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'email' => $this->email,
+            'permissions' => (int) $this->permissions,
+            'dob' => (int) $this->dob,
+            'joinDate' => (int) $this->joinDate,
+            'username' => $this->username,
+        ]);
     }
 }

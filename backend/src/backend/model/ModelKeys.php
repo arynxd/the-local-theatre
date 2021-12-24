@@ -12,7 +12,15 @@ class ModelKeys {
     }
 
     public static function USER_MODEL() {
-        return ['id', 'firstName', 'lastName', 'permissions', 'dob', 'joinDate', 'username'];
+        return [
+            'id',
+            'firstName',
+            'lastName',
+            'permissions',
+            'dob',
+            'joinDate',
+            'username',
+        ];
     }
 
     public static function USER_CREATE_MODEL() {
@@ -20,6 +28,13 @@ class ModelKeys {
     }
 
     public static function SIGNUP_MODEL() {
-        return ['firstName', 'lastName', 'username', 'dob', 'email', 'password'];
+        return [
+            'firstName',
+            'lastName',
+            'username',
+            'dob',
+            'email',
+            'password',
+        ];
     }
 }

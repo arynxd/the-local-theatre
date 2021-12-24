@@ -7,102 +7,88 @@ namespace TLT\Routing\Impl;
 
 use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
+use TLT\Model\Impl\CredentialModel;
+use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\AuthUtil;
 use TLT\Util\Data\Map;
+use TLT\Util\DBUtil;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 
 class SignupRoute extends BaseRoute {
-    public function __construct() {
-        parent ::__construct("signup", [RequestMethod::POST]);
-    }
+	public function __construct() {
+		parent::__construct('signup', [RequestMethod::POST]);
+	}
 
-    public function handle($sess, $res) {
-        $data = $sess -> jsonParams()['data'];
-        Assertions ::assertSet($data);
-        
-        $userHasAccount = $this -> userHasAccount($sess, $data['email']);
+	public function handle($sess, $res) {
+		$body = $sess->jsonParams();
 
-        if ($userHasAccount) {
-            $res -> status(409)
-                 -> error("Account already exists");
-        }
-        else {
-            $newToken = $this -> createAccount($sess, $data);
+		$cred = $sess->data->credential;
+		$cred->start();
 
-            $res -> status(200)
-                 -> cors("all")
-                 -> json([
-                    'token' => $newToken
-                 ]);
-        }
-    }
+		$user = $cred->get($body['email']);
 
-    private function userHasAccount($sess, $email) {
-        $query = "SELECT COUNT(*) FROM credential WHERE email = :email";
-        $res = $sess -> db -> query($query, [
-            'email' => $email
-        ]);
+		if (isset($user)) {
+			$res->status(409)->error('Account already exists');
+		} else {
+			$token = AuthUtil::generateToken();
+			$id = StringUtil::newID();
 
-        $res = $res -> fetchColumn(0);
+			$user = $sess->data->user;
+			$user->start();
 
-        Assertions ::assertSet($res);
+			$userModel = new UserModel(
+				$id,
+				$body['firstName'],
+				$body['lastName'],
+				DBUtil::DEFAULT_PERMISSIONS,
+				$body['dob'],
+				DBUtil::currentTime(),
+				$body['username']
+			);
 
-        return $res > 0;
-    }
+			$credModel = new CredentialModel(
+				$id,
+				$body['email'],
+				AuthUtil::hashPassword($body['password']),
+				$token
+			);
 
-    private function createAccount($sess, $data) {
-        $insertIntoUsers = "INSERT INTO user
-            (id, firstName, lastName, username, dob, joinDate, permissions) VALUES
-            (:id, :firstName, :lastName, :username, :dob, :joinDate, :permissions);";
+			$user->insert($userModel);
+			$cred->insert($credModel);
 
-        $insertIntoCreds = "INSERT INTO credential
-            (userId, email, password, token) VALUES
-            (:id, :email, :password, :token);";
+			$user->commit();
+			$cred->commit();
 
-        $db = $sess -> db;
+			$res->status(200)
+				->cors('all')
+				->json([
+					'token' => $token,
+				]);
+		}
+	}
 
-        $id = StringUtil ::newID();
-        $tok = AuthUtil ::generateToken();
+	public function validateRequest($sess, $res) {
+		$sess->applyMiddleware(new DatabaseMiddleware());
 
-        $db -> query($insertIntoUsers, [
-            'id' => $id,
-            'firstName' => $data['firstName'],
-            'lastName' => $data['lastName'],
-            'username' => $data['username'],
-            'dob' => $data['dob'],
-            'joinDate' => time(),
-            'permissions' => 1
-        ]);
+		$data = $sess->jsonParams()['data'];
 
-        $db -> query($insertIntoCreds, [
-            'id' => $id,
-            'email' => $data['email'],
-            'password' => AuthUtil ::hashPassword($data['password']),
-            'token' => $tok
-        ]);
+		if (!isset($data)) {
+			return HttpResult::BadRequest('No data provided');
+		}
 
-        return $tok;
-    }
+		$validator = new ModelValidatorMiddleware(
+			ModelKeys::SIGNUP_MODEL(),
+			Map::from($data),
+			'Invalid data provided'
+		);
+		$sess->applyMiddleware($validator);
 
-    public function validateRequest($sess, $res) {
-        $sess -> applyMiddleware(new DatabaseMiddleware());
-
-        $data = $sess -> jsonParams()['data'];
-
-        if (!isset($data)) {
-            return HttpResult ::BadRequest("No data provided");
-        }
-
-        $validator = new ModelValidatorMiddleware(ModelKeys::SIGNUP_MODEL(), Map ::from($data), "Invalid data provided");
-        $sess -> applyMiddleware($validator);
-
-        return HttpResult ::Ok();
-    }
+		return HttpResult::Ok();
+	}
 }
-

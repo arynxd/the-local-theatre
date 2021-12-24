@@ -11,16 +11,16 @@ class ShowModel extends Model {
     public $showDate;
 
     public function __construct($id, $title, $showDate) {
-        $this -> id = $id;
-        $this -> title = $title;
-        $this -> showDate = $showDate;
+        $this->id = $id;
+        $this->title = $title;
+        $this->showDate = $showDate;
     }
 
     public function toMap() {
-        return Map ::from([
-            'id' => $this -> id,
-            'title' => $this -> title,
-            'showDate' => $this -> showDate,
+        return Map::from([
+            'id' => $this->id,
+            'title' => $this->title,
+            'showDate' => $this->showDate,
         ]);
     }
 }

@@ -11,7 +11,7 @@ class BaseModule {
     protected $sess;
 
     public function __construct($sess) {
-        $this -> sess = $sess;
+        $this->sess = $sess;
     }
 
     public function onEnable() {

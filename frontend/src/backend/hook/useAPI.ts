@@ -1,7 +1,7 @@
-import {logger} from "../../util/log";
-import BackendError from "../error/BackendError";
-import usePromise from "react-use-promise";
-import { useState } from "react";
+import { logger } from '../../util/log'
+import BackendError from '../error/BackendError'
+import usePromise from 'react-use-promise'
+import { useState } from 'react'
 
 /**
  * A React hook for making API requests

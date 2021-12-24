@@ -10,11 +10,11 @@ use TLT\Util\Assert\Assertions;
 use TLT\Util\Log\Logger;
 
 /*
-* This class implements the following options for the connection:
-*  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-*  PDO::ATTR_PERSISTENT => true,
-*  PDO::ATTR_TIMEOUT => 5
-*/
+ * This class implements the following options for the connection:
+ *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+ *  PDO::ATTR_PERSISTENT => true,
+ *  PDO::ATTR_TIMEOUT => 5
+ */
 
 class DatabaseModule extends BaseModule {
     /**
@@ -23,9 +23,11 @@ class DatabaseModule extends BaseModule {
     private $dbh;
 
     public function onEnable() {
-        if (!$this -> sess -> cfg -> dbEnabled) {
-            Logger ::getInstance() -> debug("db_enabled false, halting DB connection");
-            $this -> dbh = null;
+        if (!$this->sess->cfg->dbEnabled) {
+            Logger::getInstance()->debug(
+                'db_enabled false, halting DB connection'
+            );
+            $this->dbh = null;
             return;
         }
 
@@ -35,41 +37,40 @@ class DatabaseModule extends BaseModule {
             PDO::ATTR_TIMEOUT => 5,
         ];
 
-        $cfg = $this -> sess -> cfg;
+        $cfg = $this->sess->cfg;
 
-        $url = $cfg -> dbURL;
-        $username = $cfg -> dbUsername;
-        $password = $cfg -> dbPassword;
+        $url = $cfg->dbURL;
+        $username = $cfg->dbUsername;
+        $password = $cfg->dbPassword;
 
-        Logger ::getInstance() -> info("Starting connection to DB..");
+        Logger::getInstance()->info('Starting connection to DB..');
 
-        Logger ::getInstance() -> debug("\tURL: $url");
-        Logger ::getInstance() -> debug("\tUsername: $username");
-        Logger ::getInstance() -> debug("\tPassword: $password");
+        Logger::getInstance()->debug("\tURL: $url");
+        Logger::getInstance()->debug("\tUsername: $username");
+        Logger::getInstance()->debug("\tPassword: $password");
 
         try {
-            $this -> dbh = new PDO($url, $username, $password, $opts);
-        }
-        catch (PDOException $ex) {
-            Logger ::getInstance() -> error("PDO connection failed");
-            $this -> sess -> res -> internal($ex);
+            $this->dbh = new PDO($url, $username, $password, $opts);
+        } catch (PDOException $ex) {
+            Logger::getInstance()->error('PDO connection failed');
+            $this->sess->res->internal($ex);
         }
 
-        if ($this -> sess -> cfg -> env !== "PRODUCTION") {
-            Logger ::getInstance() -> info("ENV not in prod, initialising tables");
-            $this -> initTables();
+        if ($this->sess->cfg->env !== 'PRODUCTION') {
+            Logger::getInstance()->info('ENV not in prod, initialising tables');
+            $this->initTables();
         }
     }
 
     private function initTables() {
-        $this -> initTable("tables.sql");
+        $this->initTable('tables.sql');
     }
 
     private function initTable($fileName) {
-        Logger ::getInstance() -> debug("Running SQL from file " . $fileName);
-        $sql = file_get_contents(__DIR__ . "/../../../sql/" . $fileName);
+        Logger::getInstance()->debug('Running SQL from file ' . $fileName);
+        $sql = file_get_contents(__DIR__ . '/../../../sql/' . $fileName);
         Assertions::assertNotFalse($sql);
-        $this -> query($sql, []);
+        $this->query($sql, []);
     }
 
     /**
@@ -81,26 +82,26 @@ class DatabaseModule extends BaseModule {
      * @return          PDOStatement the statement representing this query
      */
     public function query($sql, $params = []) {
-        Logger ::getInstance() -> debug("Running SQL query " . $sql);
-        $st = $this -> prepare($sql);
+        Logger::getInstance()->debug('Running SQL query ' . $sql);
+        $st = $this->prepare($sql);
 
         if (!$st) {
-            Logger ::getInstance() -> error("SQL failed to prepare");
-            Logger ::getInstance() -> error("\t$sql");
-            $this -> sess -> res -> internal();
+            Logger::getInstance()->error('SQL failed to prepare');
+            Logger::getInstance()->error("\t$sql");
+            $this->sess->res->internal();
         }
 
-        if (!$st -> execute($params)) {
-            Logger ::getInstance() -> error("SQL query failed to execute");
-            Logger ::getInstance() -> error("\t$sql");
-            $this -> sess -> res -> internal();
+        if (!$st->execute($params)) {
+            Logger::getInstance()->error('SQL query failed to execute');
+            Logger::getInstance()->error("\t$sql");
+            $this->sess->res->internal();
         }
 
         return $st;
     }
 
     private function prepare($sql) {
-        $stmt = $this -> dbh -> prepare($sql);
+        $stmt = $this->dbh->prepare($sql);
 
         if (!$stmt) {
             return false;
@@ -110,18 +111,18 @@ class DatabaseModule extends BaseModule {
     }
 
     public function isEnabled() {
-        return isset($this -> dbh);
+        return isset($this->dbh);
     }
 
     public function errorInfo() {
-        return $this -> dbh -> errorInfo();
+        return $this->dbh->errorInfo();
     }
 
     public function startTransaction() {
-        $this -> dbh -> beginTransaction();
+        $this->dbh->beginTransaction();
     }
 
     public function commit() {
-        $this -> dbh -> commit();
+        $this->dbh->commit();
     }
 }

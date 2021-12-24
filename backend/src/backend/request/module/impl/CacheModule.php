@@ -17,13 +17,13 @@ class CacheModule extends BaseModule {
      * @return SelfUserModel|null
      */
     public function user() {
-        if (isset($this -> user)) {
-            return $this -> user;
+        if (isset($this->user)) {
+            return $this->user;
         }
 
-        $auth = $this -> sess -> auth;
+        $auth = $this->sess->auth;
 
-        if (!$auth -> isAuthenticated()) {
+        if (!$auth->isAuthenticated()) {
             return null;
         }
 
@@ -31,9 +31,11 @@ class CacheModule extends BaseModule {
                     LEFT JOIN user u ON u.id = c.userId
                   WHERE token = :token";
 
-        $selfUser = $this -> sess -> db -> query($query, ['token' => $auth -> token]) -> fetch();
-        $model = SelfUserModel ::fromJSON(Map ::from($selfUser));
-        $this -> user = $model;
+        $selfUser = $this->sess->db
+            ->query($query, ['token' => $auth->token])
+            ->fetch();
+        $model = SelfUserModel::fromJSON(Map::from($selfUser));
+        $this->user = $model;
         return $model;
     }
 }

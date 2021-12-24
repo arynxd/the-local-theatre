@@ -1,25 +1,25 @@
-import {Context} from "./Context";
-import {assert} from "../../../util/assert";
-import BackendError from "../../error/BackendError";
-import Routes from "../../request/route/Routes";
-import {BackendAction} from "../../request/BackendAction";
-import {BehaviorSubject} from "rxjs";
-import {getBackend} from "../util/getters";
-import {fromPromise, toJSON} from "../../request/mappers";
-import {User} from "../../../model/User";
-import { SelfUser } from "../../../model/SelfUser";
+import { Context } from './Context'
+import { assert } from '../../../util/assert'
+import BackendError from '../../error/BackendError'
+import Routes from '../../request/route/Routes'
+import { BackendAction } from '../../request/BackendAction'
+import { BehaviorSubject } from 'rxjs'
+import { getBackend } from '../util/getters'
+import { fromPromise, toJSON } from '../../request/mappers'
+import { User } from '../../../model/User'
+import { SelfUser } from '../../../model/SelfUser'
 
 export type AuthState = 'unauthenticated' | 'authenticated'
 export type AuthToken = string
 
-const AUTH_KEY = "authorisation"
+const AUTH_KEY = 'authorisation'
 
 export interface SignupObj {
-    firstName: string,
-    lastName: string,
-    email: string,
-    username: string,
-    dob: Date,
+    firstName: string
+    lastName: string
+    email: string
+    username: string
+    dob: Date
     password: string
 }
 
@@ -30,7 +30,9 @@ export class AuthContext extends Context {
     constructor() {
         super()
         this._token = localStorage.getItem(AUTH_KEY) ?? undefined
-        this.observeUser$$ = new BehaviorSubject<SelfUser | undefined>(undefined)
+        this.observeUser$$ = new BehaviorSubject<SelfUser | undefined>(
+            undefined
+        )
 
         let currentState: AuthState = 'unauthenticated'
         if (this._token && this._token !== 'null') {
@@ -57,24 +59,27 @@ export class AuthContext extends Context {
     }
 
     async login(email: string, password: string): Promise<boolean> {
-        assert(() => !this.isAuthenticated(),
-            () => new BackendError('Tried to login whilst already being authenticated.')
+        assert(
+            () => !this.isAuthenticated(),
+            () =>
+                new BackendError(
+                    'Tried to login whilst already being authenticated.'
+                )
         )
 
         const route = Routes.Auth.LOGIN.compile()
         route.withBody({
             data: {
                 email,
-                password
-            }
+                password,
+            },
         })
 
         const newToken = await BackendAction.new(route)
             .flatMap(toJSON)
-            .map(res => res.token)
+            .map((res) => res.token)
             .assertTypeOf('string')
             .catch(() => 'error')
-
 
         if (newToken === 'error') {
             return false
@@ -88,27 +93,30 @@ export class AuthContext extends Context {
     }
 
     async signup(obj: SignupObj): Promise<string> {
-        assert(() => !this.isAuthenticated(),
-            () => new BackendError('Tried to sign up whilst already being authenticated.')
+        assert(
+            () => !this.isAuthenticated(),
+            () =>
+                new BackendError(
+                    'Tried to sign up whilst already being authenticated.'
+                )
         )
 
         const route = Routes.Auth.SIGNUP.compile()
         route.withBody({
-                data: {
-                    firstName: obj.firstName,
-                    lastName: obj.lastName,
-                    username: obj.username,
-                    email: obj.email,
-                    dob: Math.floor(obj.dob.getTime() / 1000),
-                    password: obj.password
-                }
-            }
-        )
+            data: {
+                firstName: obj.firstName,
+                lastName: obj.lastName,
+                username: obj.username,
+                email: obj.email,
+                dob: Math.floor(obj.dob.getTime() / 1000),
+                password: obj.password,
+            },
+        })
 
         // TODO: handle error cases when signing up
         const tok = await BackendAction.new(route)
             .flatMap(toJSON)
-            .map(res => res.token)
+            .map((res) => res.token)
             .assertTypeOf('string')
 
         this._token = tok
@@ -129,20 +137,27 @@ export class AuthContext extends Context {
     }
 
     private async loadSelfUser0(): Promise<SelfUser | undefined> {
-        assert(() => this.isAuthenticated(),
-            () => new BackendError('Tried to load self user without being authenticated')
+        assert(
+            () => this.isAuthenticated(),
+            () =>
+                new BackendError(
+                    'Tried to load self user without being authenticated'
+                )
         )
 
         if (this._token === undefined) {
-            throw new BackendError('Tried to load self user without a token present')
+            throw new BackendError(
+                'Tried to load self user without a token present'
+            )
         }
 
-        const user = await getBackend().http.loadSelfUser()
+        const user = await getBackend()
+            .http.loadSelfUser()
             .catch(() => {
                 this.logout()
                 return undefined
             })
         this.observeUser$$.next(user)
-        return user;
+        return user
     }
 }

@@ -25,7 +25,7 @@ class Router {
     private $routes;
 
     public function __construct() {
-        $this -> routes = [
+        $this->routes = [
             new AvatarRoute(),
             new DefaultRoute(),
             new CommentListRoute(),
@@ -50,10 +50,10 @@ class Router {
      * @return  BaseRoute       returns false if a route is not found
      */
     public function getRouteForPath($parts) {
-        $match = join("/", $parts);
+        $match = join('/', $parts);
 
-        foreach ($this -> routes as $route) {
-            if ($route -> path == $match) {
+        foreach ($this->routes as $route) {
+            if ($route->path == $match) {
                 return $route;
             }
         }

@@ -15,31 +15,30 @@ class DefaultLoggerImpl {
     private $includeLoc;
 
     public function __construct() {
-        $this -> level = LogLevel::WARN;
-        $this -> includeLoc = $this -> level <= LogLevel::DEBUG;
+        $this->level = LogLevel::WARN;
+        $this->includeLoc = $this->level <= LogLevel::DEBUG;
         ini_set('date.timezone', 'UTC');
     }
-
 
     /**
      * @inheritDoc
      */
     public function setLevel($newLevel) {
-        $this -> level = $newLevel;
+        $this->level = $newLevel;
     }
 
     /**
      * @inheritDoc
      */
     public function setLogFile($filePath) {
-        ini_set("error_log", $filePath);
+        ini_set('error_log', $filePath);
     }
 
     /**
      * @inheritDoc
      */
     public function getLogFile() {
-        $path = ini_get("error_log");
+        $path = ini_get('error_log');
         Assertions::assertNotFalse($path);
         return $path;
     }
@@ -48,7 +47,7 @@ class DefaultLoggerImpl {
      * @inheritDoc
      */
     public function setIncludeLoc($includeLoc) {
-        $this -> includeLoc = $includeLoc;
+        $this->includeLoc = $includeLoc;
     }
 
     /**
@@ -65,9 +64,9 @@ class DefaultLoggerImpl {
      */
     public function insertNewLine() {
         // if logging is enabled
-        if ($this -> shouldLog(LogLevel::DEBUG)) {
-            $f = fopen($this -> getLogFile(), 'a');
-            Assertions ::assertNotFalse($f);
+        if ($this->shouldLog(LogLevel::DEBUG)) {
+            $f = fopen($this->getLogFile(), 'a');
+            Assertions::assertNotFalse($f);
             fwrite($f, PHP_EOL);
             fclose($f);
         }
@@ -78,43 +77,46 @@ class DefaultLoggerImpl {
      */
     public function fatal($message) {
         if (is_a('Exception', $message)) {
-            $message = "An error has occurred " . $message -> getMessage();
+            $message = 'An error has occurred ' . $message->getMessage();
         }
 
-        $this -> doLog(LogLevel::FATAL, "The application has encountered a fatal error..");
-        $this -> doLog(LogLevel::FATAL, $message);
-        (new Response()) -> internal();
+        $this->doLog(
+            LogLevel::FATAL,
+            'The application has encountered a fatal error..'
+        );
+        $this->doLog(LogLevel::FATAL, $message);
+        (new Response())->internal();
     }
 
     private function doLog($level, $message) {
-        if (!$this -> shouldLog($level)) {
+        if (!$this->shouldLog($level)) {
             return;
         }
 
         $displayString = LogLevel::asDisplay($level);
         $m = "[$displayString] ";
 
-        if ($this -> includeLoc) {
+        if ($this->includeLoc) {
             // walk the stack to find where the log was called from
             // walk 2 levels, since doLog is called by this class internally
-            $stack = Map ::from(
+            $stack = Map::from(
                 debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2)
-            ) -> toMapRecursive();
+            )->toMapRecursive();
 
-            if ($stack -> length() < 2) {
-                $this -> error("Could not get location for log output, stack was empty");
+            if ($stack->length() < 2) {
+                $this->error(
+                    'Could not get location for log output, stack was empty'
+                );
             }
 
             $stack = $stack[1];
 
-            $file = join("/", // take the last section of the path
-                ArrayUtil ::arraySliceBackward(
-                    explode("/", $stack['file']), 3
-                )
+            $file = join(
+                '/', // take the last section of the path
+                ArrayUtil::arraySliceBackward(explode('/', $stack['file']), 3)
             );
 
             $m .= "@ $file {{$stack['line']}} ";
-
         }
 
         $m .= ":: $message";
@@ -123,7 +125,7 @@ class DefaultLoggerImpl {
     }
 
     private function shouldLog($atLevel) {
-        return $this -> level >= $atLevel;
+        return $this->level >= $atLevel;
     }
 
     /**
@@ -131,29 +133,29 @@ class DefaultLoggerImpl {
      */
     public function error($message) {
         if (is_a('Exception', $message)) {
-            $message = "An error has occurred " . $message -> getMessage();
+            $message = 'An error has occurred ' . $message->getMessage();
         }
-        $this -> doLog(LogLevel::ERROR, $message);
+        $this->doLog(LogLevel::ERROR, $message);
     }
 
     /**
      * @inheritDoc
      */
     public function warn($message) {
-        $this -> doLog(LogLevel::WARN, $message);
+        $this->doLog(LogLevel::WARN, $message);
     }
 
     /**
      * @inheritDoc
      */
     public function info($message) {
-        $this -> doLog(LogLevel::INFO, $message);
+        $this->doLog(LogLevel::INFO, $message);
     }
 
     /**
      * @inheritDoc
      */
     public function debug($message) {
-        $this -> doLog(LogLevel::DEBUG, $message);
+        $this->doLog(LogLevel::DEBUG, $message);
     }
 }

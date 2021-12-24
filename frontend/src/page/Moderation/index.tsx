@@ -1,14 +1,14 @@
-import {useSelfUser} from "../../backend/hook/useSelfUser";
-import {hasPermission, PermissionValue} from "../../model/Permission";
-import {Redirect} from "react-router";
-import {Paths} from "../../util/paths";
-import Separator from "../../component/Separator";
-import {User} from "../../model/User";
-import {useAPI} from "../../backend/hook/useAPI";
-import {getBackend} from "../../backend/global-scope/util/getters";
-import {useState} from "react";
-import {createPlaceholders} from "../../util/factory";
-import { Warning } from "../../component/Factory";
+import { useSelfUser } from '../../backend/hook/useSelfUser'
+import { hasPermission, PermissionValue } from '../../model/Permission'
+import { Redirect } from 'react-router'
+import { Paths } from '../../util/paths'
+import Separator from '../../component/Separator'
+import { User } from '../../model/User'
+import { useAPI } from '../../backend/hook/useAPI'
+import { getBackend } from '../../backend/global-scope/util/getters'
+import { useState } from 'react'
+import { createPlaceholders } from '../../util/factory'
+import { Warning } from '../../component/Factory'
 
 interface ModerationUserProps {
     user: User
@@ -24,22 +24,29 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
     const [level, setLevel] = useState(0)
 
     return (
-        <div
-            className='absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow-xl p-2 ring-1'>
-            <h2 className='font-md'>Editing {props.user.username}'s permissions</h2>
-            <Separator className='w-4/5'/>
+        <div className="absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow-xl p-2 ring-1">
+            <h2 className="font-md">
+                Editing {props.user.username}'s permissions
+            </h2>
+            <Separator className="w-4/5" />
 
-            <select onChange={ev => setLevel(parseInt(ev.target.value))} className='text-sm p-2 bg-gray-100 ring-1'>
+            <select
+                onChange={(ev) => setLevel(parseInt(ev.target.value))}
+                className="text-sm p-2 bg-gray-100 ring-1"
+            >
                 <option value="">--Set a permission level--</option>
                 <option value={0}>View only</option>
                 <option value={1}>Regular user</option>
                 <option value={2}>Moderator</option>
             </select>
 
-            <Separator className='w-2/5'/>
+            <Separator className="w-2/5" />
 
-            <button className='text-sm bg-gray-100 px-2 py-1 shadow-xl rounded'
-                    onClick={() => props.done(level)}>Done
+            <button
+                className="text-sm bg-gray-100 px-2 py-1 shadow-xl rounded"
+                onClick={() => props.done(level)}
+            >
+                Done
             </button>
         </div>
     )
@@ -57,37 +64,53 @@ function ModerationUser(props: ModerationUserProps) {
     }
 
     const handleDelete = () => {
-        getBackend().http.deleteUser(user.id)
+        getBackend()
+            .http.deleteUser(user.id)
             .then(() => setState('deletion'))
     }
 
     const handleDone = (perm: PermissionValue) => {
         getBackend().http.updateUser({
             ...user,
-            permissions: perm
+            permissions: perm,
         })
         setState('idle')
     }
 
     if (state === 'deletion') {
-        return (<> </>)
+        return <> </>
     }
 
     return (
-        <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2'>
-            <div className='grid grid-rows-1 grid-cols-3 md:grid-cols-5 gap-4 place-items-center justify-center'>
-                <p className='md:col-span-3 place-self-start font-semibold dark:text-gray-100'>{user.firstName} {user.lastName} ({user.username})</p>
+        <div className="w-auto bg-gray-100 dark:bg-gray-500 shadow rounded m-2 p-2">
+            <div className="grid grid-rows-1 grid-cols-3 md:grid-cols-5 gap-4 place-items-center justify-center">
+                <p className="md:col-span-3 place-self-start font-semibold dark:text-gray-100">
+                    {user.firstName} {user.lastName} ({user.username})
+                </p>
 
-                <button onClick={handleDelete} className={buttonStyles('red-300', 'red-700')}>Delete</button>
+                <button
+                    onClick={handleDelete}
+                    className={buttonStyles('red-300', 'red-700')}
+                >
+                    Delete
+                </button>
 
-                <div className='relative'>
-                    {state === 'changing_permissions'
-                        ? <>
-                            <PermissionModal user={props.user} done={handleDone}/>
+                <div className="relative">
+                    {state === 'changing_permissions' ? (
+                        <>
+                            <PermissionModal
+                                user={props.user}
+                                done={handleDone}
+                            />
                         </>
-                        : <> </>
-                    }
-                    <button onClick={handlePermissions} className={buttonStyles('blue-100', 'blue-800')}>Permissions
+                    ) : (
+                        <> </>
+                    )}
+                    <button
+                        onClick={handlePermissions}
+                        className={buttonStyles('blue-100', 'blue-800')}
+                    >
+                        Permissions
                     </button>
                 </div>
             </div>
@@ -100,56 +123,57 @@ function UserList() {
     const selfUser = useSelfUser()
 
     const UserPlaceholders = () =>
-        createPlaceholders((i) =>
-            <div key={i} className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2'>
-                <div className='w-1/3 h-3 bg-gray-300 animate-pulse rounded-xl m-2 mb-4'/>
+        createPlaceholders((i) => (
+            <div
+                key={i}
+                className="w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2"
+            >
+                <div className="w-1/3 h-3 bg-gray-300 animate-pulse rounded-xl m-2 mb-4" />
 
-                <div className='w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2'/>
-                <div className='w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2'/>
+                <div className="w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2" />
+                <div className="w-2/5 h-2 bg-gray-300 animate-pulse rounded-xl m-2" />
             </div>
-        )
+        ))
     if (!users || !selfUser) {
-        return (
-            <>
-                {UserPlaceholders()}
-            </>
-        )
+        return <>{UserPlaceholders()}</>
     }
 
-    users = users.filter(u => u.id !== selfUser.id)
-    
+    users = users.filter((u) => u.id !== selfUser.id)
+
     if (!users.length) {
         return (
-            <div className='w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2 flex flex-col items-center'>
+            <div className="w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2 flex flex-col items-center">
                 <Warning>No users found</Warning>
             </div>
         )
     }
     return (
-        <ul>{
-            users.map(u => <ModerationUser key={u.id} user={u}/>)
-        }</ul>
+        <ul>
+            {users.map((u) => (
+                <ModerationUser key={u.id} user={u} />
+            ))}
+        </ul>
     )
 }
 
 export default function Moderation() {
     const selfUser = useSelfUser()
 
-    if (!selfUser || (!hasPermission(selfUser.permissions, 'moderator'))) {
-        return (
-            <Redirect to={Paths.HOME}/>
-        )
+    if (!selfUser || !hasPermission(selfUser.permissions, 'moderator')) {
+        return <Redirect to={Paths.HOME} />
     }
 
     //TODO: change to a stateful cache and update when it's empty
     return (
-        <div className='w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow-xl'>
-            <div className='w-max'>
-                <h2 className='pt-2 px-2 font-semibold text-lg dark:text-gray-100'>Moderation</h2>
-                <Separator className='mx-2'/>
+        <div className="w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow-xl">
+            <div className="w-max">
+                <h2 className="pt-2 px-2 font-semibold text-lg dark:text-gray-100">
+                    Moderation
+                </h2>
+                <Separator className="mx-2" />
             </div>
 
-            <UserList/>
+            <UserList />
         </div>
     )
 }

@@ -4,7 +4,6 @@ namespace TLT\Model;
 
 use TLT\Util\Data\Map;
 
-
 //TODO: document fields in modules for better type information
 
 /**
@@ -22,5 +21,5 @@ abstract class Model {
      *
      * @return Map a Map representing the JSON for this model
      */
-    public abstract function toMap();
+    abstract public function toMap();
 }

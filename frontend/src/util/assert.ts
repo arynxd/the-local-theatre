@@ -1,6 +1,5 @@
 export const ASSERT_ENABLED = true
 
-
 /**
  * Asserts that the fn function returns true
  *
@@ -19,7 +18,10 @@ export function assert(fn: () => boolean, err: () => Error | string) {
  * @param obj The function to get the object from
  * @param err The error function
  */
-export function assertTruthy<T extends object>(obj: () => T, err: () => Error | string) {
+export function assertTruthy<T extends object>(
+    obj: () => T,
+    err: () => Error | string
+) {
     assert(() => !obj(), err)
 }
 
@@ -29,6 +31,9 @@ export function assertTruthy<T extends object>(obj: () => T, err: () => Error | 
  * @param obj The function to get the object from
  * @param err The error function
  */
-export function assertFalsy<T extends object>(obj: () => T, err: () => Error | string) {
+export function assertFalsy<T extends object>(
+    obj: () => T,
+    err: () => Error | string
+) {
     assert(() => !!obj(), err)
 }

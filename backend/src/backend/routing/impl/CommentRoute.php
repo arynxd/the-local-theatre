@@ -26,7 +26,11 @@ use TLT\Util\StringUtil;
 
 class CommentRoute extends BaseRoute {
     public function __construct() {
-        parent::__construct("comment", [RequestMethod::GET, RequestMethod::POST, RequestMethod::DELETE]);
+        parent::__construct('comment', [
+            RequestMethod::GET,
+            RequestMethod::POST,
+            RequestMethod::DELETE,
+        ]);
     }
 
     /**
@@ -35,13 +39,14 @@ class CommentRoute extends BaseRoute {
      * @return CommentModel|null
      */
     private function getById($id, $sess) {
-        $st = $sess -> db -> query("SELECT * FROM comment c 
+        $st = $sess->db->query(
+            "SELECT * FROM comment c 
                 LEFT JOIN user u on u.id = c.authorId
-            WHERE c.id = :id", 
+            WHERE c.id = :id",
             ['id' => $id]
         );
 
-        $res = $st -> fetch(PDO::FETCH_NAMED);
+        $res = $st->fetch(PDO::FETCH_NAMED);
 
         if (!$res) {
             return null;
@@ -55,15 +60,15 @@ class CommentRoute extends BaseRoute {
                 $ids[1],
                 $res['firstName'],
                 $res['lastName'],
-                (int)$res['permissions'],
-                (int)$res['dob'],
-                (int)$res['joinDate'],
+                (int) $res['permissions'],
+                (int) $res['dob'],
+                (int) $res['joinDate'],
                 $res['username']
             ),
             $res['postId'],
             $res['content'],
-            (int)$res['createdAt'],
-            (int)$res['editedAt']
+            (int) $res['createdAt'],
+            (int) $res['editedAt']
         );
     }
 
@@ -83,16 +88,15 @@ class CommentRoute extends BaseRoute {
             ;
         ";
 
-        $sess -> db -> query($query, [
+        $sess->db->query($query, [
             'id' => $commentId,
             'authorId' => $authorId,
             'postId' => $data['postId'],
             'content' => $data['content'],
-            'createdAt' => DBUtil ::currentTime(),
-            'editedAt' => $data -> orDefault("editedAt", null)
+            'createdAt' => DBUtil::currentTime(),
+            'editedAt' => $data->orDefault('editedAt', null),
         ]);
     }
-
 
     /**
      * @param Map $data
@@ -109,17 +113,17 @@ class CommentRoute extends BaseRoute {
             )
         ";
 
-        $newId = StringUtil ::newID();
-        $time = DBUtil ::currentTime();
+        $newId = StringUtil::newID();
+        $time = DBUtil::currentTime();
         $model = [
             'id' => $newId,
             'authorId' => $authorId,
             'postId' => $data['postId'],
             'content' => $data['content'],
             'createdAt' => $time,
-            'editedAt' => null
+            'editedAt' => null,
         ];
-        $sess -> db -> query($query, $model);
+        $sess->db->query($query, $model);
 
         return Map::from($model);
     }
@@ -130,95 +134,96 @@ class CommentRoute extends BaseRoute {
      * @return boolean if the deletion succeeded or not
      */
     private function deleteById($id, $sess) {
-        $query = "DELETE FROM comment WHERE id = :id";
+        $query = 'DELETE FROM comment WHERE id = :id';
 
-        $res = $sess -> db -> query($query, ['id' => $id]);
+        $res = $sess->db->query($query, ['id' => $id]);
 
-        return $res -> rowCount() > 0; // true if it was modified, false otherwise
+        return $res->rowCount() > 0; // true if it was modified, false otherwise
     }
 
     public function handle($sess, $res) {
-        $method = $sess -> http -> method;
+        $method = $sess->http->method;
 
         if ($method == RequestMethod::GET) {
-            $commentId = $sess -> queryParams()['id'];
-            Assertions ::assertSet($commentId);
+            $commentId = $sess->queryParams()['id'];
+            Assertions::assertSet($commentId);
 
-            $model = $this -> getById($commentId, $sess);
+            $model = $this->getById($commentId, $sess);
 
             if (!isset($model)) {
-                $res -> status(404)
-                     -> cors("all")
-                     -> error("Post not found");
+                $res->status(404)
+                    ->cors('all')
+                    ->error('Post not found');
+            } else {
+                $res->status(200)
+                    ->cors('all')
+                    ->json($model->toMap());
             }
-            else {
-                $res -> status(200)
-                     -> cors("all")
-                     -> json($model -> toMap());
-            }
-        } 
-        else if ($method == RequestMethod::POST) {
-            Assertions ::assert($sess -> auth -> isAuthenticated());
-            $selfUser = $sess -> cache -> user();
-            Assertions ::assertSet($selfUser);
+        } elseif ($method == RequestMethod::POST) {
+            Assertions::assert($sess->auth->isAuthenticated());
+            $selfUser = $sess->cache->user();
+            Assertions::assertSet($selfUser);
 
-            $body = $sess -> jsonParams();
-
+            $body = $sess->jsonParams();
 
             $idToFetchWith = null;
             if (isset($body['id'])) {
-                $this -> updateById($body['id'], $selfUser -> id, $body, $sess);
+                $this->updateById($body['id'], $selfUser->id, $body, $sess);
                 $idToFetchWith = $body['id'];
-            }
-            else if (isset($body['postId'])) { 
-                $idToFetchWith = $this -> insertNew($body, $selfUser -> id, $sess)['id'];
-            }
-            else {
-                $res -> sendError("No identifiers passed, cannot infer what action should be performed", [StatusCode::BAD_REQUEST]);
+            } elseif (isset($body['postId'])) {
+                $idToFetchWith = $this->insertNew($body, $selfUser->id, $sess)[
+                    'id'
+                ];
+            } else {
+                $res->sendError(
+                    'No identifiers passed, cannot infer what action should be performed',
+                    [StatusCode::BAD_REQUEST]
+                );
             }
 
-            $comment = $this -> getById($idToFetchWith, $sess);
+            $comment = $this->getById($idToFetchWith, $sess);
 
             Assertions::assertSet($comment); // it should be set, we just inserted / updated
-            $res -> sendJSON($comment -> toMap());
-        } 
-        else if ($method == RequestMethod::DELETE) {
-            $id = $sess -> queryParams()['id'];
-            Assertions ::assertSet($id);
+            $res->sendJSON($comment->toMap());
+        } elseif ($method == RequestMethod::DELETE) {
+            $id = $sess->queryParams()['id'];
+            Assertions::assertSet($id);
 
-            Assertions ::assert($sess -> auth -> isAuthenticated());
-            $selfUser = $sess -> cache -> user();
-            Assertions ::assertSet($selfUser);
+            Assertions::assert($sess->auth->isAuthenticated());
+            $selfUser = $sess->cache->user();
+            Assertions::assertSet($selfUser);
 
-            $isMod = $selfUser -> permissions >= PermissionLevel ::MODERATOR;
-            
-            $comment = $this -> getById($id, $sess);
+            $isMod = $selfUser->permissions >= PermissionLevel::MODERATOR;
+
+            $comment = $this->getById($id, $sess);
 
             if ($isMod) {
-                if (!$this -> deleteById($id, $sess) || !isset($comment)) {
-                    $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
-                }
-                else {
-                    $res -> sendJSON($comment -> toMap(), [StatusCode ::OK]);
+                if (!$this->deleteById($id, $sess) || !isset($comment)) {
+                    $res->sendError("Unknown comment $id", [
+                        StatusCode::NOT_FOUND,
+                    ]);
+                } else {
+                    $res->sendJSON($comment->toMap(), [StatusCode::OK]);
                 }
             }
 
             if (!isset($comment)) {
-                $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
+                $res->sendError("Unknown comment $id", [StatusCode::NOT_FOUND]);
             }
 
-            if ($comment -> author -> id != $selfUser -> id) {
-                $res -> sendError("Cannot delete comments you did not make", [StatusCode ::FORBIDDEN]);
+            if ($comment->author->id != $selfUser->id) {
+                $res->sendError('Cannot delete comments you did not make', [
+                    StatusCode::FORBIDDEN,
+                ]);
             }
 
-            if (!$this -> deleteById($id, $sess)) {
-                $res -> sendError("Unknown comment $id", [StatusCode ::NOT_FOUND]);
+            if (!$this->deleteById($id, $sess)) {
+                $res->sendError("Unknown comment $id", [StatusCode::NOT_FOUND]);
             }
 
-            $res -> sendJSON($comment -> toMap());
-        } 
-        else {
-            Logger ::getInstance() -> fatal("Unexpected RequestMethod $method");
+            $res->sendJSON($comment->toMap());
+        } else {
+            Logger::getInstance()->fatal("Unexpected RequestMethod $method");
         }
     }
 
@@ -226,34 +231,39 @@ class CommentRoute extends BaseRoute {
         $sess->applyMiddleware(new DatabaseMiddleware());
 
         $method = $sess->http->method;
-        $query = $sess -> queryParams();
+        $query = $sess->queryParams();
 
         if ($method === RequestMethod::GET) {
             if (!isset($query['id'])) {
-                return HttpResult::BadRequest("No ID provided");
+                return HttpResult::BadRequest('No ID provided');
             }
-        } 
-        else if ($method === RequestMethod::POST) {
-            $body = $sess -> jsonParams();
-            $sess -> applyMiddleware(new ModelValidatorMiddleware(ModelKeys::COMMENT_MODEL(), $body, "Invalid data provided"));
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
-            $selfUser = $sess -> cache -> user();
+        } elseif ($method === RequestMethod::POST) {
+            $body = $sess->jsonParams();
+            $sess->applyMiddleware(
+                new ModelValidatorMiddleware(
+                    ModelKeys::COMMENT_MODEL(),
+                    $body,
+                    'Invalid data provided'
+                )
+            );
+            $sess->applyMiddleware(new AuthenticationMiddleware());
+            $selfUser = $sess->cache->user();
 
             Assertions::assertSet($selfUser); // the self user should be set if the middleware passes
 
-            if ($selfUser -> permissions < PermissionLevel::USER) {
-                return HttpResult:: BadRequest("You do not have permission to post this comment");
+            if ($selfUser->permissions < PermissionLevel::USER) {
+                return HttpResult::BadRequest(
+                    'You do not have permission to post this comment'
+                );
             }
-        } 
-        else if ($method === RequestMethod::DELETE) {
-            $sess -> applyMiddleware(new AuthenticationMiddleware());
+        } elseif ($method === RequestMethod::DELETE) {
+            $sess->applyMiddleware(new AuthenticationMiddleware());
 
             if (!isset($query['id'])) {
-                return HttpResult ::BadRequest("No ID provided");
+                return HttpResult::BadRequest('No ID provided');
             }
-        } 
-        else {
-            Logger ::getInstance() -> fatal("Unknown method $method");
+        } else {
+            Logger::getInstance()->fatal("Unknown method $method");
         }
         return HttpResult::Ok();
     }

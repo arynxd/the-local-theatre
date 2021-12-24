@@ -24,8 +24,8 @@ class HttpResult {
      * @param string|null $error the error string to use, JSON format
      */
     function __construct($httpCode, $error) {
-        $this -> httpCode = $httpCode;
-        $this -> error = $error;
+        $this->httpCode = $httpCode;
+        $this->error = $error;
     }
 
     public static function Ok() {
@@ -50,6 +50,6 @@ class HttpResult {
      * @return bool true if this result is an error, false otherwise
      */
     function isError() {
-        return isset($this -> error);
+        return isset($this->error);
     }
 }

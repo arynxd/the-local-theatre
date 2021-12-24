@@ -1,5 +1,5 @@
-import React from "react";
-import {StylableProps} from "../props/StylableProps";
+import React from 'react'
+import { StylableProps } from '../props/StylableProps'
 
 export default function Separator(props: StylableProps) {
     const styles = `
@@ -7,7 +7,5 @@ export default function Separator(props: StylableProps) {
          dark:border-gray-400
         ${props.className}
     `
-    return (
-        <hr className={styles}/>
-    )
+    return <hr className={styles} />
 }

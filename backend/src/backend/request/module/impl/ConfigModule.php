@@ -8,13 +8,11 @@ use TLT\Util\Data\JSONLoader;
 use TLT\Util\Log\Logger;
 
 class ConfigModule extends BaseModule {
-
     /**
      * Whether the DB is enabled for this session
      * @var boolean $dbEnabled
      */
     public $dbEnabled;
-
 
     /**
      * The current environment
@@ -38,21 +36,22 @@ class ConfigModule extends BaseModule {
      */
     public $dbPassword;
 
-
     public function onEnable() {
-        $loader = new JSONLoader("./config.json");
-        $loader -> load();
-        $raw = $loader -> data();
+        $loader = new JSONLoader('./config.json');
+        $loader->load();
+        $raw = $loader->data();
 
         if (!isset($raw)) {
-            Logger ::getInstance() -> fatal("config.json could not be loaded");
+            Logger::getInstance()->fatal('config.json could not be loaded');
         }
 
-        Logger::getInstance() -> info("config.json loaded successfully, setting fields");
+        Logger::getInstance()->info(
+            'config.json loaded successfully, setting fields'
+        );
 
-        $this -> dbEnabled = (boolean)$raw['db_enabled'];
-        $this -> dbURL = (string)$raw['db_url'];
-        $this -> dbUsername = (string)$raw['db_username'];
-        $this -> dbPassword = (string)$raw['db_password'];
+        $this->dbEnabled = (bool) $raw['db_enabled'];
+        $this->dbURL = (string) $raw['db_url'];
+        $this->dbUsername = (string) $raw['db_username'];
+        $this->dbPassword = (string) $raw['db_password'];
     }
 }

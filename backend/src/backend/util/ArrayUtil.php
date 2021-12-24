@@ -23,15 +23,12 @@ class ArrayUtil {
         $newArray = [];
         foreach ($arr as $key => $value) {
             if (is_array($value)) {
-                $newArray[$key] = self ::arrayCopy($value);
-            }
-            else if (is_object($value)) {
+                $newArray[$key] = self::arrayCopy($value);
+            } elseif (is_object($value)) {
+                $newArray[$key] = $value;
+            } else {
                 $newArray[$key] = $value;
             }
-            else {
-                $newArray[$key] = $value;
-            }
-
         }
         return $newArray;
     }

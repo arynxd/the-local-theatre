@@ -5,71 +5,66 @@ namespace TLT\Respository\Impl;
 use TLT\Model\Impl\UserModel;
 use TLT\Respository\BaseRepository;
 use TLT\Util\Data\Map;
-use TLT\Util\Enum\Constants;
 
 class UserRepository extends BaseRepository {
-  /**
-   * @inheritDoc
-   * @return UserModel|null
-   */
-  public function get($id) {
-    $query = "SELECT * FROM user WHERE id = :id";
+    /**
+     * @inheritDoc
+     * @return UserModel|null
+     */
+    public function get($id) {
+        $query = 'SELECT * FROM user WHERE id = :id';
 
-    $st = $this -> sess -> db -> query($query, [
-        'id' => $id
-    ]);
+        $st = $this->sess->db->query($query, [
+            'id' => $id,
+        ]);
 
-    $dbRes = Map ::from($st -> fetchAll()) -> toMapRecursive();
+        $dbRes = Map::from($st->fetchAll())->toMapRecursive();
 
-    if ($dbRes -> length() == 0) {
-        return null;
+        if ($dbRes->length() == 0) {
+            return null;
+        }
+
+        $dbRes = $dbRes->first();
+
+        return UserModel::fromJSON($dbRes);
     }
 
-    $dbRes = $dbRes -> first(); 
+    /**
+     * @inheritDoc
+     * @return Map<UserModel>
+     */
+    public function getAll() {
+        $out = Map::none();
 
-    return UserModel ::fromJSON($dbRes);
-  }
+        $st = $this->sess->db->query('SELECT * FROM user');
+        $dbRes = Map::from($st->fetchAll());
 
-  /**
-   * @inheritDoc
-   * @return Map<UserModel>
-   */
-  public function getAll() {
-    $out = Map ::none();
-
-    $st = $this -> sess -> db -> query("SELECT * FROM user");
-    $dbRes = Map ::from($st -> fetchAll());
-
-
-    foreach ($dbRes -> raw() as $arr) {
-        // convert to a model to get the right keys & validate
-        $out -> push(
-            UserModel ::fromJSON(Map ::from($arr)) -> toMap()
-        );
+        foreach ($dbRes->raw() as $arr) {
+            // convert to a model to get the right keys & validate
+            $out->push(UserModel::fromJSON(Map::from($arr))->toMap());
+        }
+        return $out;
     }
-    return $out;
-  }
 
-  /**
-   * @inheritDoc
-   */
-  public function delete($id) {
-    $query = "DELETE FROM user WHERE id = :id";
+    /**
+     * @inheritDoc
+     */
+    public function delete($id) {
+        $query = 'DELETE FROM user WHERE id = :id';
 
-    $res = $this -> sess -> db -> query($query, [
-      'id' => $id
-    ]);
+        $res = $this->sess->db->query($query, [
+            'id' => $id,
+        ]);
 
-    return $res -> rowCount() > 0;
-  }
+        return $res->rowCount() > 0;
+    }
 
-  /**
-   * @inheritDoc
-   * @param UserModel $model
-   */
-  public function insert($model) {
-    $query = 
-      "INSERT INTO user (id, firstName, lastName, username, dob, joinDate, permissions)
+    /**
+     * @inheritDoc
+     * @param UserModel $model
+     */
+    public function insert($model) {
+        $query = "INSERT INTO user (id, firstName, lastName, username, dob, joinDate, permissions)
           VALUES (
               :id,
               :firstName,
@@ -80,23 +75,24 @@ class UserRepository extends BaseRepository {
               :permissions
       )";
 
-    $this -> sess -> db -> query($query, [
-      'firstName' => $model -> firstName,
-      'lastName' => $model -> lastName,
-      'username' => $model -> username,
-      'dob' => $model -> dob,
-      'permissions' => $model -> permissions,
-      'id' => $model -> id,
-      'joinDate' => $model -> joinDate
-    ]);
-  }
+        $this->sess->db->query($query, [
+            'firstName' => $model->firstName,
+            'lastName' => $model->lastName,
+            'username' => $model->username,
+            'dob' => $model->dob,
+            'permissions' => $model->permissions,
+            'id' => $model->id,
+            'joinDate' => $model->joinDate,
+        ]);
+        return true;
+    }
 
-  /**
-   * @inheritDoc
-   * @param UserModel $model
-   */
-  public function edit($model) {
-    $query = "UPDATE user SET
+    /**
+     * @inheritDoc
+     * @param UserModel $model
+     */
+    public function edit($model) {
+        $query = "UPDATE user SET
                 firstName = :firstName,
                 lastName = :lastName,
                 username = :username,
@@ -105,25 +101,25 @@ class UserRepository extends BaseRepository {
             WHERE id = :id
     ";
 
-    $res = $this -> sess -> db -> query($query, [
-        'firstName' => $model -> firstName,
-        'lastName' => $model -> lastName,
-        'username' => $model -> username,
-        'dob' => $model -> dob,
-        'permissions' => $model -> permissions,
-        'id' => $model -> id
-    ]);
+        $res = $this->sess->db->query($query, [
+            'firstName' => $model->firstName,
+            'lastName' => $model->lastName,
+            'username' => $model->username,
+            'dob' => $model->dob,
+            'permissions' => $model->permissions,
+            'id' => $model->id,
+        ]);
 
-    return $res -> rowCount() > 0;
-  }
+        return $res->rowCount() > 0;
+    }
 
-  public function exists($id) {
-    $query = "SELECT COUNT(*) FROM user WHERE id = :id";
+    public function exists($id) {
+        $query = 'SELECT COUNT(*) FROM user WHERE id = :id';
 
-    $res = $this -> sess -> db -> query($query, [
-      'id' => $id
-    ]);
+        $res = $this->sess->db->query($query, [
+            'id' => $id,
+        ]);
 
-    return $res -> fetchColumn() > 0;
-  }
+        return $res->fetchColumn() > 0;
+    }
 }
