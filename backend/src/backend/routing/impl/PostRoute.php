@@ -25,231 +25,159 @@ use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
 
 class PostRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('post', [
-            RequestMethod::GET,
-            RequestMethod::POST,
-            RequestMethod::DELETE,
-        ]);
-    }
+	public function __construct() {
+		parent::__construct('post', [
+			RequestMethod::GET,
+			RequestMethod::POST,
+			RequestMethod::DELETE,
+		]);
+	}
 
-    public function handle($sess, $res) {
-        $method = $sess->http->method;
+	public function handle($sess, $res) {
+		$method = $sess->http->method;
+		$post = $sess->data->post;
 
-        if ($method == RequestMethod::GET) {
-            $id = $sess->queryParams()['id'];
+		if ($method == RequestMethod::GET) {
+			$id = $sess->queryParams()['id'];
 
-            Assertions::assertSet($id);
+			Assertions::assertSet($id);
 
-            $model = $this->getById($id, $sess);
+			$model = $post->get($id);
 
-            if (!isset($model)) {
-                $res->status(404)
-                    ->cors('all')
-                    ->error('Post not found');
-            }
+			if (!isset($model)) {
+				$res->status(404)
+					->cors('all')
+					->error('Post not found');
+			}
 
-            $res->sendJSON($model->toMap(), [StatusCode::OK]);
-        } elseif ($method == RequestMethod::POST) {
-            Assertions::assert($sess->auth->isAuthenticated());
-            Assertions::assert($this->isModMakingRequest($sess));
-            $selfUser = $sess->cache->user();
-            Assertions::assertSet($selfUser);
+			$res->status(200)
+				->cors('all')
+				->json($model->toMap());
+		} elseif ($method == RequestMethod::POST) {
+			Assertions::assert($sess->auth->isAuthenticated());
+			Assertions::assert($this->isModMakingRequest($sess));
 
-            $body = $sess->jsonParams();
+			$selfUser = $sess->cache->user();
+			Assertions::assertSet($selfUser);
 
-            $data = Map::from([
-                'authorId' => $selfUser->id,
-                'content' => $body['content'],
-                'title' => $body['title'],
-                'createdAt' => DBUtil::currentTime(),
-                'editedAt' => $body->orDefault('editedAt', null),
-            ]);
+			$body = $sess->jsonParams();
+			$model = null;
 
-            Logger::getInstance()->error($data);
-            if (isset($body['id'])) {
-                $data['id'] = $body['id'];
-                $this->updateById($data, $sess);
-            } else {
-                $data['id'] = StringUtil::newID();
-                $this->insertNew($data, $sess);
-            }
+			if (isset($body['id'])) {
+				// Update existing entity
+				$post->start();
+				$model = $post->get($body['id']);
 
-            $id = $data['id'];
-            Assertions::assertSet($id);
-            $model = $this->getById($id, $sess);
-            Assertions::assertSet($model);
+				if (!isset($model)) {
+					$res->status(404)
+						->cors('all')
+						->error('Post not found');
+				}
 
-            $res->sendJSON($model->toMap(), [StatusCode::OK]);
-        } elseif ($method == RequestMethod::DELETE) {
-            Assertions::assert($sess->auth->isAuthenticated());
-            Assertions::assert($this->isModMakingRequest($sess));
+				$model->title = $body['title'];
+				$model->content = $body['content'];
+				$model->editedAt = DBUtil::currentTime();
 
-            $id = $sess->queryParams()['id'];
-            Assertions::assertSet($id);
+				$post->edit($model);
+				$post->commit();
+			} else {
+				// Insert new entity
 
-            $model = $this->getById($id, $sess);
-            $this->deleteById($id, $sess);
-            $res->sendJSON($model->toMap(), [StatusCode::OK]);
-        } else {
-            Logger::getInstance()->fatal("Unknown method $method");
-        }
-    }
+				$model = new PostModel(
+					StringUtil::newID(),
+					$selfUser,
+					$body['content'],
+					$body['title'],
+					DBUtil::currentTime(),
+					null
+				);
 
-    /**
-     * @param string $id
-     * @param Session $sess
-     * @return boolean if the deletion succeeded or not
-     */
-    private function deleteById($id, $sess) {
-        $query = 'DELETE FROM post WHERE id = :id';
+				$post->insert($model);
+			}
 
-        $res = $sess->db->query($query, ['id' => $id]);
+			Assertions::assertSet($model);
 
-        return $res->rowCount() > 0; // true if it was modified, false otherwise
-    }
+			$res->status(200)
+				->cors('all')
+				->json($model->toMap());
+		} elseif ($method == RequestMethod::DELETE) {
+			Assertions::assert($sess->auth->isAuthenticated());
+			Assertions::assert($this->isModMakingRequest($sess));
 
-    /**
-     * @param Map $data
-     * @param Session $sess
-     */
-    private function updateById($data, $sess) {
-        $query = "INSERT INTO post (id, content, title, authorId, createdAt, editedAt)
-                VALUES (
-                    :id, :content, :title, :authorId, :createdAt, :editedAt
-                )ON DUPLICATE KEY UPDATE
-                    content=:content,
-                    title=:title,
-                    editedAt=:editedAt
-                ;
-        ";
+			$id = $sess->queryParams()['id'];
+			Assertions::assertSet($id);
 
-        $sess->db->query($query, [
-            'id' => $data['id'],
-            'title' => $data['title'],
-            'authorId' => $data['authorId'],
-            'content' => $data['content'],
-            'createdAt' => $data['createdAt'],
-            'editedAt' => $data['editedAt'],
-        ]);
-    }
+			$post->start();
+			$model = $post->get($id);
 
-    /**
-     * @param Map $data
-     * @param string $authorId
-     * @param Session $sess
-     */
-    private function insertNew($data, $sess) {
-        $query = "INSERT INTO post (id, content, title, authorId, createdAt, editedAt)
-                VALUES (
-                    :id, :content, :title, :authorId, :createdAt, :editedAt      
-                );
-        ";
+			if (!isset($model)) {
+				$res->status(404)
+					->cors('all')
+					->error('Post not found');
+			}
 
-        $sess->db->query($query, [
-            'id' => $data['id'],
-            'title' => $data['title'],
-            'authorId' => $data['authorId'],
-            'content' => $data['content'],
-            'createdAt' => $data['createdAt'],
-            'editedAt' => $data['editedAt'],
-        ]);
-    }
+			$post->delete($model->id);
+			$res->status(200)
+				->cors('all')
+				->json($model->toMap());
+		} else {
+			Logger::getInstance()->fatal("Unknown method $method");
+		}
+	}
 
-    /**
-     * Gets a post by its ID
-     *
-     * @param Session $sess
-     * @param string $id
-     * @return PostModel|null The model, or null if not found
-     */
-    private function getById($id, $sess) {
-        $st = $sess->db->query(
-            "SELECT * FROM post p 
-                LEFT JOIN user u on u.id = p.authorId
-            WHERE p.id = :id",
-            ['id' => $id]
-        );
+	/**
+	 * @param Session $sess
+	 * @return boolean whether a mod is making this request
+	 */
+	private function isModMakingRequest($sess) {
+		$self = $sess->cache->user();
+		if (!isset($self)) {
+			return false;
+		}
+		return $self->permissions >= PermissionLevel::MODERATOR;
+	}
 
-        $res = $st->fetch(PDO::FETCH_NAMED);
+	public function validateRequest($sess, $res) {
+		$sess->applyMiddleware(new DatabaseMiddleware());
 
-        if (!$res) {
-            return null;
-        }
+		$method = $sess->http->method;
 
-        $ids = $res['id'];
+		if ($method == RequestMethod::GET) {
+			if (!isset($sess->queryParams()['id'])) {
+				return HttpResult::BadRequest('No id provided');
+			}
+		} elseif ($method == RequestMethod::POST) {
+			$body = $sess->jsonParams();
+			$sess->applyMiddleware(
+				new ModelValidatorMiddleware(
+					ModelKeys::POST_MODEL(),
+					$body,
+					'Invalid data provided'
+				)
+			);
+			$sess->applyMiddleware(new AuthenticationMiddleware());
 
-        return new PostModel(
-            $ids[0],
-            new UserModel(
-                $ids[1],
-                $res['firstName'],
-                $res['lastName'],
-                (int) $res['permissions'],
-                (int) $res['dob'],
-                (int) $res['joinDate'],
-                $res['username']
-            ),
-            $res['content'],
-            $res['title'],
-            (int) $res['createdAt'],
-            (int) $res['editedAt']
-        );
-    }
+			if (!$this->isModMakingRequest($sess)) {
+				return HttpResult::BadRequest(
+					'You do not have permission to create this post'
+				);
+			}
+		} elseif ($method == RequestMethod::DELETE) {
+			$sess->applyMiddleware(new AuthenticationMiddleware());
 
-    /**
-     * @param Session $sess
-     * @return boolean whether a mod is making this request
-     */
-    private function isModMakingRequest($sess) {
-        $self = $sess->cache->user();
-        if (!isset($self)) {
-            return false;
-        }
-        return $self->permissions >= PermissionLevel::MODERATOR;
-    }
+			if (!isset($sess->queryParams()['id'])) {
+				return HttpResult::BadRequest('No id provided');
+			}
 
-    public function validateRequest($sess, $res) {
-        $sess->applyMiddleware(new DatabaseMiddleware());
+			if (!$this->isModMakingRequest($sess)) {
+				return HttpResult::BadRequest(
+					'You do not have permission to create this post'
+				);
+			}
+		} else {
+			Logger::getInstance()->fatal("Unknown method $method");
+		}
 
-        $method = $sess->http->method;
-
-        if ($method == RequestMethod::GET) {
-            if (!isset($sess->queryParams()['id'])) {
-                return HttpResult::BadRequest('No id provided');
-            }
-        } elseif ($method == RequestMethod::POST) {
-            $body = $sess->jsonParams();
-            $sess->applyMiddleware(
-                new ModelValidatorMiddleware(
-                    ModelKeys::POST_MODEL(),
-                    $body,
-                    'Invalid data provided'
-                ),
-                new AuthenticationMiddleware()
-            );
-
-            if (!$this->isModMakingRequest($sess)) {
-                return HttpResult::BadRequest(
-                    'You do not have permission to create this post'
-                );
-            }
-        } elseif ($method == RequestMethod::DELETE) {
-            $sess->applyMiddleware(new AuthenticationMiddleware());
-
-            if (!isset($sess->queryParams()['id'])) {
-                return HttpResult::BadRequest('No id provided');
-            }
-
-            if (!$this->isModMakingRequest($sess)) {
-                return HttpResult::BadRequest(
-                    'You do not have permission to create this post'
-                );
-            }
-        } else {
-            Logger::getInstance()->fatal("Unknown method $method");
-        }
-
-        return HttpResult::Ok();
-    }
+		return HttpResult::Ok();
+	}
 }
