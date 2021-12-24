@@ -17,7 +17,7 @@ class AuthModule extends BaseModule {
     private $isAuthenticated;
 
     public function onEnable() {
-        $this -> token = $this -> sess -> data -> headers['Authorisation'];
+        $this -> token = $this -> sess -> http -> headers['Authorisation'];
 
         if (!isset($this -> token) || !$this -> sess -> db -> isEnabled()) {
             Logger ::getInstance() -> info("Authorisation header was not set or the DB was not enabled, this request will be treated as UNAUTHENTICATED..");

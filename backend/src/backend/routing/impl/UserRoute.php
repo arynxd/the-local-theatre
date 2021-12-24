@@ -10,10 +10,13 @@ use TLT\Model\ModelKeys;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
+use TLT\Util\DBUtil;
 use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\Log\Logger;
+use TLT\Util\StringUtil;
 
 class UserRoute extends BaseRoute {
     public function __construct() {
@@ -24,18 +27,30 @@ class UserRoute extends BaseRoute {
         $method = $sess -> http -> method;
 
         if ($method == RequestMethod::GET) {
-            $res -> sendJSON($this -> getUserById($sess, $res, $sess -> queryParams()['id']) -> toMap());
+            $id = $sess -> queryParams()['id'];
+            Assertions::assertSet($id);
+
+            $entity = $sess -> data -> user -> get($id);
+
+            if (!isset($entity)) {
+                $res -> status(404)
+                     -> cors("all")
+                     -> error("User not found");
+            }
+
+            $res -> status(200)
+                 -> cors("all")
+                 -> json($entity -> toMap());
         }
         else if ($method == RequestMethod::POST) {
-            $data = $sess -> jsonParams();
+            $body = $sess -> jsonParams();
 
             $selfUser = $sess -> cache -> user();
-
             Assertions ::assertSet($selfUser);
 
-            $isModifyingSelf = $selfUser -> id == $data['id'];
+            $isModifyingSelf = $selfUser -> id == $body['id'];
             $isSelfAdmin = $selfUser -> permissions == 2;
-            $isEditingPerms = $selfUser -> permissions != $data['permissions'];
+            $isEditingPerms = $selfUser -> permissions != $body['permissions'];
 
             if (!$isModifyingSelf && !$isSelfAdmin) {
                 $res -> status(401)
@@ -49,59 +64,65 @@ class UserRoute extends BaseRoute {
                      -> error("You cannot change your own permissions");
             }
 
-            $this -> updateUser($sess, $data);
+            $user = $sess -> data -> user;
 
-            $selfUser = $selfUser -> toMap();
+            if (isset($body['id'])) {
+                // Update existing entity
 
-            foreach ($data -> raw() as $k => $v) {
-                $selfUser[$k] = $v;
+                $user -> start();
+                $model = $user -> get($body['id']);
+
+                if (!isset($model)) {
+                    $res -> status(404)
+                         -> cors("all")
+                         -> error("User not found");
+                }
+
+                $newMap = Map::from([
+                    'id' => $model -> id,
+                    'firstName' => $body -> orDefault("firstName", $model -> firstName),
+                    'lastName' => $body -> orDefault("lastName", $model -> lastName),
+                    'permissions' => $body -> orDefault("permissions", $model -> permissions),
+                    'dob' => $body -> orDefault("dob", $model -> dob),
+                    'joinDate' => $model -> joinDate,
+                    'username' => $body -> orDefault("username", $model -> username),
+                ]);
+
+                $newModel = UserModel::fromJSON($newMap);
+                $user -> edit($newModel);
+                $user -> commit();
             }
+            else {
+                // Insert new entity
 
-            $res -> status(200) 
-                 -> cors("all")
-                 -> json($selfUser);
+                // Make sure we have enough data to create a user
+                $sess -> applyMiddleware(
+                    new ModelValidatorMiddleware(
+                        ModelKeys::USER_CREATE_MODEL(), $body, "Incomplete user data provided"
+                    )
+                );
+
+                $id = StringUtil::newID();
+                $joinDate = DBUtil::currentTime();
+
+                $userData = Map::from([
+                    'id' => $id,
+                    'firstName' => $body['firstName'],
+                    'lastName' => $body['lastName'],
+                    'permissions' => 1, // Always have permissions 1 for creation
+                    'dob' => $body['dob'],
+                    'joinDate' => $joinDate,
+                    'username' => $body['username'],
+                ]);
+
+                $userModel = UserModel::fromJSON($userData);
+
+                $user -> insert($userModel);
+            }
         }
-    }
-
-    private function getUserById($sess, $res, $id) {
-        $query = "SELECT * FROM user WHERE id = :id";
-
-        $st = $sess -> db -> query($query, [
-            'id' => $id
-        ]);
-
-        $dbRes = Map ::from($st -> fetchAll());
-
-        if ($dbRes -> length() == 0) {
-            $res -> status(404)
-                 -> cors("all")
-                 -> error("User not found");
+        else {
+            Logger::getInstance() -> fatal("Unhandled method $method");
         }
-
-        $dbRes = Map ::from($dbRes -> first()); // we get arrays back from the db, convert it to a map
-        $dbRes['avatar'] = Constants ::AVATAR_URL_PREFIX() . "?id=" . $dbRes['id'];
-
-        return UserModel ::fromJSON($dbRes);
-    }
-
-    private function updateUser($sess, $data) {
-        $query = "UPDATE user SET
-                    firstName = :firstName,
-                    lastName = :lastName,
-                    username = :username,
-                    dob = :dob,
-                    permissions = :permissions
-                WHERE id = :id
-        ";
-
-        $sess -> db -> query($query, [
-            'firstName' => $data['firstName'],
-            'lastName' => $data['lastName'],
-            'username' => $data['username'],
-            'dob' => $data['dob'],
-            'permissions' => $data['permissions'],
-            'id' => $data['id']
-        ]);
     }
 
     public function validateRequest($sess, $res) {
@@ -119,7 +140,6 @@ class UserRoute extends BaseRoute {
             }
 
             $sess -> applyMiddleware(new AuthenticationMiddleware());
-            $sess -> applyMiddleware(new ModelValidatorMiddleware(ModelKeys::USER_UPDATE_MODEL(), $data, "Invalid data provided"));
         }
 
         return HttpResult ::Ok();

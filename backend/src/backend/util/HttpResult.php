@@ -29,15 +29,15 @@ class HttpResult {
     }
 
     public static function Ok() {
-        return new HttpResult(StatusCode::OK, null);
+        return new HttpResult(200, null);
     }
 
     public static function BadRequest($error) {
-        return new HttpResult(StatusCode::BAD_REQUEST, $error);
+        return new HttpResult(400, $error);
     }
 
     public static function Unprocessable($error) {
-        return new HttpResult(StatusCode::UNPROCESSABLE_ENTITY, $error);
+        return new HttpResult(422, $error);
     }
 
     public static function from($code, $error) {

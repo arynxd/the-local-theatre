@@ -38,6 +38,9 @@ class Response {
         Assertions::assertSet($this -> sess);
     }
 
+    /**
+     * @return never
+     */
     private function send($data) {
         Assertions::assertSet($data);
         if ($this -> headers -> length() == 0) {
@@ -59,6 +62,7 @@ class Response {
      * If a string is passed, it must be a valid JSON string
      * 
      * @param string|Map|array
+     * @return never
      */
     public function json($msg) {
         $this -> content("json");
@@ -99,6 +103,7 @@ class Response {
      * Sets a header
      * 
      * @param string $header
+     * @return Response The current instance
      */
     public function header($header) {
         $this -> headers -> push($header);
@@ -110,6 +115,7 @@ class Response {
      * 
      * @param string $path
      * @param string|null $default
+     * @return never
      */
     public function data($path, $default = null) {
         if (isset($default)) {
@@ -167,6 +173,7 @@ class Response {
      * Sends an internal error, $ex will NOT be sent to the client
      * 
      * @param Exception|string $ex
+     * @return never
      */
     public function internal($ex = "No message set") {
         Logger ::getInstance() -> error("An internal error has occurred:");
@@ -180,6 +187,7 @@ class Response {
      * Sends an error message to the client
      * 
      * @param string $msg
+     * @return never
      */
     public function error($msg) {
         Logger ::getInstance() -> error("Route returned error => " . $msg);

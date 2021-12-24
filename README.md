@@ -36,11 +36,13 @@
 - [x] Unify shadows
 - [x] Fix comments / posts not being updated in UI when they are changed 
 - [x] Colour icons
+- [x] Improve backend response api
 - [ ] Change CORS policy in backend
 - [ ] Add docs to backend
 - [ ] Add docs to frontend
 - [ ] Cache param sources in backend for perf
 - [ ] Abstract backend DB calls
+  - Controller Repository Database
 - [ ] Animate all moving elements
 - [ ] Use useCallback for callback functions
 - [ ] Reactive cache implementation
@@ -49,11 +51,13 @@
 - [ ] Cache for blogs
 - [ ] Context menu component
 - [ ] Changeable avatars
-- [ ] Improve backend response api
 - [ ] Input validation for edits
 - [ ] Moderator deleted comments do not update frontend cache
   - [ ] Clear caches when we logout
 - [ ] Cache images by md5 (or similar) => b64
+  - [ ] Investigate cache control headers for this
+- [ ] Backend type checks (Assertion function)
+
 ## Feature List 
 - [x] Login
 - [x] Logout

@@ -47,7 +47,7 @@ class Router {
      * Gets the routing for a given path.
      *
      * @param string[] $parts the path
-     * @return  BaseRoute|false       returns false if the routing is not found
+     * @return  BaseRoute       returns false if a route is not found
      */
     public function getRouteForPath($parts) {
         $match = join("/", $parts);
@@ -57,6 +57,6 @@ class Router {
                 return $route;
             }
         }
-        return false;
+        return null;
     }
 }

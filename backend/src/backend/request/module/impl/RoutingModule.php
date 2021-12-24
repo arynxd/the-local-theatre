@@ -29,7 +29,7 @@ class RoutingModule extends BaseModule {
 
         $result = $this -> router -> getRouteForPath($uri);
 
-        if (!$result) {
+        if (!isset($result)) {
             $this -> sess -> 
                 res -> status(404)
                     -> cors("all")

@@ -83,7 +83,7 @@ class DefaultLoggerImpl {
 
         $this -> doLog(LogLevel::FATAL, "The application has encountered a fatal error..");
         $this -> doLog(LogLevel::FATAL, $message);
-        (new Response()) -> sendInternalError();
+        (new Response()) -> internal();
     }
 
     private function doLog($level, $message) {

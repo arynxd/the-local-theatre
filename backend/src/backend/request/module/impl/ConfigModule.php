@@ -44,7 +44,9 @@ class ConfigModule extends BaseModule {
         $loader -> load();
         $raw = $loader -> data();
 
-        Assertions::assertSet($raw);
+        if (!isset($raw)) {
+            Logger ::getInstance() -> fatal("config.json could not be loaded");
+        }
 
         Logger::getInstance() -> info("config.json loaded successfully, setting fields");
 

@@ -16,27 +16,15 @@ class UserListRoute extends BaseRoute {
     }
 
     public function handle($sess, $res) {
-        $out = Map ::none();
+        $users = $sess -> data -> user -> getAll();
 
-        $st = $sess -> db -> query("SELECT * FROM user");
-        $dbRes = Map ::from($st -> fetchAll());
-
-        if ($dbRes -> length() == 0) {
-            $res -> status(404)
-                 -> cors("all")
-                 -> error("No users found");
-        }
-
-        foreach ($dbRes -> raw() as $arr) {
-            // convert to a model to get the right keys & validate
-            $out -> push(
-                UserModel ::fromJSON(Map ::from($arr)) -> toMap()
-            );
-        }
+        $users = $users -> map(function ($_, $value) {
+            return $value -> toMap();
+        });
 
         $res -> status(200)
              -> cors("all")
-             -> json($out);
+             -> json($users);
     }
 
     public function validateRequest($sess, $res) {

@@ -6,7 +6,6 @@ require_once 'autoloader.php';
 use TLT\Request\Response;
 use TLT\Request\Session;
 use TLT\Util\Enum\LogLevel;
-use TLT\Util\Enum\StatusCode;
 use TLT\Util\Log\Logger;
 
 Logger::getInstance() -> enablePHPErrors();
@@ -27,8 +26,7 @@ try {
 catch (Exception $ex) {
     Logger::getInstance() -> error("Failed to start session..");
     // We will have to create a new response since the session is in an undefined state
-    $res = new Response();
-    $res -> internal($ex);
+    (new Response()) -> internal($ex);
 }
 Logger::getInstance() -> info("Session enabled without error");
 
@@ -45,9 +43,9 @@ Logger ::getInstance() -> info("Validating route " . $route -> path);
 $routeResult = $route -> validateRequest($sess, $sess -> res);
 
 if ($routeResult -> isError()) {
-    $sess -> res -> 
-        status($routeResult -> httpCode) -> 
-        error($routeResult -> error);
+    $sess -> res 
+         -> status($routeResult -> httpCode) 
+         -> error($routeResult -> error);
 }
 else {
     Logger::getInstance() -> info("Starting route " . $route -> path . " (" . $sess -> http -> method . ")");

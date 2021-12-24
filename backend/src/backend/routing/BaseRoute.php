@@ -28,7 +28,7 @@ abstract class BaseRoute {
 
     /**
      * Handle an incoming request, ideally this function never throws.
-     * All validation should be performed in validate($conn, $res, ...$params)
+     * All data validation should be performed in validate($sess, $res)
      *
      * @param Session $sess the current session
      * @param Response $res the response to send data to
@@ -39,11 +39,11 @@ abstract class BaseRoute {
      * Validates this routing based on an incoming request.
      * If the validation result is false, the request fails, otherwise it will continue.
      * If the validation fails, the request fails.
-     * Validation should only check the state of the data, in a pure form. It should not query outside sources.
+     * Validation should only check the shape of the data, in a pure form. It should not query outside sources.
      *
-     * @param Session $sess the current connection
+     * @param Session $sess the current session
      * @param Response $res the response to send data to
-     * @return  HttpResult  the result of the validation
+     * @return HttpResult  the result of the validation
      */
     public abstract function validateRequest($sess, $res);
 

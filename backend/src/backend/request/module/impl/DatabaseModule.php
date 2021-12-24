@@ -6,7 +6,6 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use TLT\Request\Module\BaseModule;
-use TLT\Util\Assert\AssertionException;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Log\Logger;
 
@@ -88,13 +87,13 @@ class DatabaseModule extends BaseModule {
         if (!$st) {
             Logger ::getInstance() -> error("SQL failed to prepare");
             Logger ::getInstance() -> error("\t$sql");
-            $this -> sess -> res -> sendInternalError();
+            $this -> sess -> res -> internal();
         }
 
         if (!$st -> execute($params)) {
             Logger ::getInstance() -> error("SQL query failed to execute");
             Logger ::getInstance() -> error("\t$sql");
-            $this -> sess -> res -> sendInternalError();
+            $this -> sess -> res -> internal();
         }
 
         return $st;
@@ -116,5 +115,13 @@ class DatabaseModule extends BaseModule {
 
     public function errorInfo() {
         return $this -> dbh -> errorInfo();
+    }
+
+    public function startTransaction() {
+        $this -> dbh -> beginTransaction();
+    }
+
+    public function commit() {
+        $this -> dbh -> commit();
     }
 }

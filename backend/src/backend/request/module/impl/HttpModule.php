@@ -7,6 +7,8 @@ use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
+use TLT\Util\Data\Map;
+use TLT\Util\Assert\Assertions;
 
 class HttpModule extends BaseModule {
     /**
@@ -27,8 +29,14 @@ class HttpModule extends BaseModule {
      */
     public $method;
 
+    /**
+     * @var Map $headers
+     */
+    public $headers;
+
     public function onEnable() {
         $this -> method = $_SERVER["REQUEST_METHOD"];
+        $this -> headers = $this -> parseHeaders();
         $this -> handleCors();
         $this -> rawUri = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $this -> uri = $this -> parseURI();
@@ -45,6 +53,17 @@ class HttpModule extends BaseModule {
             header("Access-Control-Allow-Origin: *");
             die(0);
         }
+    }
+
+    private function parseHeaders() {
+        if (!function_exists('getallheaders')) {
+            Logger ::getInstance() -> fatal("getallheaders function did not exist? are we actually running under Apache?");
+        }
+
+        $h = getallheaders();
+
+        Assertions::assertNotFalse($h);
+        return Map ::from($h);
     }
 
     /**
