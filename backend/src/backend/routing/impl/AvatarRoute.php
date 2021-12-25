@@ -12,25 +12,25 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
 class AvatarRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('avatar', [RequestMethod::GET]);
-    }
+	public function __construct() {
+		parent::__construct('avatar', [RequestMethod::GET]);
+	}
 
-    public function handle($sess, $res) {
-        $id = $sess->queryParams()['id'];
+	public function handle($sess, $res) {
+		$id = $sess->queryParams()['id'];
 
-        Assertions::assertSet($id);
+		Assertions::assertSet($id);
 
-        $res->status(200)
-            ->content('png')
-            ->cors('all')
-            ->data("avatars/$id.png", 'avatars/avatar.png');
-    }
+		$res->status(200)
+			->content('png')
+			->cors('all')
+			->data("avatars/$id.png", 'avatars/avatar.png');
+	}
 
-    public function validateRequest($sess, $res) {
-        if (!isset($sess->queryParams()['id'])) {
-            return HttpResult::BadRequest('No ID provided.');
-        }
-        return HttpResult::Ok();
-    }
+	public function validate($sess, $res) {
+		if (!isset($sess->queryParams()['id'])) {
+			return HttpResult::BadRequest('No ID provided.');
+		}
+		return HttpResult::Ok();
+	}
 }

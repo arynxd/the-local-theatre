@@ -10,6 +10,7 @@ use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Model\Impl\CommentModel;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
+use TLT\Request\Session;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
@@ -19,58 +20,68 @@ use TLT\Util\HttpResult;
 use TLT\Util\StringUtil;
 
 class CommentListRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('comment/list', [RequestMethod::GET]);
-    }
+	public function __construct() {
+		parent::__construct('comment/list', [RequestMethod::GET]);
+	}
 
-    public function handle($sess, $res) {
-        $id = $sess->queryParams()['id'];
-        Assertions::assertSet($id);
-
-        $st = $sess->db->query(
-            "SELECT * FROM comment c 
+	/**
+	 * @param Session $sess
+	 * @param string $postId
+	 * @return Map<CommentModel>
+	 */
+	private function getAllCommentsForPost($sess, $postId) {
+		$st = $sess->db->query(
+			"SELECT * FROM comment c 
                 LEFT JOIN user u on u.id = c.authorId
             WHERE c.postId = :id",
-            ['id' => $id]
-        );
+			['id' => $postId]
+		);
 
-        $db = $st->fetchAll(PDO::FETCH_NAMED);
+		$db = $st->fetchAll(PDO::FETCH_NAMED);
 
-        $items = Map::none();
+		$items = Map::none();
 
-        foreach ($db as $item) {
-            $model = new CommentModel(
-                $item['id'][0],
-                new UserModel(
-                    $item['id'][1],
-                    $item['firstName'],
-                    $item['lastName'],
-                    (int) $item['permissions'],
-                    (int) $item['dob'],
-                    (int) $item['joinDate'],
-                    $item['username']
-                ),
-                $item['postId'],
-                $item['content'],
-                (int) $item['createdAt'],
-                (int) $item['editedAt']
-            );
-            $items->push($model->toMap());
-        }
+		foreach ($db as $item) {
+			$model = new CommentModel(
+				$item['id'][0],
+				new UserModel(
+					$item['id'][1],
+					$item['firstName'],
+					$item['lastName'],
+					(int) $item['permissions'],
+					(int) $item['dob'],
+					(int) $item['joinDate'],
+					$item['username']
+				),
+				$item['postId'],
+				$item['content'],
+				(int) $item['createdAt'],
+				(int) $item['editedAt']
+			);
+			$items->push($model->toMap());
+		}
+		return $items;
+	}
 
-        $res->status(200)
-            ->cors('all')
-            ->json([
-                'comments' => $items,
-                'count' => $item->length(),
-            ]);
-    }
+	public function handle($sess, $res) {
+		$id = $sess->queryParams()['id'];
+		Assertions::assertSet($id);
 
-    public function validateRequest($sess, $res) {
-        if (!isset($sess->queryParams()['id'])) {
-            return HttpResult::BadRequest('No ID provided');
-        }
-        $sess->applyMiddleware(new DatabaseMiddleware());
-        return HttpResult::Ok();
-    }
+		$items = $this->getAllCommentsForPost($sess, $id);
+
+		$res->status(200)
+			->cors('all')
+			->json([
+				'comments' => $items,
+				'count' => $items->length(),
+			]);
+	}
+
+	public function validate($sess, $res) {
+		if (!isset($sess->queryParams()['id'])) {
+			return HttpResult::BadRequest('No ID provided');
+		}
+		$sess->applyMiddleware(new DatabaseMiddleware());
+		return HttpResult::Ok();
+	}
 }

@@ -12,47 +12,47 @@ use TLT\Util\HttpResult;
  * @see Router
  */
 abstract class BaseRoute {
-    public $path;
-    private $methods;
+	public $path;
+	private $methods;
 
-    /**
-     * A subclass constructor for the Route
-     * @param string $path the path for the route (eg; 'user/list')
-     * @param RequestMethod[] $methods the request methods this route accepts
-     */
-    protected function __construct($path, $methods) {
-        $this->path = $path;
-        $this->methods = $methods;
-    }
+	/**
+	 * A subclass constructor for the Route
+	 * @param string $path the path for the route (eg; 'user/list')
+	 * @param RequestMethod[] $methods the request methods this route accepts
+	 */
+	protected function __construct($path, $methods) {
+		$this->path = $path;
+		$this->methods = $methods;
+	}
 
-    /**
-     * Handle an incoming request, ideally this function never throws.
-     * All data validation should be performed in validate($sess, $res)
-     *
-     * @param Session $sess the current session
-     * @param Response $res the response to send data to
-     */
-    abstract public function handle($sess, $res);
+	/**
+	 * Handle an incoming request, ideally this function never throws.
+	 * All data validation should be performed in validate($sess, $res)
+	 *
+	 * @param Session $sess the current session
+	 * @param Response $res the response to send data to
+	 */
+	abstract public function handle($sess, $res);
 
-    /**
-     * Validates this routing based on an incoming request.
-     * If the validation result is false, the request fails, otherwise it will continue.
-     * If the validation fails, the request fails.
-     * Validation should only check the shape of the data, in a pure form. It should not query outside sources.
-     *
-     * @param Session $sess the current session
-     * @param Response $res the response to send data to
-     * @return HttpResult  the result of the validation
-     */
-    abstract public function validateRequest($sess, $res);
+	/**
+	 * Validates this routing based on an incoming request.
+	 * If the validation result is false, the request fails, otherwise it will continue.
+	 * If the validation fails, the request fails.
+	 * Validation should only check the shape of the data, in a pure form. It should not query outside sources.
+	 *
+	 * @param Session $sess the current session
+	 * @param Response $res the response to send data to
+	 * @return HttpResult  the result of the validation
+	 */
+	abstract public function validate($sess, $res);
 
-    /**
-     * Validates this route based on an incoming request's methods.
-     *
-     * @param Session $sess the current session
-     * @return  boolean     true, if the validation passed, false otherwise
-     */
-    public function validateMethod($sess) {
-        return in_array($sess->http->method, $this->methods);
-    }
+	/**
+	 * Validates this route based on an incoming request's methods.
+	 *
+	 * @param Session $sess the current session
+	 * @return boolean     true, if the validation passed, false otherwise
+	 */
+	public function isMethodOk($sess) {
+		return in_array($sess->http->method, $this->methods);
+	}
 }

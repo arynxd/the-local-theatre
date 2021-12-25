@@ -12,25 +12,25 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
 class ShowImageRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('show/image', [RequestMethod::GET]);
-    }
+	public function __construct() {
+		parent::__construct('show/image', [RequestMethod::GET]);
+	}
 
-    public function handle($sess, $res) {
-        $id = $sess->queryParams()['id'];
+	public function handle($sess, $res) {
+		$id = $sess->queryParams()['id'];
 
-        Assertions::assertSet($id);
+		Assertions::assertSet($id);
 
-        $res->content('png')
-            ->cors('all')
-            ->status(200)
-            ->data("shows/$id.png", 'shows/show.png');
-    }
+		$res->content('png')
+			->cors('all')
+			->status(200)
+			->data("shows/$id.png", 'shows/show.png');
+	}
 
-    public function validateRequest($sess, $res) {
-        if (!isset($sess->queryParams()['id'])) {
-            return HttpResult::BadRequest('No ID provided.');
-        }
-        return HttpResult::Ok();
-    }
+	public function validate($sess, $res) {
+		if (!isset($sess->queryParams()['id'])) {
+			return HttpResult::BadRequest('No ID provided.');
+		}
+		return HttpResult::Ok();
+	}
 }

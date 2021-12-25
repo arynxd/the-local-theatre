@@ -137,7 +137,7 @@ class PostRoute extends BaseRoute {
 		return $self->permissions >= PermissionLevel::MODERATOR;
 	}
 
-	public function validateRequest($sess, $res) {
+	public function validate($sess, $res) {
 		$sess->applyMiddleware(new DatabaseMiddleware());
 
 		$method = $sess->http->method;

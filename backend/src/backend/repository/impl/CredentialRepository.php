@@ -3,6 +3,7 @@
 namespace TLT\Respository\Impl;
 
 use TLT\Model\Impl\CredentialModel;
+use TLT\Model\Impl\UserModel;
 use TLT\Respository\BaseRepository;
 use TLT\Util\Data\Map;
 
@@ -11,11 +12,11 @@ class CredentialRepository extends BaseRepository {
 	 * @inheritDoc
 	 * @return CredentialModel|null
 	 */
-	public function get($email) {
+	public function get($id) {
 		$query = 'SELECT * FROM credential WHERE email = :email';
 
 		$st = $this->sess->db->query($query, [
-			'email' => $email,
+			'email' => $id,
 		]);
 
 		$dbRes = Map::from($st->fetchAll())->toMapRecursive();
@@ -104,7 +105,7 @@ class CredentialRepository extends BaseRepository {
                 password = :password,
                 token = :token
             WHERE userId = :userId
-    ";
+        ";
 
 		$res = $this->sess->db->query($query, [
 			'userId' => $model->userId,
@@ -116,11 +117,11 @@ class CredentialRepository extends BaseRepository {
 		return $res->rowCount() > 0;
 	}
 
-	public function exists($email) {
+	public function exists($id) {
 		$query = 'SELECT COUNT(*) FROM credential WHERE email = :email';
 
 		$res = $this->sess->db->query($query, [
-			'email' => $email,
+			'email' => $id,
 		]);
 
 		return $res->fetchColumn() > 0;

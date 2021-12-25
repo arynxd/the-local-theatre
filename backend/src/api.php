@@ -21,37 +21,37 @@ Logger::getInstance()->info('Starting new session...');
 $sess = null;
 
 try {
-    $sess = new Session();
+	$sess = new Session();
 } catch (Exception $ex) {
-    Logger::getInstance()->error('Failed to start session..');
-    // We will have to create a new response since the session is in an undefined state
-    (new Response())->internal($ex);
+	Logger::getInstance()->error('Failed to start session..');
+	// We will have to create a new response since the session is in an undefined state
+	(new Response())->internal($ex);
 }
 Logger::getInstance()->info('Session enabled without error');
 
 $route = $sess->routing->route;
 
-if (!$route->validateMethod($sess)) {
-    Logger::getInstance()->error(
-        "Attempted to use unsupported method {$sess->http->method} on route {$route->path}"
-    );
-    $sess->res->status(400)->error('Unsupported method ' . $sess->http->method);
+if (!$route->isMethodOk($sess)) {
+	Logger::getInstance()->error(
+		"Attempted to use unsupported method {$sess->http->method} on route {$route->path}"
+	);
+	$sess->res->status(400)->error('Unsupported method ' . $sess->http->method);
 }
 
 Logger::getInstance()->info('Validating route ' . $route->path);
-$routeResult = $route->validateRequest($sess, $sess->res);
+$routeResult = $route->validate($sess, $sess->res);
 
 if ($routeResult->isError()) {
-    $sess->res->status($routeResult->httpCode)->error($routeResult->error);
+	$sess->res->status($routeResult->httpCode)->error($routeResult->error);
 } else {
-    Logger::getInstance()->info(
-        'Starting route ' . $route->path . ' (' . $sess->http->method . ')'
-    );
-    try {
-        $route->handle($sess, $sess->res);
-        $sess->res->internal('No output received from the route');
-    } catch (Exception $ex) {
-        Logger::getInstance()->error('Route threw an uncaught error');
-        $sess->res->internal($ex);
-    }
+	Logger::getInstance()->info(
+		'Starting route ' . $route->path . ' (' . $sess->http->method . ')'
+	);
+	try {
+		$route->handle($sess, $sess->res);
+		$sess->res->internal('No output received from the route');
+	} catch (Exception $ex) {
+		Logger::getInstance()->error('Route threw an uncaught error');
+		$sess->res->internal($ex);
+	}
 }

@@ -12,18 +12,18 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
 class ModerationRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('moderation', [RequestMethod::POST]);
-    }
+	public function __construct() {
+		parent::__construct('moderation', [RequestMethod::POST]);
+	}
 
-    public function handle($sess, $res) {
-        $res->status(400)
-            ->cors('all')
-            ->error('Not implemented');
-    }
+	public function handle($sess, $res) {
+		$res->status(400)
+			->cors('all')
+			->error('Not implemented');
+	}
 
-    public function validateRequest($sess, $res) {
-        $sess->applyMiddleware(new DatabaseMiddleware());
-        return HttpResult::Ok();
-    }
+	public function validate($sess, $res) {
+		$sess->applyMiddleware(new DatabaseMiddleware());
+		return HttpResult::Ok();
+	}
 }

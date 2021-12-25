@@ -73,7 +73,7 @@ class SignupRoute extends BaseRoute {
 		}
 	}
 
-	public function validateRequest($sess, $res) {
+	public function validate($sess, $res) {
 		$sess->applyMiddleware(new DatabaseMiddleware());
 
 		$data = $sess->jsonParams()['data'];

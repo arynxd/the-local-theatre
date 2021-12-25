@@ -11,30 +11,30 @@ use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
 
 class SelfUserRoute extends BaseRoute {
-    public function __construct() {
-        parent::__construct('user/@me', [RequestMethod::GET]);
-    }
+	public function __construct() {
+		parent::__construct('user/@me', [RequestMethod::GET]);
+	}
 
-    public function handle($sess, $res) {
-        $selfUser = $sess->cache->user();
+	public function handle($sess, $res) {
+		$selfUser = $sess->cache->user();
 
-        Assertions::assertSet($selfUser);
+		Assertions::assertSet($selfUser);
 
-        $selfUser = $selfUser->toMap();
+		$selfUser = $selfUser->toMap();
 
-        // properly type numbers
-        $selfUser['permissions'] = (int) $selfUser['permissions'];
-        $selfUser['joinDate'] = (int) $selfUser['joinDate'];
-        $selfUser['dob'] = (int) $selfUser['dob'];
+		// properly type numbers
+		$selfUser['permissions'] = (int) $selfUser['permissions'];
+		$selfUser['joinDate'] = (int) $selfUser['joinDate'];
+		$selfUser['dob'] = (int) $selfUser['dob'];
 
-        $res->status(200)
-            ->cors('all')
-            ->json($selfUser);
-    }
+		$res->status(200)
+			->cors('all')
+			->json($selfUser);
+	}
 
-    public function validateRequest($sess, $res) {
-        $sess->applyMiddleware(new DatabaseMiddleware());
-        $sess->applyMiddleware(new AuthenticationMiddleware());
-        return HttpResult::Ok();
-    }
+	public function validate($sess, $res) {
+		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->applyMiddleware(new AuthenticationMiddleware());
+		return HttpResult::Ok();
+	}
 }
