@@ -59,6 +59,7 @@
     -   [ ] Investigate cache control headers for this
 -   [ ] Backend type checks (Assertion function)
 - [ ] Individual post page deletion not working
+- [ ] Handle token invalidation
 
 ## Feature List
 
