@@ -14,8 +14,6 @@ class AuthUtil {
 	}
 
 	public static function verifyPassword($rawPassword, $hashed) {
-		Assertions::assertType($rawPassword, 'string');
-		Assertions::assertType($hashed, 'string');
 
 		// Credit: https://www.php.net/manual/en/function.crypt.php comments
 

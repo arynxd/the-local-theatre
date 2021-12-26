@@ -1,10 +1,10 @@
 <?php
 
-namespace TLT\Respository\Impl;
+namespace TLT\Repository\Impl;
 
 use TLT\Model\Impl\CredentialModel;
 use TLT\Model\Impl\UserModel;
-use TLT\Respository\BaseRepository;
+use TLT\Repository\BaseRepository;
 use TLT\Util\Data\Map;
 
 class CredentialRepository extends BaseRepository {

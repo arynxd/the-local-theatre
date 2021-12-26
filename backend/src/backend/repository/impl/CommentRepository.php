@@ -2,11 +2,11 @@
 
 namespace TLT\Repository\Impl;
 
-use http\Exception\BadMethodCallException;
+use BadMethodCallException;
 use PDO;
 use TLT\Model\Impl\CommentModel;
 use TLT\Model\Impl\UserModel;
-use TLT\Respository\BaseRepository;
+use TLT\Repository\BaseRepository;
 
 class CommentRepository extends BaseRepository {
 	/**

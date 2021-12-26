@@ -70,7 +70,7 @@ class Response {
 	public function json($msg) {
 		$this->content('json');
 
-		if (MapUtil::is_map($msg)) {
+		if (MapUtil::is_map($msg) || is_array($msg)) {
 			$this->send(json_encode($msg));
 		} elseif (is_string($msg)) {
 			$this->send(json_encode(json_decode($msg))); // encode/decode for validation

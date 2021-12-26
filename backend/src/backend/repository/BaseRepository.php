@@ -1,6 +1,6 @@
 <?php
 
-namespace TLT\Respository;
+namespace TLT\Repository;
 use TLT\Request\Session;
 
 /**

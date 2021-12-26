@@ -5,7 +5,7 @@ namespace TLT\Repository\Impl;
 use PDO;
 use TLT\Model\Impl\PostModel;
 use TLT\Model\Impl\UserModel;
-use TLT\Respository\BaseRepository;
+use TLT\Repository\BaseRepository;
 use TLT\Util\Data\Map;
 
 class PostRepository extends BaseRepository {

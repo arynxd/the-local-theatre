@@ -11,7 +11,6 @@ class HttpUtil {
 	 * @param string $header The header to send
 	 */
 	public static function applyHeader($header) {
-		Assertions::assertType($header, 'string');
 		header($header);
 	}
 
@@ -21,7 +20,6 @@ class HttpUtil {
 	 * @param string[] The headers to send
 	 */
 	public static function applyHeaders($headers) {
-		Assertions::assertType($headers, 'array');
 		foreach ($headers as $h) {
 			self::applyHeader($h);
 		}

@@ -44,9 +44,6 @@ class StringUtil {
 	 * @return bool
 	 */
 	public static function startsWith($src, $target) {
-		Assertions::assertType($src, 'string');
-		Assertions::assertType($target, 'string');
-
 		$length = strlen($target);
 		return substr($src, 0, $length) === $target;
 	}

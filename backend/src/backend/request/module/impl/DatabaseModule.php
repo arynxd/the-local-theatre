@@ -63,7 +63,7 @@ class DatabaseModule extends BaseModule {
     }
 
     private function initTables() {
-        $this->initTable('tables.sql');
+        //$this->initTable('tables.sql');
     }
 
     private function initTable($fileName) {
