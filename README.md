@@ -39,10 +39,10 @@
 -   [x] Improve backend response api
 -   [x] Abstract backend DB calls
     - [x]   Controller Repository Database
+-   [x] Cache param sources in backend for perf
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
--   [ ] Cache param sources in backend for perf
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
 -   [ ] Reactive cache implementation
