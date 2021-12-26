@@ -58,6 +58,7 @@
 -   [ ] Cache images by md5 (or similar) => b64
     -   [ ] Investigate cache control headers for this
 -   [ ] Backend type checks (Assertion function)
+- [ ] Individual post page deletion not working
 
 ## Feature List
 
