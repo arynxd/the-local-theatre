@@ -7,6 +7,9 @@ use TLT\Request\Response;
 use TLT\Request\Session;
 use TLT\Util\Enum\LogLevel;
 use TLT\Util\Log\Logger;
+use TLT\Util\Polyfill\Polyfill;
+
+Polyfill::applyPollyfills();
 
 Logger::getInstance()->enablePHPErrors();
 Logger::getInstance()->setLogFile(sys_get_temp_dir() . '/php_log.log');
