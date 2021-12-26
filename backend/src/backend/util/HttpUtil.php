@@ -2,24 +2,28 @@
 
 namespace TLT\Util;
 
-class HttpUtil {
-    /**
-     * Sends the $header
-     *
-     * @param string $header The header to send
-     */
-    public static function applyHeader($header) {
-        header($header);
-    }
+use TLT\Util\Assert\Assertions;
 
-    /**
-     * Sends all the $headers
-     *
-     * @param string[] The headers to send
-     */
-    public static function applyHeaders($headers) {
-        foreach ($headers as $h) {
-            self::applyHeader($h);
-        }
-    }
+class HttpUtil {
+	/**
+	 * Sends the $header
+	 *
+	 * @param string $header The header to send
+	 */
+	public static function applyHeader($header) {
+		Assertions::assertType($header, 'string');
+		header($header);
+	}
+
+	/**
+	 * Sends all the $headers
+	 *
+	 * @param string[] The headers to send
+	 */
+	public static function applyHeaders($headers) {
+		Assertions::assertType($headers, 'array');
+		foreach ($headers as $h) {
+			self::applyHeader($h);
+		}
+	}
 }

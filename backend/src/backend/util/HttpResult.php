@@ -2,6 +2,8 @@
 
 namespace TLT\Util;
 
+use TLT\Util\Assert\Assertions;
+
 /**
  * A generic result class
  *
@@ -22,6 +24,9 @@ class HttpResult {
 	 * @param string|null $error the error string to use, JSON format
 	 */
 	function __construct($httpCode, $error) {
+		Assertions::assertType($httpCode, 'int');
+		Assertions::assertTypeOrNull($error, 'string');
+
 		$this->httpCode = $httpCode;
 		$this->error = $error;
 	}

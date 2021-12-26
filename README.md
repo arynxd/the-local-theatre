@@ -37,18 +37,18 @@
 -   [x] Fix comments / posts not being updated in UI when they are changed
 -   [x] Colour icons
 -   [x] Improve backend response api
+-   [x] Abstract backend DB calls
+    - [x]   Controller Repository Database
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
 -   [ ] Cache param sources in backend for perf
--   [ ] Abstract backend DB calls
-    -   Controller Repository Database
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
 -   [ ] Reactive cache implementation
 -   [ ] Loading spinner on submit buttons
 -   [ ] Colour icons
--   [ ] Cache for blogs
+-   [ ] Cache for posts
 -   [ ] Context menu component
     -   [ ] Click away to hide
 -   [ ] Changeable avatars
