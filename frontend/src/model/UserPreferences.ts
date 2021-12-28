@@ -4,14 +4,14 @@ import { Theme } from '../backend/global-scope/context/ThemeContext'
 import { LocalStorage } from '../backend/global-scope/GlobalScope'
 
 export interface UserPreferences extends GenericModel {
-    userId: EntityIdentifier
-    theme: Theme
+	userId: EntityIdentifier
+	theme: Theme
 }
 
 export function isUserPreferences(obj: LocalStorage | UserPreferences) {
-    return (
-        typeof obj === 'object' &&
-        (obj.theme === 'dark' || obj.theme === 'light') &&
-        isEntityIdentifier(obj.userId)
-    )
+	return (
+		typeof obj === 'object' &&
+		(obj.theme === 'dark' || obj.theme === 'light') &&
+		isEntityIdentifier(obj.userId)
+	)
 }

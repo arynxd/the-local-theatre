@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 body {
-    @apply bg-gray-300 dark:bg-gray-600;
+	@apply bg-gray-300 dark:bg-gray-600;
 }
 
 @layer utilities {
-    .tabbable {
-        tab-index: 0;
-    }
+	.tabbable {
+		tab-index: 0;
+	}
 }

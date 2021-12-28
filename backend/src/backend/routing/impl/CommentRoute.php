@@ -57,7 +57,7 @@ class CommentRoute extends BaseRoute {
 			Assertions::assertSet($selfUser);
 
 			$body = $sess->jsonParams();
-			$commentId = isset($body['id']);
+			$commentId = $body['id'];
 			$sess->data->start();
 
 			if (isset($commentId)) {
@@ -69,13 +69,19 @@ class CommentRoute extends BaseRoute {
 						->error('Comment not found');
 				}
 
+				if ($model->author->id != $selfUser->id) {
+					$res->status(401)
+						->cors('all')
+						->error('Cannot edit someone elses comment');
+				}
+
 				$model->content = $body['content'];
 				$model->editedAt = DBUtil::currentTime();
 
 				$comment->edit($model);
 			} else {
 				$postId = $body['postId'];
-				$content = $body['newContent'];
+				$content = $body['content'];
 				$author = $selfUser;
 
 				Assertions::assertSet($postId);
@@ -107,10 +113,11 @@ class CommentRoute extends BaseRoute {
 
 			$isMod = $selfUser->permissions >= PermissionLevel::MODERATOR;
 
-			$sess -> data -> start();
+			$sess->data->start();
 			$model = $comment->get($id);
 
 			if (!isset($model)) {
+				$sess->data->commit();
 				$res->status(404)
 					->cors('all')
 					->error('Unknown comment');
@@ -118,19 +125,22 @@ class CommentRoute extends BaseRoute {
 
 			if ($isMod) {
 				$comment->delete($model->id);
+				$sess->data->commit();
 				$res->status(200)
 					->cors('all')
 					->json($model->toMap());
 			}
 
 			if ($model->author->id != $selfUser->id) {
+				$sess->data->commit();
 				$res->status(401)
 					->cors('all')
 					->error('Cannot delete comments you did not make');
 			}
 
 			$comment->delete($model->id);
-			$sess -> data -> commit();
+			$sess->data->commit();
+
 			$res->status(200)
 				->cors('all')
 				->json($model->toMap());

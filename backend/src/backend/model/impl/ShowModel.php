@@ -6,21 +6,21 @@ use TLT\Model\Model;
 use TLT\Util\Data\Map;
 
 class ShowModel extends Model {
-    public $id;
-    public $title;
-    public $showDate;
+	public $id;
+	public $title;
+	public $showDate;
 
-    public function __construct($id, $title, $showDate) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->showDate = $showDate;
-    }
+	public function __construct($id, $title, $showDate) {
+		$this->id = $id;
+		$this->title = $title;
+		$this->showDate = $showDate;
+	}
 
-    public function toMap() {
-        return Map::from([
-            'id' => $this->id,
-            'title' => $this->title,
-            'showDate' => $this->showDate,
-        ]);
-    }
+	public function toMap() {
+		return Map::from([
+			'id' => $this->id,
+			'title' => $this->title,
+			'showDate' => $this->showDate,
+		]);
+	}
 }

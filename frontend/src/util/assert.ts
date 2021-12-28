@@ -7,9 +7,9 @@ export const ASSERT_ENABLED = true
  * @param err The error function
  */
 export function assert(fn: () => boolean, err: () => Error | string) {
-    if (ASSERT_ENABLED && !fn()) {
-        throw err()
-    }
+	if (ASSERT_ENABLED && !fn()) {
+		throw err()
+	}
 }
 
 /**
@@ -19,10 +19,10 @@ export function assert(fn: () => boolean, err: () => Error | string) {
  * @param err The error function
  */
 export function assertTruthy<T extends object>(
-    obj: () => T,
-    err: () => Error | string
+	obj: () => T,
+	err: () => Error | string
 ) {
-    assert(() => !obj(), err)
+	assert(() => !obj(), err)
 }
 
 /**
@@ -32,8 +32,8 @@ export function assertTruthy<T extends object>(
  * @param err The error function
  */
 export function assertFalsy<T extends object>(
-    obj: () => T,
-    err: () => Error | string
+	obj: () => T,
+	err: () => Error | string
 ) {
-    assert(() => !!obj(), err)
+	assert(() => !!obj(), err)
 }

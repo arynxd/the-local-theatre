@@ -1,23 +1,23 @@
 {
-    "name": "multi-platform-website",
-    "version": "1.0.0",
-    "description": "## TODO",
-    "main": "index.js",
-    "scripts": {
-        "fmt": "prettier --write ."
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/arynxd/multi-platform-website.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/arynxd/multi-platform-website/issues"
-    },
-    "homepage": "https://github.com/arynxd/multi-platform-website#readme",
-    "dependencies": {
-        "@prettier/plugin-php": "^0.17.6",
-        "prettier": "^2.5.1"
-    }
+	"name": "multi-platform-website",
+	"version": "1.0.0",
+	"description": "## TODO",
+	"main": "index.js",
+	"scripts": {
+		"fmt": "prettier --write ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/arynxd/multi-platform-website.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/arynxd/multi-platform-website/issues"
+	},
+	"homepage": "https://github.com/arynxd/multi-platform-website#readme",
+	"dependencies": {
+		"@prettier/plugin-php": "^0.17.6",
+		"prettier": "^2.5.1"
+	}
 }

@@ -5,29 +5,29 @@ import { IdentifiedEntity } from './IdentifiedEntity'
 import { GenericModel } from './GenericModel'
 
 export interface Post extends IdentifiedEntity, GenericModel {
-    author: User
-    title: string
-    content: string
-    createdAt: number
-    editedAt: number
+	author: User
+	title: string
+	content: string
+	createdAt: number
+	editedAt: number
 }
 
 export function isPost(json: JSONObject | Post): json is Post {
-    const now = new Date()
+	const now = new Date()
 
-    return isEntityIdentifier(json.id) &&
-        isJSONObject(json.author as JSONValue) && // it will always be a value of some sort
-        isUser(json.author as JSONObject) && // if its an object ^, we can cast it
-        typeof json.title === 'string' &&
-        typeof json.content === 'string' &&
-        typeof json.createdAt === 'number' &&
-        typeof json.editedAt === 'number' &&
-        // posts cannot be created in the future (obviously)
-        // this also asserts the number is some sort of valid utc
-        now.getTime() >= new Date(json.createdAt * 1000).getTime() &&
-        json.editedAt
-        ? typeof json.editedAt == 'number'
-            ? true
-            : false
-        : true
+	return isEntityIdentifier(json.id) &&
+		isJSONObject(json.author as JSONValue) && // it will always be a value of some sort
+		isUser(json.author as JSONObject) && // if its an object ^, we can cast it
+		typeof json.title === 'string' &&
+		typeof json.content === 'string' &&
+		typeof json.createdAt === 'number' &&
+		typeof json.editedAt === 'number' &&
+		// posts cannot be created in the future (obviously)
+		// this also asserts the number is some sort of valid utc
+		now.getTime() >= new Date(json.createdAt * 1000).getTime() &&
+		json.editedAt
+		? typeof json.editedAt == 'number'
+			? true
+			: false
+		: true
 }

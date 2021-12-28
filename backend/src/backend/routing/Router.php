@@ -22,41 +22,41 @@ use TLT\Routing\Impl\UserRoute;
  * @see BaseRoute
  */
 class Router {
-    private $routes;
+	private $routes;
 
-    public function __construct() {
-        $this->routes = [
-            new AvatarRoute(),
-            new DefaultRoute(),
-            new CommentListRoute(),
-            new CommentRoute(),
-            new LoginRoute(),
-            new ModerationRoute(),
-            new PostListRoute(),
-            new PostRoute(),
-            new SelfUserRoute(),
-            new ShowImageRoute(),
-            new ShowListRoute(),
-            new SignupRoute(),
-            new UserListRoute(),
-            new UserRoute(),
-        ];
-    }
+	public function __construct() {
+		$this->routes = [
+			new AvatarRoute(),
+			new DefaultRoute(),
+			new CommentListRoute(),
+			new CommentRoute(),
+			new LoginRoute(),
+			new ModerationRoute(),
+			new PostListRoute(),
+			new PostRoute(),
+			new SelfUserRoute(),
+			new ShowImageRoute(),
+			new ShowListRoute(),
+			new SignupRoute(),
+			new UserListRoute(),
+			new UserRoute(),
+		];
+	}
 
-    /**
-     * Gets the routing for a given path.
-     *
-     * @param string[] $parts the path
-     * @return  BaseRoute       returns false if a route is not found
-     */
-    public function getRouteForPath($parts) {
-        $match = join('/', $parts);
+	/**
+	 * Gets the routing for a given path.
+	 *
+	 * @param string[] $parts the path
+	 * @return  BaseRoute       returns false if a route is not found
+	 */
+	public function getRouteForPath($parts) {
+		$match = join('/', $parts);
 
-        foreach ($this->routes as $route) {
-            if ($route->path == $match) {
-                return $route;
-            }
-        }
-        return null;
-    }
+		foreach ($this->routes as $route) {
+			if ($route->path == $match) {
+				return $route;
+			}
+		}
+		return null;
+	}
 }

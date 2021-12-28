@@ -8,12 +8,12 @@ import { CommentCache } from '../cache/CommentCache'
  * Used by the app to reduce the number of backend requests
  */
 export class CacheManager extends Manager {
-    /**
-     * The user cache
-     */
-    public readonly user = new UserCache()
+	/**
+	 * The user cache
+	 */
+	public readonly user = new UserCache()
 
-    public readonly post = new PostCache()
+	public readonly post = new PostCache()
 
-    public readonly comment = new CommentCache()
+	public readonly comment = new CommentCache()
 }

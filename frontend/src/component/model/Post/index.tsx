@@ -15,7 +15,12 @@ import { Hamburger } from '../../Icons'
 import { useSubscription } from '../../../backend/hook/useSubscription'
 import { User } from '../../../model/User'
 import { toLevel } from '../../../model/Permission'
-import { useReactiveCache, ReactiveCache, CacheUpdateFunction } from '../../../util/cache'
+import {
+	useReactiveCache,
+	ReactiveCache,
+	CacheUpdateFunction,
+} from '../../../util/cache'
+import Modal from '../../Modal'
 
 interface ContextMenuProps {
 	model: PostModel
@@ -213,7 +218,7 @@ function AddCommentView(
 
 		getBackend()
 			.http.addComment(props.post.id, text)
-			.then((c) => { 
+			.then((c) => {
 				props.cache.set(c.id, c)
 				props.updateCache()
 				props.done()
@@ -289,8 +294,8 @@ function ContextMenu(props: ContextMenuProps) {
 		return <> </>
 	}
 
-	const menu = (
-		<ul className="absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center">
+	const menu = () => (
+		<ul className="absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center z-20">
 			{canEdit ? (
 				<button onClick={() => props.setState('edit')}>
 					<li className="dark:text-gray-200 font-semibold">Edit</li>
@@ -314,7 +319,11 @@ function ContextMenu(props: ContextMenuProps) {
 				<Hamburger className="h-6 w-6 fill-white" />
 			</div>
 
-			{props.state === 'context' ? menu : <> </>}
+			<Modal
+				provideMenu={menu}
+				onClickAway={() => props.setState('view')}
+				shouldShow={() => props.state === 'context'}
+			/>
 		</>
 	)
 }

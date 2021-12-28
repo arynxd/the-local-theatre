@@ -38,28 +38,28 @@
 -   [x] Colour icons
 -   [x] Improve backend response api
 -   [x] Abstract backend DB calls
-    - [x]   Controller Repository Database
+    -   [x] Controller Repository Database
 -   [x] Cache param sources in backend for perf
 -   [x] Reactive cache implementation
 -   [x] Cache for posts
+-   [x] Show component 'showing date' wrong colour in light theme
+-   [x] Context menu component
+    -   [x] Click away to hide
+-   [ ] Individual post page deletion not working
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
 -   [ ] Loading spinner on submit buttons
--   [ ] Context menu component
-    -   [ ] Click away to hide
 -   [ ] Changeable avatars
 -   [ ] Input validation for edits
--   [ ] Moderator deleted comments do not update frontend cache
-    -   [ ] Clear caches when we logout
+-   [ ] Deleted comments do not update frontend cache when accounts are switched
+    -   [ ] Cache mismatch?
 -   [ ] Cache images by md5 (or similar) => b64
     -   [ ] Investigate cache control headers for this
-- [ ] Individual post page deletion not working
-- [ ] Handle token invalidation
-- [ ] Check API (base endpoint) online when we launch
-- [ ] Show component 'showing date' wrong colour in light theme
+-   [ ] Handle token invalidation
+-   [ ] Check API (base endpoint) online when we launch
 
 ## Feature List
 

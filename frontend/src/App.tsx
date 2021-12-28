@@ -15,63 +15,63 @@ import UserSettings from './page/UserSettings'
 import Moderation from './page/Moderation'
 
 function Body() {
-    return (
-        <Switch>
-            <Route exact path="/">
-                <Home />
-            </Route>
+	return (
+		<Switch>
+			<Route exact path="/">
+				<Home />
+			</Route>
 
-            <Route exact path={Paths.HOME}>
-                <Home />
-            </Route>
+			<Route exact path={Paths.HOME}>
+				<Home />
+			</Route>
 
-            <Route path={Paths.BLOG}>
-                <Blog />
-            </Route>
+			<Route path={Paths.BLOG}>
+				<Blog />
+			</Route>
 
-            <Route path={Paths.CONTACT}>
-                <Contact />
-            </Route>
+			<Route path={Paths.CONTACT}>
+				<Contact />
+			</Route>
 
-            <Route path={Paths.LOGIN}>
-                <Login />
-            </Route>
+			<Route path={Paths.LOGIN}>
+				<Login />
+			</Route>
 
-            <Route path={Paths.SIGNUP}>
-                <Signup />
-            </Route>
+			<Route path={Paths.SIGNUP}>
+				<Signup />
+			</Route>
 
-            <Route path={Paths.POST}>
-                <Post />
-            </Route>
+			<Route path={Paths.POST}>
+				<Post />
+			</Route>
 
-            <Route path={Paths.USER_SETTINGS}>
-                <UserSettings />
-            </Route>
+			<Route path={Paths.USER_SETTINGS}>
+				<UserSettings />
+			</Route>
 
-            <Route path={Paths.MODERATION}>
-                <Moderation />
-            </Route>
+			<Route path={Paths.MODERATION}>
+				<Moderation />
+			</Route>
 
-            <Route>
-                <NotFound />
-            </Route>
-        </Switch>
-    )
+			<Route>
+				<NotFound />
+			</Route>
+		</Switch>
+	)
 }
 export default function App() {
-    logger.debug('Starting application')
-    logger.debug('Base URL is ' + getPrefix())
+	logger.debug('Starting application')
+	logger.debug('Base URL is ' + getPrefix())
 
-    return (
-        <BrowserRouter>
-            <Navbar />
-            <div className="h-max flex flex-col overflow-visible">
-                <div className="min-h-screen flex-grow">
-                    <Body />
-                </div>
-                <Footer />
-            </div>
-        </BrowserRouter>
-    )
+	return (
+		<BrowserRouter>
+			<Navbar />
+			<div className="h-max flex flex-col overflow-visible">
+				<div className="min-h-screen flex-grow">
+					<Body />
+				</div>
+				<Footer />
+			</div>
+		</BrowserRouter>
+	)
 }

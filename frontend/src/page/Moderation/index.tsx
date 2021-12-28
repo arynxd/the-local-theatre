@@ -6,9 +6,10 @@ import Separator from '../../component/Separator'
 import { User } from '../../model/User'
 import { useAPI } from '../../backend/hook/useAPI'
 import { getBackend } from '../../backend/global-scope/util/getters'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { createPlaceholders } from '../../util/factory'
 import { Error, Warning } from '../../component/Factory'
+import Modal from '../../component/Modal'
 
 interface ModerationUserProps {
 	user: User
@@ -17,22 +18,33 @@ interface ModerationUserProps {
 type ModerationUserState = 'idle' | 'changing_permissions' | 'deletion'
 
 interface ModalProps {
-	done: (newValue: PermissionValue) => void
+	onSubmit: (newValue: PermissionValue) => void
+	onCancel: () => void
+	state: ModerationUserState
 }
 
 function PermissionModal(props: ModerationUserProps & ModalProps) {
 	const [level, setLevel] = useState(0)
 
-	return (
-		<div className="absolute flex flex-col items-center justify-center bg-gray-100 w-max h-auto top-0 right-5 z-10 rounded shadow-xl p-2 ring-1">
-			<h2 className="font-md">
+	const handleSubmit = () => props.onSubmit(level)
+
+	const handleChange = (event: ChangeEvent<HTMLSelectElement>) =>
+		setLevel(parseInt(event.target.value))
+
+	const handleCancel = () => props.onCancel()
+
+	const shouldShow = () => props.state === 'changing_permissions'
+
+	const component = () => (
+		<div className="absolute flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-700 w-max h-auto top-0 right-5 z-10 rounded shadow-xl p-2">
+			<h2 className="font-md text-gray-900 dark:text-gray-200">
 				Editing {props.user.username}'s permissions
 			</h2>
-			<Separator className="w-4/5" />
+			<Separator className="w-4/5 my-3" />
 
 			<select
-				onChange={(ev) => setLevel(parseInt(ev.target.value))}
-				className="text-sm p-2 bg-gray-100 ring-1"
+				onChange={handleChange}
+				className="text-sm p-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200"
 			>
 				<option value="">--Set a permission level--</option>
 				<option value={0}>View only</option>
@@ -40,22 +52,32 @@ function PermissionModal(props: ModerationUserProps & ModalProps) {
 				<option value={2}>Moderator</option>
 			</select>
 
-			<Separator className="w-2/5" />
+			<Separator className="w-2/5 my-3" />
 
 			<button
 				className="text-sm bg-gray-100 px-2 py-1 shadow-xl rounded"
-				onClick={() => props.done(level)}
+				onClick={handleSubmit}
 			>
 				Done
 			</button>
 		</div>
+	)
+
+	return (
+		<Modal
+			provideMenu={component}
+			onClickAway={handleCancel}
+			shouldShow={shouldShow}
+		/>
 	)
 }
 
 function ModerationUser(props: ModerationUserProps) {
 	const user = props.user
 	const buttonStyles = (lightColour: string, darkColour: string) =>
-		`block text-sm md:text-md bg-${lightColour} dark:bg-${darkColour} dark:text-gray-200 shadow-xl rounded p-2`
+		`block text-sm md:text-md bg-${lightColour} dark:bg-${darkColour}
+         dark:text-gray-200 shadow-xl rounded p-2
+    `
 
 	const [state, setState] = useState<ModerationUserState>('idle')
 
@@ -69,7 +91,11 @@ function ModerationUser(props: ModerationUserProps) {
 			.then(() => setState('deletion'))
 	}
 
-	const handleDone = (perm: PermissionValue) => {
+	const handleCancel = () => {
+		setState('idle')
+	}
+
+	const handleSubmit = (perm: PermissionValue) => {
 		getBackend().http.updateUser({
 			...user,
 			permissions: perm,
@@ -96,16 +122,12 @@ function ModerationUser(props: ModerationUserProps) {
 				</button>
 
 				<div className="relative">
-					{state === 'changing_permissions' ? (
-						<>
-							<PermissionModal
-								user={props.user}
-								done={handleDone}
-							/>
-						</>
-					) : (
-						<> </>
-					)}
+					<PermissionModal
+						user={user}
+						state={state}
+						onSubmit={handleSubmit}
+						onCancel={handleCancel}
+					/>
 					<button
 						onClick={handlePermissions}
 						className={buttonStyles('blue-100', 'blue-800')}
@@ -139,16 +161,14 @@ function UserList() {
 			</div>
 		))
 
-    if (isError) {
-        return (
-            <Error>An error occured</Error>
-        )
-    }
+	if (isError) {
+		return <Error>An error occured</Error>
+	}
 	if (!users || !selfUser) {
 		return <>{UserPlaceholders()}</>
 	}
 
-	users = users.filter((u) => u.id !== selfUser.id)
+	//users = users.filter((u) => u.id !== selfUser.id)
 
 	if (!users.length) {
 		return (

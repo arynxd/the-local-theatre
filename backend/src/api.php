@@ -13,7 +13,7 @@ Polyfill::applyPollyfills();
 
 Logger::getInstance()->enablePHPErrors();
 Logger::getInstance()->setLogFile(sys_get_temp_dir() . '/php_log.log');
-Logger::getInstance()->setLevel(LogLevel::INFO);
+Logger::getInstance()->setLevel(LogLevel::DEBUG);
 Logger::getInstance()->setIncludeLoc(false);
 Logger::getInstance()->insertNewLine();
 
@@ -52,7 +52,7 @@ if ($routeResult->isError()) {
 	);
 	try {
 		$route->handle($sess, $sess->res);
-		$sess -> data -> ensureCommitted();
+		$sess->data->ensureCommitted();
 		$sess->res->internal('No output received from the route');
 	} catch (Exception $ex) {
 		Logger::getInstance()->error('Route threw an uncaught error');

@@ -6,43 +6,43 @@ import { Theme } from '../../backend/global-scope/context/ThemeContext'
 import { Moon, Sun } from '../Icons'
 
 interface ThemeToggleProps {
-    onChange?: (newTheme: Theme) => void
+	onChange?: (newTheme: Theme) => void
 }
 
 export default function ThemeToggle(props: StylableProps & ThemeToggleProps) {
-    const themeCtx = getTheme().observable$$
-    const [theme, setTheme] = useState<Theme>(themeCtx.value)
+	const themeCtx = getTheme().observable$$
+	const [theme, setTheme] = useState<Theme>(themeCtx.value)
 
-    useSubscription(
-        themeCtx,
-        useCallback((newTheme) => setTheme(newTheme), [])
-    )
+	useSubscription(
+		themeCtx,
+		useCallback((newTheme) => setTheme(newTheme), [])
+	)
 
-    const handler = (): void => {
-        if (theme === 'light') {
-            setTheme('dark')
-            themeCtx.next('dark')
-            props.onChange?.('light')
-        } else if (theme === 'dark') {
-            setTheme('light')
-            themeCtx.next('light')
-            props.onChange?.('light')
-        }
-    }
+	const handler = (): void => {
+		if (theme === 'light') {
+			setTheme('dark')
+			themeCtx.next('dark')
+			props.onChange?.('light')
+		} else if (theme === 'dark') {
+			setTheme('light')
+			themeCtx.next('light')
+			props.onChange?.('light')
+		}
+	}
 
-    if (theme === 'dark') {
-        return (
-            <button onClick={handler}>
-                <Sun className={props.className} />
-            </button>
-        )
-    } else if (theme === 'light') {
-        return (
-            <button onClick={handler}>
-                <Moon className={props.className} />
-            </button>
-        )
-    } else {
-        throw new TypeError('Unknown theme ' + theme)
-    }
+	if (theme === 'dark') {
+		return (
+			<button onClick={handler}>
+				<Sun className={props.className} />
+			</button>
+		)
+	} else if (theme === 'light') {
+		return (
+			<button onClick={handler}>
+				<Moon className={props.className} />
+			</button>
+		)
+	} else {
+		throw new TypeError('Unknown theme ' + theme)
+	}
 }

@@ -3,6 +3,6 @@
 namespace TLT\Util\Enum;
 
 class ParamSource {
-    const QUERY = 'query';
-    const JSON = 'json';
+	const QUERY = 'query';
+	const JSON = 'json';
 }

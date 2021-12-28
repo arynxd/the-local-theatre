@@ -29,7 +29,7 @@ class SignupRoute extends BaseRoute {
 		$body = $sess->jsonParams();
 
 		$cred = $sess->data->credential;
-		$sess -> data -> start();
+		$sess->data->start();
 
 		$user = $cred->get($body['email']);
 
@@ -61,7 +61,7 @@ class SignupRoute extends BaseRoute {
 			$user->insert($userModel);
 			$cred->insert($credModel);
 
-			$sess -> data -> commit();
+			$sess->data->commit();
 
 			$res->status(200)
 				->cors('all')

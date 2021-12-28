@@ -16,10 +16,10 @@ use TLT\Util\Data\Map;
  * Implementors may choose to add a static factory, however this is not required
  */
 abstract class Model {
-    /**
-     * Converts this model to a Map for use in an API response
-     *
-     * @return Map a Map representing the JSON for this model
-     */
-    abstract public function toMap();
+	/**
+	 * Converts this model to a Map for use in an API response
+	 *
+	 * @return Map a Map representing the JSON for this model
+	 */
+	abstract public function toMap();
 }

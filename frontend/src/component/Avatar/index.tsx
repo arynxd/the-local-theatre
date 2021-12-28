@@ -6,29 +6,29 @@ import { ImgHTMLAttributes } from 'react'
 import { toURL } from '../../backend/request/mappers'
 
 interface AvatarProps
-    extends StylableProps,
-        ImgHTMLAttributes<HTMLImageElement> {
-    user: User
+	extends StylableProps,
+		ImgHTMLAttributes<HTMLImageElement> {
+	user: User
 }
 
 export default function Avatar(props: AvatarProps) {
-    const { user, ...rest } = props
+	const { user, ...rest } = props
 
-    const avatar = useAPI(() => getBackend().http.loadAvatar(user).map(toURL))
-    const styles = `
+	const avatar = useAPI(() => getBackend().http.loadAvatar(user).map(toURL))
+	const styles = `
         ${props.className}
         animation-pulse rounded-xl bg-gray-300
     `
 
-    if (!avatar) {
-        return <div className={styles} />
-    }
-    return (
-        <img
-            {...rest}
-            src={avatar}
-            alt="User avatar"
-            className={props.className}
-        />
-    )
+	if (!avatar) {
+		return <div className={styles} />
+	}
+	return (
+		<img
+			{...rest}
+			src={avatar}
+			alt="User avatar"
+			className={props.className}
+		/>
+	)
 }

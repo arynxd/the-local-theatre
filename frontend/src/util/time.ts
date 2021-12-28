@@ -5,5 +5,5 @@
  * @returns The date object representing this timestamp
  */
 export function toDate(utc: number): Date {
-    return new Date(utc * 1000)
+	return new Date(utc * 1000)
 }

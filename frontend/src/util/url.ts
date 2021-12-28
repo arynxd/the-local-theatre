@@ -7,13 +7,13 @@ import { logger } from './log'
  * @returns The URL prefix
  */
 export function getPrefix(): string {
-    if (process.env.NODE_ENV === 'development') {
-        return 'http://localhost:8000/'
-    } else if (process.env.NODE_ENV === 'production') {
-        return 'https://comp-server.uhi.ac.uk/~20006203/'
-    }
+	if (process.env.NODE_ENV === 'development') {
+		return 'http://localhost:8000/'
+	} else if (process.env.NODE_ENV === 'production') {
+		return 'https://comp-server.uhi.ac.uk/~20006203/'
+	}
 
-    throw new TypeError('Could not locate prefix.')
+	throw new TypeError('Could not locate prefix.')
 }
 
 /**
@@ -24,15 +24,15 @@ export function getPrefix(): string {
  * @returns The resulting promise representing the request operation
  */
 export function fetch(
-    input: RequestInfo,
-    init?: RequestInit
+	input: RequestInfo,
+	init?: RequestInit
 ): Promise<Response> {
-    logger.debug(
-        'Sending wrapped fetch() for ' +
-            getPrefix() +
-            input +
-            ' with init ' +
-            JSON.stringify(init)
-    )
-    return global.fetch(getPrefix() + input, init)
+	logger.debug(
+		'Sending wrapped fetch() for ' +
+			getPrefix() +
+			input +
+			' with init ' +
+			JSON.stringify(init)
+	)
+	return global.fetch(getPrefix() + input, init)
 }

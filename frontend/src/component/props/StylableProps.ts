@@ -1,3 +1,3 @@
 export interface StylableProps {
-    className?: string
+	className?: string
 }

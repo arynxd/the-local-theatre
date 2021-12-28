@@ -53,18 +53,22 @@ class Response {
 		}
 
 		if (!isset($headers['cors'])) {
-			Logger::getInstance() -> warn("No cors header set, this is a bug");
-			$this -> internal();
+			Logger::getInstance()->warn('No cors header set, this is a bug');
+			$this->internal();
 		}
 
 		if (!isset($headers['content'])) {
-			Logger::getInstance() -> warn("No content type header set, this is a bug");
-			$this -> internal();
+			Logger::getInstance()->warn(
+				'No content type header set, this is a bug'
+			);
+			$this->internal();
 		}
 
 		if (!isset($headers['status'])) {
-			Logger::getInstance() -> warn("No status code header set, this is a bug");
-			$this -> internal();
+			Logger::getInstance()->warn(
+				'No status code header set, this is a bug'
+			);
+			$this->internal();
 		}
 
 		HttpUtil::applyHeaders($this->headers->raw());
