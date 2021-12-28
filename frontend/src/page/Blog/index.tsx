@@ -10,6 +10,7 @@ import { useSelfUser } from '../../backend/hook/useSelfUser'
 import { hasPermission } from '../../model/Permission'
 import { Post } from '../../model/Post'
 import { EntityIdentifier } from '../../model/EntityIdentifier'
+import { useReactiveCache } from '../../util/cache'
 
 interface CreatePostProps {
     onComplete: (post: Post) => void
@@ -81,7 +82,7 @@ type BlogState = 'view_posts' | 'create_post' | 'error'
 
 export default function Blog() {
     const [state, setState] = useState<BlogState>('view_posts')
-    const [posts, setPosts] = useState<Map<EntityIdentifier, Post>>(new Map())
+    const [cache, updateCache] = useReactiveCache<EntityIdentifier, Post>()
     const selfUser = useSelfUser()
 
     const PostPlaceholders = () =>
@@ -106,7 +107,8 @@ export default function Blog() {
 
     useEffect(() => {
         if (apiRes) {
-            setPosts(new Map(apiRes.map((p) => [p.id, p])))
+            apiRes.forEach(post =>  cache.set(post.id, post))
+            updateCache()
         }
     }, [apiRes])
 
@@ -139,13 +141,12 @@ export default function Blog() {
         )
 
     const deleteHandler = (post: Post) => {
-        const newPosts = posts
-        newPosts.delete(post.id)
-        setPosts(new Map(newPosts))
+        cache.delete(post.id)
+        updateCache()
         setState('view_posts')
     }
 
-    const sorted = Array.from(posts.values()).sort(
+    const sorted = cache.values().sort(
         (a, b) => b.createdAt - a.createdAt
     )
 
@@ -160,8 +161,8 @@ export default function Blog() {
                                 key={post.id}
                                 post={post}
                                 onDelete={deleteHandler}
-                                cache={posts}
-                                setCache={setPosts}
+                                cache={cache}
+                                updateCache={updateCache}
                             />
                         ))}
                     </div>
@@ -176,9 +177,8 @@ export default function Blog() {
         return (
             <CreatePostView
                 onComplete={(p) => {
-                    const newPosts = posts
-                    newPosts.set(p.id, p)
-                    setPosts(new Map(newPosts))
+                    cache.set(p.id, p)
+                    updateCache()
                     setState('view_posts')
                 }}
             />

@@ -41,7 +41,7 @@ class UserRepository extends BaseRepository {
 
 		foreach ($dbRes->raw() as $arr) {
 			// convert to a model to get the right keys & validate
-			$out->push(UserModel::fromJSON(Map::from($arr))->toMap());
+			$out->push(UserModel::fromJSON(Map::from($arr)));
 		}
 		return $out;
 	}

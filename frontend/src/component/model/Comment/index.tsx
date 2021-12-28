@@ -9,6 +9,7 @@ import { useSubscription } from '../../../backend/hook/useSubscription'
 import InlineButton from '../../InlineButton'
 import { assert } from '../../../util/assert'
 import { EntityIdentifier } from '../../../model/EntityIdentifier'
+import { CacheUpdateFunction, ReactiveCache } from '../../../util/cache'
 
 export const MAX_COMMENT_LENGTH = 3000
 
@@ -16,11 +17,6 @@ interface CommentProps {
     model: CommentModel
     onDeletion?: (comment: CommentModel) => void
     onChange?: (newComment: CommentModel) => void
-}
-
-interface CommentCacheProps {
-    cache: Map<EntityIdentifier, CommentModel>
-    setCache: (newCache: Map<EntityIdentifier, CommentModel>) => void
 }
 
 interface ContextMenuProps {
@@ -102,7 +98,7 @@ function ContextMenu(props: ContextMenuProps) {
     )
 }
 
-function EditComment(props: CommentProps & CommentCacheProps) {
+function EditComment(props: CommentProps) {
     const [text, setText] = useState(props.model.content)
     const submitHandler = useCallback(() => {
         assert(
@@ -121,10 +117,7 @@ function EditComment(props: CommentProps & CommentCacheProps) {
         getBackend()
             .http.updateComment(props.model.id, text)
             .then((c) => {
-                const newCache = props.cache
-                newCache.set(c.id, c)
                 props.onChange?.(c)
-                props.setCache(new Map(newCache))
             })
     }, [props, text])
 
@@ -154,7 +147,7 @@ function EditComment(props: CommentProps & CommentCacheProps) {
 type CommentState = 'view' | 'edit' | 'delete' | 'context'
 
 export default function Comment(
-    props: CommentProps & StylableProps & CommentCacheProps
+    props: CommentProps & StylableProps
 ) {
     const { model, onDeletion } = props
     const { author } = model
@@ -180,8 +173,6 @@ export default function Comment(
                 {state === 'edit' ? (
                     <EditComment
                         model={model}
-                        cache={props.cache}
-                        setCache={props.setCache}
                         onChange={() => setState('view')}
                     />
                 ) : (

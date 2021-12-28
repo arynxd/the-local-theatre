@@ -68,7 +68,7 @@ class UserRoute extends BaseRoute {
 			if (isset($body['id'])) {
 				// Update existing entity
 
-				$user->start();
+				$sess->data->start();
 				$model = $user->get($body['id']);
 
 				if (!isset($model)) {
@@ -101,7 +101,11 @@ class UserRoute extends BaseRoute {
 
 				$newModel = UserModel::fromJSON($newMap);
 				$user->edit($newModel);
-				$user->commit();
+				$sess->data->commit();
+
+				$res->status(200)
+					->cors('all')
+					->json($newModel->toMap());
 			} else {
 				// Insert new entity
 
@@ -130,6 +134,9 @@ class UserRoute extends BaseRoute {
 				$userModel = UserModel::fromJSON($userData);
 
 				$user->insert($userModel);
+				$res->status(200)
+					->cors('all')
+					->json($userModel->toMap());
 			}
 		} else {
 			Logger::getInstance()->fatal("Unhandled method $method");

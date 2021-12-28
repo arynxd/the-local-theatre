@@ -15,7 +15,7 @@ import { useState } from 'react'
  */
 export function useAPI<T>(
     action: () => Promise<T>,
-    errorHandler: (err: BackendError) => void = logger.error,
+    errorHandler: (err: BackendError) => void = () => {},
     deps: unknown[] = []
 ): T | undefined {
     const [res, err] = usePromise(action, deps)
@@ -24,6 +24,7 @@ export function useAPI<T>(
 
     if (err && !isErrorFired) {
         setErrorFired(true)
+        logger.error(err) // force a log, we dont want errors supressed by the handler
         errorHandler(err)
     }
     return res

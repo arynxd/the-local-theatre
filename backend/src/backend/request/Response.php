@@ -44,10 +44,27 @@ class Response {
 	 */
 	private function send($data) {
 		Assertions::assertSet($data);
-		if ($this->headers->length() == 0) {
+
+		$headers = $this->headers;
+		if ($headers->length() == 0) {
 			Logger::getInstance()->warn(
 				'No headers set, this is probably a bug'
 			);
+		}
+
+		if (!isset($headers['cors'])) {
+			Logger::getInstance() -> warn("No cors header set, this is a bug");
+			$this -> internal();
+		}
+
+		if (!isset($headers['content'])) {
+			Logger::getInstance() -> warn("No content type header set, this is a bug");
+			$this -> internal();
+		}
+
+		if (!isset($headers['status'])) {
+			Logger::getInstance() -> warn("No status code header set, this is a bug");
+			$this -> internal();
 		}
 
 		HttpUtil::applyHeaders($this->headers->raw());
@@ -137,11 +154,11 @@ class Response {
 		$header = CORS::MAP()[$policy];
 
 		if (!isset($header)) {
-			throw new UnexpectedValueException("Unknown CORS policy $policy");
+			Logger::getInstance()->fatal("Unknown CORS policy $policy");
 		}
 
 		if (isset($this->headers['cors'])) {
-			throw new UnexpectedValueException('CORS policy already set');
+			Logger::getInstance()->fatal('CORS policy already set');
 		}
 
 		$this->headers['cors'] = $header;
@@ -158,11 +175,11 @@ class Response {
 		$header = ContentType::MAP()[$type];
 
 		if (!isset($header)) {
-			throw new UnexpectedValueException("Unknown ContentType $type");
+			Logger::getInstance()->fatal("Unknown ContentType $type");
 		}
 
 		if (isset($this->headers['content'])) {
-			throw new UnexpectedValueException('Content type already set');
+			Logger::getInstance()->fatal('Content type already set');
 		}
 
 		$this->headers['content'] = $header;
@@ -180,6 +197,7 @@ class Response {
 		Logger::getInstance()->error("\t" . $ex);
 
 		$this->status(500);
+		$this->cors('all');
 		$this->error(ErrorStrings::INTERNAL_ERROR);
 	}
 

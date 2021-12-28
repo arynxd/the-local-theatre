@@ -3,6 +3,7 @@
 namespace TLT\Util;
 
 use TLT\Util\Assert\Assertions;
+use TLT\Util\Log\Logger;
 
 class HttpUtil {
 	/**
@@ -11,6 +12,7 @@ class HttpUtil {
 	 * @param string $header The header to send
 	 */
 	public static function applyHeader($header) {
+		Logger::getInstance()->debug("Applying header $header");
 		header($header);
 	}
 

@@ -12,7 +12,6 @@ use TLT\Util\Log\Logger;
 /*
  * This class implements the following options for the connection:
  *  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
- *  PDO::ATTR_PERSISTENT => true,
  *  PDO::ATTR_TIMEOUT => 5
  */
 
@@ -33,7 +32,6 @@ class DatabaseModule extends BaseModule {
 
         $opts = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_TIMEOUT => 5,
         ];
 

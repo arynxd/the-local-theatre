@@ -58,10 +58,9 @@ class CommentRoute extends BaseRoute {
 
 			$body = $sess->jsonParams();
 			$commentId = isset($body['id']);
+			$sess->data->start();
 
 			if (isset($commentId)) {
-				$comment->start();
-
 				$model = $comment->get($commentId);
 
 				if (!isset($model)) {
@@ -74,7 +73,6 @@ class CommentRoute extends BaseRoute {
 				$model->editedAt = DBUtil::currentTime();
 
 				$comment->edit($model);
-				$comment->commit();
 			} else {
 				$postId = $body['postId'];
 				$content = $body['newContent'];
@@ -93,6 +91,7 @@ class CommentRoute extends BaseRoute {
 				);
 
 				$comment->insert($model);
+				$sess->data->commit();
 
 				$res->status(200)
 					->cors('all')
@@ -108,6 +107,7 @@ class CommentRoute extends BaseRoute {
 
 			$isMod = $selfUser->permissions >= PermissionLevel::MODERATOR;
 
+			$sess -> data -> start();
 			$model = $comment->get($id);
 
 			if (!isset($model)) {
@@ -130,6 +130,7 @@ class CommentRoute extends BaseRoute {
 			}
 
 			$comment->delete($model->id);
+			$sess -> data -> commit();
 			$res->status(200)
 				->cors('all')
 				->json($model->toMap());

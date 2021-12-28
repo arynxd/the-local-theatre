@@ -30,7 +30,31 @@ class DataModule extends BaseModule {
 	 */
 	public $comment;
 
+	private $transactionActive;
+
+	/**
+     * Starts the modification of data within this repository
+     */
+    final public function start() {
+        $this->sess->db->startTransaction();
+		$this -> transactionActive = true;
+    }
+
+    /**
+     * Commits all pending modifications to this repository
+     */
+    final public function commit() {
+        $this->sess->db->commit();
+		$this -> transactionActive = false;
+    }
+
+	public function ensureCommitted() {
+		if ($this -> transactionActive) {
+			$this ->sess -> res -> internal("Uncommitted data found, ensure you call commit()");
+		}
+	}
 	public function onEnable() {
+		$this -> transactionActive = false;
 		Logger::getInstance()->debug("Loading repositories..");
 		$this->user = new UserRepository($this->sess);
 		$this->credential = new CredentialRepository($this->sess);

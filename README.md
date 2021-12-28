@@ -40,15 +40,14 @@
 -   [x] Abstract backend DB calls
     - [x]   Controller Repository Database
 -   [x] Cache param sources in backend for perf
+-   [x] Reactive cache implementation
+-   [x] Cache for posts
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
--   [ ] Reactive cache implementation
 -   [ ] Loading spinner on submit buttons
--   [ ] Colour icons
--   [ ] Cache for posts
 -   [ ] Context menu component
     -   [ ] Click away to hide
 -   [ ] Changeable avatars
@@ -57,9 +56,10 @@
     -   [ ] Clear caches when we logout
 -   [ ] Cache images by md5 (or similar) => b64
     -   [ ] Investigate cache control headers for this
--   [ ] Backend type checks (Assertion function)
 - [ ] Individual post page deletion not working
 - [ ] Handle token invalidation
+- [ ] Check API (base endpoint) online when we launch
+- [ ] Show component 'showing date' wrong colour in light theme
 
 ## Feature List
 

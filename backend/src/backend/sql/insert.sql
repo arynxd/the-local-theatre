@@ -1,9 +1,9 @@
 INSERT INTO user (id, firstName, lastName, username, dob, joinDate, permissions)
 VALUES (
         'f568d4d2-28b5-4ad5-956c-50bd3930bbe5',
-        'aryn',
-        'nodoxx',
-        'arynxd',
+        'Admin',
+        'Lastname',
+        'admin',
         1100605477,
         1639655077,
         2
@@ -12,9 +12,9 @@ VALUES (
 INSERT INTO credential (userId, email, password, token)
 VALUES (
         'f568d4d2-28b5-4ad5-956c-50bd3930bbe5',
-        'aryn@test.com',
-        '$2y$11$tykSfMmum11BgcIqERxWb.0dRyyJ4ZSsR3wKU5AmVQSnST5DowiLu',
-        'ad4dbe85b97f41eeb0c3208ddda9637ce6bf1fff28fe69171435c1866b379aa8'
+        'admin@tlt.com',
+        '$2y$10$GuMFgzesvuuyT1deDhdayONl2ff0Kara0szw.89VFgXONXdd1JrIO',
+        'cd5d9483f707aef56760db463419bef2970b5cac82fb8f24f5c60d7e731b87bf'
 );
 
 INSERT INTO user_prefs (userId, theme)

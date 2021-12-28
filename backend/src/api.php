@@ -52,6 +52,7 @@ if ($routeResult->isError()) {
 	);
 	try {
 		$route->handle($sess, $sess->res);
+		$sess -> data -> ensureCommitted();
 		$sess->res->internal('No output received from the route');
 	} catch (Exception $ex) {
 		Logger::getInstance()->error('Route threw an uncaught error');

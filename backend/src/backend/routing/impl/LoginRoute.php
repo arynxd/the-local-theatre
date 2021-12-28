@@ -22,7 +22,7 @@ class LoginRoute extends BaseRoute {
 	public function handle($sess, $res) {
 		$ERR = 'Account does not exist, or email / password was incorrect.';
 
-		$data = $sess->jsonParams()['data'];
+		$data = $sess->jsonParams();
 
 		Assertions::assertSet($data);
 
@@ -70,11 +70,7 @@ class LoginRoute extends BaseRoute {
 	public function validate($sess, $res) {
 		$sess->applyMiddleware(new DatabaseMiddleware());
 
-		$data = $sess->jsonParams()['data'];
-
-		if (!isset($data)) {
-			return HttpResult::Unprocessable('No data was passed.');
-		}
+		$data = $sess->jsonParams();
 
 		$email = $data['email'];
 		$pwd = $data['password'];

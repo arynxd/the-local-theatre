@@ -15,8 +15,8 @@ class DefaultLoggerImpl {
     private $includeLoc;
 
     public function __construct() {
-        $this->level = LogLevel::WARN;
-        $this->includeLoc = $this->level <= LogLevel::DEBUG;
+        $this->level = LogLevel::INFO;
+        $this->includeLoc = false;
         ini_set('date.timezone', 'UTC');
     }
 
@@ -57,6 +57,17 @@ class DefaultLoggerImpl {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
+
+        $errorHandler = function ($errno, $errstr, $errfile, $errline) {
+            (new Response()) -> internal($errstr);
+        };
+
+        $exceptionHandler = function ($throwable) {
+            $this -> fatal($throwable);
+        };
+
+        set_error_handler($errorHandler);
+        set_exception_handler($exceptionHandler);
     }
 
     /**
@@ -76,7 +87,7 @@ class DefaultLoggerImpl {
      * @inheritDoc
      */
     public function fatal($message) {
-        if (is_a('Exception', $message)) {
+        if (is_a('Throwable', $message)) {
             $message = 'An error has occurred ' . $message->getMessage();
         }
 

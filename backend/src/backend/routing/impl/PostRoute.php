@@ -65,7 +65,7 @@ class PostRoute extends BaseRoute {
 
 			if (isset($body['id'])) {
 				// Update existing entity
-				$post->start();
+				$sess -> data -> start();
 				$model = $post->get($body['id']);
 
 				if (!isset($model)) {
@@ -79,7 +79,7 @@ class PostRoute extends BaseRoute {
 				$model->editedAt = DBUtil::currentTime();
 
 				$post->edit($model);
-				$post->commit();
+				$sess -> data -> commit();
 			} else {
 				// Insert new entity
 
@@ -107,7 +107,7 @@ class PostRoute extends BaseRoute {
 			$id = $sess->queryParams()['id'];
 			Assertions::assertSet($id);
 
-			$post->start();
+			$sess -> data -> start();
 			$model = $post->get($id);
 
 			if (!isset($model)) {
@@ -117,6 +117,8 @@ class PostRoute extends BaseRoute {
 			}
 
 			$post->delete($model->id);
+			$sess -> data -> commit();
+
 			$res->status(200)
 				->cors('all')
 				->json($model->toMap());

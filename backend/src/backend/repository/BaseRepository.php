@@ -25,19 +25,6 @@ abstract class BaseRepository {
     }
 
     /**
-     * Starts the modification of data within this repository
-     */
-    final public function start() {
-        $this->sess->db->startTransaction();
-    }
-
-    /**
-     * Commits all pending modifications to this repository
-     */
-    final public function commit() {
-        $this->sess->db->commit();
-    }
-    /**
      * Gets an entity by its ID from this repository
      *
      * @param string $id

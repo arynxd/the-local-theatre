@@ -29,7 +29,7 @@ class SignupRoute extends BaseRoute {
 		$body = $sess->jsonParams();
 
 		$cred = $sess->data->credential;
-		$cred->start();
+		$sess -> data -> start();
 
 		$user = $cred->get($body['email']);
 
@@ -40,7 +40,6 @@ class SignupRoute extends BaseRoute {
 			$id = StringUtil::newID();
 
 			$user = $sess->data->user;
-			$user->start();
 
 			$userModel = new UserModel(
 				$id,
@@ -62,8 +61,7 @@ class SignupRoute extends BaseRoute {
 			$user->insert($userModel);
 			$cred->insert($credModel);
 
-			$user->commit();
-			$cred->commit();
+			$sess -> data -> commit();
 
 			$res->status(200)
 				->cors('all')
@@ -76,11 +74,7 @@ class SignupRoute extends BaseRoute {
 	public function validate($sess, $res) {
 		$sess->applyMiddleware(new DatabaseMiddleware());
 
-		$data = $sess->jsonParams()['data'];
-
-		if (!isset($data)) {
-			return HttpResult::BadRequest('No data provided');
-		}
+		$data = $sess->jsonParams();
 
 		$validator = new ModelValidatorMiddleware(
 			ModelKeys::SIGNUP_MODEL(),

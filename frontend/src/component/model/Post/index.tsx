@@ -8,13 +8,14 @@ import Separator from '../../Separator'
 import { assert } from '../../../util/assert'
 import { createPlaceholders } from '../../../util/factory'
 import InlineButton from '../../InlineButton'
-import { WarningIcon, Error} from '../../Factory'
+import { WarningIcon, Error } from '../../Factory'
 import { EntityIdentifier } from '../../../model/EntityIdentifier'
 import { Comment } from '../../../model/Comment'
 import { Hamburger } from '../../Icons'
 import { useSubscription } from '../../../backend/hook/useSubscription'
 import { User } from '../../../model/User'
 import { toLevel } from '../../../model/Permission'
+import { useReactiveCache, ReactiveCache, CacheUpdateFunction } from '../../../util/cache'
 
 interface ContextMenuProps {
 	model: PostModel
@@ -24,14 +25,14 @@ interface ContextMenuProps {
 
 type CommentViewState = 'loaded' | 'waiting' | 'error'
 interface CommentCacheProps {
-	cache: Map<EntityIdentifier, Comment>
-	setCache: (newCache: Map<EntityIdentifier, Comment>) => void
+	cache: ReactiveCache<EntityIdentifier, Comment>
+	updateCache: CacheUpdateFunction
 	state: CommentViewState
 }
 
 interface PostCacheProps {
-	cache: Map<EntityIdentifier, PostModel>
-	setCache: (newCache: Map<EntityIdentifier, PostModel>) => void
+	cache: ReactiveCache<EntityIdentifier, PostModel>
+	updateCache: CacheUpdateFunction
 }
 
 interface PostProps {
@@ -70,16 +71,19 @@ function CommentView(props: PostProps & CommentCacheProps) {
 		)
 
 	const deleteHandler = (comment: Comment) => {
-		const newCache = props.cache
-		newCache.delete(comment.id)
-		props.setCache(new Map(newCache))
+		props.cache.delete(comment.id)
+		props.updateCache()
 	}
-    
-    if (props.state === 'error') {
-        return <>{<Error>An error occurred</Error>}</>
-    }
-	
-    if (props.state === 'waiting') {
+	const changeHandler = (comment: Comment) => {
+		props.cache.set(comment.id, comment)
+		props.updateCache()
+	}
+
+	if (props.state === 'error') {
+		return <>{<Error>An error occurred</Error>}</>
+	}
+
+	if (props.state === 'waiting') {
 		return <>{LoadingComments()}</>
 	}
 
@@ -105,8 +109,7 @@ function CommentView(props: PostProps & CommentCacheProps) {
 					key={c.id}
 					model={c}
 					onDeletion={deleteHandler}
-					cache={props.cache}
-					setCache={props.setCache}
+					onChange={changeHandler}
 				/>
 			))}
 		</>
@@ -210,10 +213,9 @@ function AddCommentView(
 
 		getBackend()
 			.http.addComment(props.post.id, text)
-			.then((c) => {
-				const newCache = props.cache
-				newCache.set(c.id, c)
-				props.setCache(new Map(newCache))
+			.then((c) => { 
+				props.cache.set(c.id, c)
+				props.updateCache()
 				props.done()
 			})
 	}, [props, text])
@@ -327,9 +329,10 @@ type PostState =
 
 export default function Post(props: PostProps & PostCacheProps) {
 	const post = props.post
-	const [cache, setCache] = useState(new Map<EntityIdentifier, Comment>())
+	const [cache, updateCache] = useReactiveCache<EntityIdentifier, Comment>()
 	const [state, setState] = useState<PostState>('view')
-    const [commentState, setCommentState] = useState<CommentViewState>("waiting")
+	const [commentState, setCommentState] =
+		useState<CommentViewState>('waiting')
 
 	const apiRes = useAPI(
 		() => getBackend().http.loadCommentsForPost(props.post.id),
@@ -338,12 +341,11 @@ export default function Post(props: PostProps & PostCacheProps) {
 
 	useEffect(() => {
 		if (apiRes) {
-			const map = new Map<EntityIdentifier, Comment>()
 			for (const comment of apiRes[0]) {
-				map.set(comment.id, comment)
+				cache.set(comment.id, comment)
 			}
-            setCommentState("loaded")
-			setCache(map)
+			updateCache()
+			setCommentState('loaded')
 		}
 	}, [apiRes])
 
@@ -399,22 +401,19 @@ export default function Post(props: PostProps & PostCacheProps) {
 	}
 
 	const editHandler = (newPost: PostModel) => {
-		const postCache = props.cache
-		postCache.set(newPost.id, newPost)
-		props.setCache(new Map(postCache))
+		props.cache.set(newPost.id, newPost)
+		props.updateCache()
 		setState('view')
 	}
 
 	const computeCommentViewState = (): CommentViewState => {
 		if (commentState === 'error') {
-            return "error"
-        }
-        else if (!apiRes) {
-            return "waiting"
-        }
-        else {
-            return "loaded"
-        }
+			return 'error'
+		} else if (!apiRes) {
+			return 'waiting'
+		} else {
+			return 'loaded'
+		}
 	}
 
 	return (
@@ -450,7 +449,7 @@ export default function Post(props: PostProps & PostCacheProps) {
 				<CommentView
 					post={post}
 					cache={cache}
-					setCache={setCache}
+					updateCache={updateCache}
 					state={computeCommentViewState()}
 				/>
 			) : (
@@ -461,7 +460,7 @@ export default function Post(props: PostProps & PostCacheProps) {
 				<AddCommentView
 					post={post}
 					cache={cache}
-					setCache={setCache}
+					updateCache={updateCache}
 					state={'loaded'}
 					done={() => {
 						setState('view_comments')
