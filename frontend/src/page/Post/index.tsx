@@ -8,7 +8,7 @@ import { Paths } from '../../util/paths'
 import { Error as ErrorElement } from '../../component/Factory'
 import { NoOpCache } from '../../util/cache'
 
-type PostState = 'view' | 'delete' | 'error' | 'deleting' | 'deleted'
+type PostState = 'view' | 'error' | 'deleted'
 export function Post() {
 	const id = useParams<{ id: EntityIdentifier }>().id
 	const [state, setState] = useState<PostState>('view')
@@ -17,13 +17,6 @@ export function Post() {
 		() => getBackend().http.loadPost(id),
 		() => setState('error')
 	)
-
-	if (state === 'delete') {
-		getBackend()
-			.http.deletePost(id)
-			.then(() => setState('deleted'))
-			.catch(() => setState('error'))
-	}
 
 	if (state === 'deleted') {
 		return <Redirect to={Paths.HOME} />
@@ -53,7 +46,7 @@ export function Post() {
 		<div className="flex flex-col items-center justify-center mx-4 md:mx-24 lg:mx-44">
 			<PostElement
 				post={post}
-				onDelete={() => setState('delete')}
+				onDelete={() => setState('deleted')}
 				cache={new NoOpCache()}
 				updateCache={() => {
 					throw new Error('Not implemented')

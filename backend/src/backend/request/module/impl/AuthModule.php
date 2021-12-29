@@ -21,7 +21,10 @@ class AuthModule extends BaseModule {
 
 		if (!isset($this->token) || !$this->sess->db->isEnabled()) {
 			Logger::getInstance()->info(
-				'Authorisation header was not set or the DB was not enabled, this request will be treated as UNAUTHENTICATED..'
+				'Authorisation header was not set or the DB was not enabled'
+			);
+			Logger::getInstance()->info(
+				'this request will be treated as UNAUTHENTICATED..'
 			);
 			$this->isAuthenticated = false;
 		}
@@ -48,7 +51,7 @@ class AuthModule extends BaseModule {
 			->query($query, [
 				'token' => $this->token,
 			])
-			->rowCount();
+			->fetchColumn();
 
 		if ($dbRes > 0) {
 			Logger::getInstance()->info(

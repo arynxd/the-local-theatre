@@ -176,7 +176,7 @@ function RecentActivity() {
 
 	if (!posts.length) {
 		return (
-			<div className="flex flex-col items-center bg-gray-200 w-auto m-2 shadow-xl rounded-xl">
+			<div className="flex flex-col items-center bg-gray-200 dark:bg-gray-500 w-auto m-2 shadow-xl rounded-xl">
 				<Warning>No posts found</Warning>
 			</div>
 		)

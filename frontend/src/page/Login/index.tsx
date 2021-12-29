@@ -10,6 +10,7 @@ import {
 } from '../../component/FormElement'
 import { logger } from '../../util/log'
 import { isAPIError } from '../../model/APIError'
+import SubmitButton from '../../component/SubmitButton'
 
 type LoginState =
 	| 'logging_in'
@@ -57,40 +58,39 @@ export default function Login() {
 		return <Redirect to={Paths.HOME} />
 	}
 
-	if (state === 'logging_in') {
+	const makePromise = () => {
 		if (!email || !password) {
 			throw new TypeError('Email or password was not set')
 		}
 
-		setTimeout(() => {
-			getAuth()
-				.login(email, password)
-				.then((isLoggedIn) => {
-					if (isLoggedIn) {
-						setState('success')
-					} else {
-						setErrors({
-							general: ['Email or password incorrect'],
-						})
-						setState('login_failed')
-					}
-				})
-				.catch((err) => {
-					if (isAPIError(err)) {
-						setErrors({
-							general: ['Email or password incorrect.'],
-						})
-					} else {
-						setErrors({
-							general: [
-								'An error occurred whilst logging in, please try again',
-							],
-						})
-						logger.error(err)
-					}
-					setState('login_failed')
-				})
-		}, 5_000)
+		return getAuth().login(email, password)
+	}
+
+	const handleSuccess = (isLoggedIn: boolean) => {
+		if (isLoggedIn) {
+			setState('success')
+		} else {
+			setErrors({
+				general: ['Email or password incorrect'],
+			})
+			setState('login_failed')
+		}
+	}
+
+	const handleError = (err: any) => {
+		if (isAPIError(err)) {
+			setErrors({
+				general: ['Email or password incorrect.'],
+			})
+		} else {
+			setErrors({
+				general: [
+					'An error occurred whilst logging in, please try again',
+				],
+			})
+			logger.error(err)
+		}
+		setState('login_failed')
 	}
 
 	return (
@@ -122,36 +122,12 @@ export default function Login() {
 
 					<ErrorElement error={errors.general} />
 
-					<button
-						className="p-2 m-2 w-10/12 inline-flex items-center justify-center text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl"
-						type="submit"
-					>
-						{state === 'logging_in' ? (
-							<svg
-								className="animate-spin mx-2 h-5 w-5 text-white"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-							>
-								<circle
-									className="opacity-25"
-									cx="12"
-									cy="12"
-									r="10"
-									stroke="currentColor"
-									strokeWidth="4"
-								/>
-								<path
-									className="opacity-75"
-									fill="currentColor"
-									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-								/>
-							</svg>
-						) : (
-							<> </>
-						)}
-						Submit
-					</button>
+					<SubmitButton
+						onSubmit={makePromise}
+						onSuccess={handleSuccess}
+						onError={handleError}
+						shouldDisplayLoading={() => state === 'logging_in'}
+					/>
 				</form>
 			</div>
 		</div>

@@ -7,6 +7,7 @@ use PDOException;
 use PDOStatement;
 use TLT\Request\Module\BaseModule;
 use TLT\Util\Assert\Assertions;
+use TLT\Util\Data\Map;
 use TLT\Util\Log\Logger;
 
 /*
@@ -81,6 +82,9 @@ class DatabaseModule extends BaseModule {
 	 */
 	public function query($sql, $params = []) {
 		Logger::getInstance()->debug('Running SQL query ' . $sql);
+		Logger::getInstance()->debug('With params..');
+		Logger::getInstance()->debug("\t" . Map::from($params));
+
 		$st = $this->prepare($sql);
 
 		if (!$st) {

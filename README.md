@@ -45,14 +45,15 @@
 -   [x] Show component 'showing date' wrong colour in light theme
 -   [x] Context menu component
     -   [x] Click away to hide
--   [ ] Individual post page deletion not working
+-   [x] Individual post page deletion not working
+-   [x] Loading spinner on submit buttons
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
--   [ ] Loading spinner on submit buttons
 -   [ ] Changeable avatars
+-   [ ] Use SubmitButton for all submit buttons
 -   [ ] Input validation for edits
 -   [ ] Deleted comments do not update frontend cache when accounts are switched
     -   [ ] Cache mismatch?
@@ -60,6 +61,7 @@
     -   [ ] Investigate cache control headers for this
 -   [ ] Handle token invalidation
 -   [ ] Check API (base endpoint) online when we launch
+-   [ ] Individual post page editing support
 
 ## Feature List
 

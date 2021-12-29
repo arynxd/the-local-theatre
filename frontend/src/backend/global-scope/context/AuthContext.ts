@@ -89,7 +89,7 @@ export class AuthContext extends Context {
 		return true
 	}
 
-	async signup(obj: SignupObj): Promise<string> {
+	async signup(obj: SignupObj): Promise<void> {
 		assert(
 			() => !this.isAuthenticated(),
 			() =>
@@ -108,6 +108,7 @@ export class AuthContext extends Context {
 		})
 
 		// TODO: handle error cases when signing up
+		// custom result object
 		const tok = await BackendAction.new(route)
 			.flatMap(toJSON)
 			.map((res) => res.token)
@@ -117,7 +118,6 @@ export class AuthContext extends Context {
 		localStorage[AUTH_KEY] = tok
 		this.observeAuth$$.next('authenticated')
 		this.loadSelfUser()
-		return 'success'
 	}
 
 	logout(): void {

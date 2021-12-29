@@ -165,7 +165,7 @@ export default function Blog() {
 						))}
 					</div>
 				) : (
-					<div className="w-auto m-4 p-2 bg-gray-200 rounded shadow-xl flex flex-col items-center">
+					<div className="w-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow-xl flex flex-col items-center">
 						<Warning>No posts found</Warning>
 					</div>
 				)}

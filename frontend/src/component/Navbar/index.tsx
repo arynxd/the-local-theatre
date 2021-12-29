@@ -11,6 +11,7 @@ import Avatar from '../Avatar'
 import { hasPermission } from '../../model/Permission'
 import ThemeToggle from '../ThemeToggle'
 import { Hamburger, Close } from '../Icons'
+import Modal from '../Modal'
 
 function ProfileMenu() {
 	const [isOpen, setOpen] = useState(false)
@@ -21,11 +22,48 @@ function ProfileMenu() {
 		return <></>
 	}
 
-	const imageStyles = `
-        origin-top-right right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-gray-100 dark:bg-gray-600 focus:outline-none
+	const menuContainerStyles = `
+        origin-top-right right-0 mt-2 w-max rounded-md shadow-xl py-1 bg-gray-100 dark:bg-gray-600 
+		focus:outline-none z-20
         ${isOpen ? 'absolute' : 'hidden'} 
-   `
+    `
 
+	const menu = () => (
+		<div className={menuContainerStyles}>
+			<div className="grid grid-cols-1 gap-3 p-4 pt-2 place-items-center w-max h-full">
+				<h2 className="font-semibold text-xl dark:text-gray-200">
+					Profile ({selfUser.firstName} {selfUser.lastName})
+				</h2>
+				<Separator className="w-2/3" />
+
+				<div className="flex flex-row items-center">
+					<h2 className="p-2 dark:text-gray-200">Toggle theme: </h2>
+					<ThemeToggle className="h-8 w-8" />
+				</div>
+				<Separator className="w-6/12" />
+
+				<Link
+					className="dark:text-gray-200"
+					onClick={() => setOpen(false)}
+					to={Paths.USER_SETTINGS}
+				>
+					Edit your details
+				</Link>
+				<Separator className="w-1/3" />
+
+				<Link
+					to={Paths.HOME}
+					className="dark:text-gray-200"
+					onClick={() => {
+						getAuth().logout()
+						setOpen(false)
+					}}
+				>
+					Sign out
+				</Link>
+			</div>
+		</div>
+	)
 	return (
 		<>
 			<button
@@ -36,42 +74,11 @@ function ProfileMenu() {
 				<Avatar className="h-10 w-10 rounded-full" user={selfUser} />
 			</button>
 
-			<div className={imageStyles}>
-				<div className="grid grid-cols-1 gap-3 p-4 pt-2 place-items-center w-auto h-full">
-					<h2 className="font-semibold text-xl dark:text-gray-200">
-						Profile ({selfUser.firstName} {selfUser.lastName})
-					</h2>
-					<Separator className="w-2/3" />
-
-					<div className="flex flex-row items-center">
-						<h2 className="p-2 dark:text-gray-200">
-							Toggle theme:{' '}
-						</h2>
-						<ThemeToggle className="h-8 w-8" />
-					</div>
-					<Separator className="w-6/12" />
-
-					<Link
-						className="dark:text-gray-200"
-						onClick={() => setOpen(false)}
-						to={Paths.USER_SETTINGS}
-					>
-						Edit your details
-					</Link>
-					<Separator className="w-1/3" />
-
-					<Link
-						to={Paths.HOME}
-						className="dark:text-gray-200"
-						onClick={() => {
-							getAuth().logout()
-							setOpen(false)
-						}}
-					>
-						Sign out
-					</Link>
-				</div>
-			</div>
+			<Modal
+				provideMenu={menu}
+				onClickAway={() => setOpen(false)}
+				shouldShow={() => isOpen}
+			/>
 		</>
 	)
 }
