@@ -1,0 +1,219 @@
+openapi: 3.0.0
+servers: []
+info:
+    description: Backend API for TLT
+    version: '1.0.0'
+    title: The Local Theatre API
+    contact:
+        email: you@your-company.com
+    license:
+        name: Apache 2.0
+        url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+    - name: users
+      description: operations for users
+    - name: posts
+      description: operations for posts
+paths:
+    /user:
+        get:
+            tags:
+                - users
+            summary: gets a user by their ID
+            operationId: getUser
+            description: looks up a user by their UUID
+            parameters:
+                - in: query
+                  name: id
+                  description: the id to fetch with
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: the requested user object
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+        post:
+            tags:
+                - users
+            summary: updates or creates a user
+            operationId: updateOrCreateUser
+            description: updates or creates a user using the provided data
+            requestBody:
+                description: the user object to update or create with
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - $ref: '#/components/schemas/User'
+                                - $ref: '#/components/schemas/UpdateUser'
+            responses:
+                '200':
+                    description: the updated user object
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#components/schemas/User'
+                '401':
+                    $ref: '#/components/responses/Unauthorised'
+    /post:
+        get:
+            tags:
+                - posts
+            summary: gets a post
+            description: gets a post by its ID
+            operationId: getPost
+            parameters:
+                - in: query
+                  name: id
+                  description: the id to fetch with
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: the requested post object
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Post'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+
+components:
+    responses:
+        Unauthorised:
+            description: the requested action could not be performed due to permission errors
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+        Forbidden:
+            description: the requested resource could not be accessed due to permission errors
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+        NotFound:
+            description: the requested resource was not found
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+        BadRequest:
+            description: the provided data was invalid
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+    schemas:
+        Post:
+            type: object
+            required:
+                - id,
+                - author
+                - content
+                - title
+                - createdAt
+                - editedAt
+
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    example: d290f1ee-6c54-4b01-90e6-d701748f0851
+                author:
+                    $ref: '#/components/schemas/User'
+                content:
+                    type: string
+                    example: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                title:
+                    type: string
+                    example: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                createdAt:
+                    type: integer
+                    example: 1640817997
+                editedAt:
+                    type: integer
+                    example: 1640817997
+        User:
+            type: object
+            required:
+                - id
+                - firstName
+                - lastName
+                - permissions
+                - dob
+                - joinDate
+                - username
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    example: d290f1ee-6c54-4b01-90e6-d701748f0851
+                firstName:
+                    type: string
+                    example: John
+                lastName:
+                    type: string
+                    example: Doe
+                permissions:
+                    type: integer
+                    example: 1
+                dob:
+                    type: integer
+                    example: 1640817997
+                joinDate:
+                    type: integer
+                    example: 1640817997
+                username:
+                    type: string
+                    example: jdoe
+        UpdateUser:
+            type: object
+            required:
+                - id
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    example: d290f1ee-6c54-4b01-90e6-d701748f0851
+                firstName:
+                    type: string
+                    example: John
+                lastName:
+                    type: string
+                    example: Doe
+                permissions:
+                    type: integer
+                    example: 1
+                dob:
+                    type: integer
+                    example: 1640817997
+                username:
+                    type: string
+                    example: jdoe
+        Error:
+            type: object
+            required:
+                - error
+                - message
+            properties:
+                error:
+                    type: boolean
+                    example: true
+                message:
+                    type: string
+                    example: An error occured
