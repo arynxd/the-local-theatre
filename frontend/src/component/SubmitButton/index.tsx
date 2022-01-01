@@ -1,5 +1,7 @@
 import { MouseEvent } from 'react'
 
+export type SubmitState = 'waiting' | 'submitting' | 'error'
+
 interface SubmitButtonProps<T> {
 	onSubmit: () => Promise<T>
 	onSuccess: (result: T) => void

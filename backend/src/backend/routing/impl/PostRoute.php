@@ -21,6 +21,7 @@ use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\HttpUtil;
 use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
 
@@ -140,7 +141,7 @@ class PostRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 
 		$method = $sess->http->method;
 
@@ -150,14 +151,15 @@ class PostRoute extends BaseRoute {
 			}
 		} elseif ($method == RequestMethod::POST) {
 			$body = $sess->jsonParams();
-			$sess->applyMiddleware(
-				new ModelValidatorMiddleware(
-					ModelKeys::POST_MODEL(),
-					$body,
-					'Invalid data provided'
-				)
-			);
-			$sess->applyMiddleware(new AuthenticationMiddleware());
+			$bodyResult = HttpUtil::validateBody($body, [
+				'content' => 'string',
+				'title' => 'string'
+			]);
+
+			if ($bodyResult -> isError()) {
+				return $bodyResult;
+			}
+			$sess->routing->middlware('auth');
 
 			if (!$this->isModMakingRequest($sess)) {
 				return HttpResult::BadRequest(
@@ -165,7 +167,7 @@ class PostRoute extends BaseRoute {
 				);
 			}
 		} elseif ($method == RequestMethod::DELETE) {
-			$sess->applyMiddleware(new AuthenticationMiddleware());
+			$sess->routing->middlware('auth');
 
 			if (!isset($sess->queryParams()['id'])) {
 				return HttpResult::BadRequest('No id provided');

@@ -23,7 +23,7 @@ class ModerationRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 		return HttpResult::Ok();
 	}
 }

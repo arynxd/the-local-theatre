@@ -81,7 +81,7 @@ class CommentListRoute extends BaseRoute {
 		if (!isset($sess->queryParams()['id'])) {
 			return HttpResult::BadRequest('No ID provided');
 		}
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 		return HttpResult::Ok();
 	}
 }

@@ -68,7 +68,7 @@ class LoginRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 
 		$data = $sess->jsonParams();
 

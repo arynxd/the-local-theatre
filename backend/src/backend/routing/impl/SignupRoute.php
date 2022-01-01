@@ -18,6 +18,7 @@ use TLT\Util\DBUtil;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\HttpUtil;
 use TLT\Util\StringUtil;
 
 class SignupRoute extends BaseRoute {
@@ -72,17 +73,18 @@ class SignupRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 
 		$data = $sess->jsonParams();
 
-		$validator = new ModelValidatorMiddleware(
-			ModelKeys::SIGNUP_MODEL(),
-			Map::from($data),
-			'Invalid data provided'
-		);
-		$sess->applyMiddleware($validator);
-
+		HttpUtil::validateBody($data, [
+			'firstName' => 'string',
+			'lastName' => 'string',
+			'dob' => 'int',
+			'username' => 'string',
+			'email' => 'string', 
+			'password' => 'string'
+		]);
 		return HttpResult::Ok();
 	}
 }

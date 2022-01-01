@@ -15,6 +15,7 @@ use TLT\Util\Enum\Constants;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\HttpUtil;
 use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
 
@@ -106,37 +107,6 @@ class UserRoute extends BaseRoute {
 				$res->status(200)
 					->cors('all')
 					->json($newModel->toMap());
-			} else {
-				// Insert new entity
-
-				// Make sure we have enough data to create a user
-				$sess->applyMiddleware(
-					new ModelValidatorMiddleware(
-						ModelKeys::USER_CREATE_MODEL(),
-						$body,
-						'Incomplete user data provided'
-					)
-				);
-
-				$id = StringUtil::newID();
-				$joinDate = DBUtil::currentTime();
-
-				$userData = Map::from([
-					'id' => $id,
-					'firstName' => $body['firstName'],
-					'lastName' => $body['lastName'],
-					'permissions' => DBUtil::DEFAULT_PERMISSIONS,
-					'dob' => $body['dob'],
-					'joinDate' => $joinDate,
-					'username' => $body['username'],
-				]);
-
-				$userModel = UserModel::fromJSON($userData);
-
-				$user->insert($userModel);
-				$res->status(200)
-					->cors('all')
-					->json($userModel->toMap());
 			}
 		} else {
 			Logger::getInstance()->fatal("Unhandled method $method");
@@ -144,7 +114,7 @@ class UserRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 
 		if (
 			$sess->http->method == RequestMethod::GET &&
@@ -160,7 +130,11 @@ class UserRoute extends BaseRoute {
 				return HttpResult::BadRequest('No data provided');
 			}
 
-			$sess->applyMiddleware(new AuthenticationMiddleware());
+			if (!isset($data['id'])) {
+				return HttpResult::BadRequest('No ID provided');
+			}
+
+			$sess->routing->middlware('auth');
 		}
 
 		return HttpResult::Ok();

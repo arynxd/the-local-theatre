@@ -197,27 +197,6 @@ class Session {
 	 * @param BaseMiddleware $middleware The middlewares to apply
 	 */
 	public function applyMiddleware($middleware) {
-		$wareResult = null;
-		Logger::getInstance()->debug(
-			'Applying middleware ' . get_class($middleware)
-		);
-
-		try {
-			$wareResult = $middleware->apply($this);
-		} catch (Exception $ex) {
-			Logger::getInstance()->error(
-				'An error occurred whilst applying middleware ' .
-					get_class($middleware)
-			);
-			$this->res->internal($ex);
-		}
-
-		if ($wareResult->isError()) {
-			$this->res
-				->status($wareResult->httpCode)
-				->cors('all')
-				->error($wareResult->error);
-		}
-		Logger::getInstance()->info('Middleware applied without error');
+		Logger::getInstance()->fatal("Calling Session#applyMiddlware is an error, please use RoutingModule#middleware instead");
 	}
 }

@@ -33,8 +33,7 @@ class SelfUserRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
-		$sess->applyMiddleware(new AuthenticationMiddleware());
+		$sess->routing->middlware('db')->middlware('auth');
 		return HttpResult::Ok();
 	}
 }

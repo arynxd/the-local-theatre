@@ -19,6 +19,7 @@ use TLT\Util\Enum\PermissionLevel;
 use TLT\Util\Enum\RequestMethod;
 use TLT\Util\Enum\StatusCode;
 use TLT\Util\HttpResult;
+use TLT\Util\HttpUtil;
 use TLT\Util\Log\Logger;
 use TLT\Util\StringUtil;
 
@@ -150,7 +151,7 @@ class CommentRoute extends BaseRoute {
 	}
 
 	public function validate($sess, $res) {
-		$sess->applyMiddleware(new DatabaseMiddleware());
+		$sess->routing->middlware('db');
 
 		$method = $sess->http->method;
 		$query = $sess->queryParams();
@@ -163,13 +164,11 @@ class CommentRoute extends BaseRoute {
 			$body = $sess->jsonParams();
 
 			if (isset($body['id'])) {
-				$sess->applyMiddleware(
-					new ModelValidatorMiddleware(
-						ModelKeys::COMMENT_MODEL(),
-						$body,
-						'Incomplete comment data provided'
-					)
-				);
+				$bodyValid = HttpUtil::validateBody($body, []);
+
+				if ($bodyValid -> isError()) {
+					return $bodyValid;
+				}
 			}
 			$sess->applyMiddleware(new AuthenticationMiddleware());
 		} elseif ($method === RequestMethod::DELETE) {
