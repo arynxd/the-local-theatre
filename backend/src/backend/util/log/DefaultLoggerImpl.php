@@ -3,6 +3,7 @@
 namespace TLT\Util\Log;
 
 use Exception;
+use RuntimeException;
 use TLT\Request\Response;
 use TLT\Util\ArrayUtil;
 use TLT\Util\Assert\AssertionException;
@@ -95,7 +96,8 @@ class DefaultLoggerImpl {
 			LogLevel::FATAL,
 			'The application has encountered a fatal error..'
 		);
-		$this->doLog(LogLevel::FATAL, $message);
+		
+		$this -> doLog(LogLevel::FATAL, new RuntimeException($message))
 		(new Response())->internal();
 	}
 

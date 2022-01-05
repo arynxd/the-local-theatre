@@ -1,4 +1,5 @@
 import { MouseEvent } from 'react'
+import { StylableProps } from '../props/StylableProps'
 
 export type SubmitState = 'waiting' | 'submitting' | 'error'
 
@@ -10,7 +11,7 @@ interface SubmitButtonProps<T> {
 	onClick?: (event: MouseEvent<HTMLButtonElement>) => void
 }
 
-export default function SubmitButton<T>(props: SubmitButtonProps<T>) {
+export default function SubmitButton<T>(props: SubmitButtonProps<T> & StylableProps) {
 	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
 		props.onClick?.(event)
 		props
@@ -23,9 +24,15 @@ export default function SubmitButton<T>(props: SubmitButtonProps<T>) {
 			})
 	}
 
+	const styles = `
+		p-2 m-2 inline-flex items-center justify-center 
+		text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl
+		${props.className}
+	`
+
 	return (
 		<button
-			className="p-2 m-2 w-10/12 inline-flex items-center justify-center text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl"
+			className={styles}
 			type="submit"
 			onClick={handleClick}
 		>

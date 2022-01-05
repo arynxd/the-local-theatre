@@ -10,6 +10,9 @@ import InlineButton from '../../InlineButton'
 import { assert } from '../../../util/assert'
 import { EntityIdentifier } from '../../../model/EntityIdentifier'
 import { CacheUpdateFunction, ReactiveCache } from '../../../util/cache'
+import SubmitButton from '../../SubmitButton'
+import { Error } from '../../Factory'
+import Modal from '../../Modal'
 
 export const MAX_COMMENT_LENGTH = 3000
 
@@ -68,8 +71,8 @@ function ContextMenu(props: ContextMenuProps) {
 		return <> </>
 	}
 
-	const menu = (
-		<ul className="absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center">
+	const menu = () => (
+		<ul className="z-20 absolute top-2 right-14 bg-white dark:bg-gray-700 p-2 shadow-xl rounded-xl flex flex-col items-center">
 			{canEdit ? (
 				<button onClick={() => props.setState('edit')}>
 					<li className="dark:text-gray-200 font-semibold">Edit</li>
@@ -93,33 +96,30 @@ function ContextMenu(props: ContextMenuProps) {
 				<Hamburger className="h-6 w-6 fill-white" />
 			</div>
 
-			{props.state === 'context' ? menu : <> </>}
+			{props.state === 'context' ? (
+				<Modal
+					provideMenu={menu}
+					onClickAway={contextHandler}
+					shouldShow={() => props.state === 'context'}
+					className='bg-opacity-0'
+				/>
+			) : (
+				<> </>
+			)}
 		</>
 	)
 }
 
+type EditCommentState = 'view' | 'submit' | 'error'
+
 function EditComment(props: CommentProps) {
 	const [text, setText] = useState(props.model.content)
-	const submitHandler = useCallback(() => {
-		assert(
-			() => text.length <= MAX_COMMENT_LENGTH,
-			() =>
-				new TypeError(
-					'Text exceeded the maximum of ' + MAX_COMMENT_LENGTH
-				)
-		)
+	const [state, setState] = useState<EditCommentState>('view')
 
-		assert(
-			() => text.length > 0,
-			() => new TypeError('Text was empty')
-		)
-
-		getBackend()
-			.http.updateComment(props.model.id, text)
-			.then((c) => {
-				props.onChange?.(c)
-			})
-	}, [props, text])
+	const makePromise = useCallback(
+		() => getBackend().http.updateComment(props.model.id, text),
+		[text]
+	)
 
 	const changeHandler = useCallback(
 		(ev: ChangeEvent<HTMLTextAreaElement>) => {
@@ -128,8 +128,12 @@ function EditComment(props: CommentProps) {
 		[]
 	)
 
+	if (state === 'error') {
+		return <Error>An error has occurred</Error>
+	}
+
 	return (
-		<div className="w-auto m-2 pb-2">
+		<div className="w-auto m-2 flex flex-col items-center">
 			<textarea
 				minLength={1}
 				maxLength={MAX_COMMENT_LENGTH}
@@ -138,9 +142,14 @@ function EditComment(props: CommentProps) {
 				defaultValue={props.model.content}
 			/>
 
-			<InlineButton onClick={submitHandler} className="mt-2 w-full">
-				Submit
-			</InlineButton>
+			<SubmitButton
+				onSubmit={makePromise}
+				onSuccess={(c) => props.onChange?.(c)}
+				onError={() => setState('error')}
+				shouldDisplayLoading={() => state === 'submit'}
+				onClick={() => setState('submit')}
+				className="w-full"
+			/>
 		</div>
 	)
 }
@@ -171,7 +180,10 @@ export default function Comment(props: CommentProps & StylableProps) {
 				{state === 'edit' ? (
 					<EditComment
 						model={model}
-						onChange={() => setState('view')}
+						onChange={(c) => {
+							setState('view')
+							props.onChange?.(c)
+						}}
 					/>
 				) : (
 					<p className="text-md p-2 dark:text-gray-300 break-words">

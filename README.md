@@ -47,13 +47,13 @@
     -   [x] Click away to hide
 -   [x] Individual post page deletion not working
 -   [x] Loading spinner on submit buttons
+-   [x] Use SubmitButton for all submit buttons
 -   [ ] Change CORS policy in backend
 -   [ ] Add docs to backend
 -   [ ] Add docs to frontend
 -   [ ] Animate all moving elements
 -   [ ] Use useCallback for callback functions
 -   [ ] Changeable avatars
--   [ ] Use SubmitButton for all submit buttons
 -   [ ] Input validation for edits
 -   [ ] Deleted comments do not update frontend cache when accounts are switched
     -   [ ] Cache mismatch?

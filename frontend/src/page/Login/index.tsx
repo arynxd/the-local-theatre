@@ -127,6 +127,7 @@ export default function Login() {
 						onSuccess={handleSuccess}
 						onError={handleError}
 						shouldDisplayLoading={() => state === 'logging_in'}
+						className='w-10/12'
 					/>
 				</form>
 			</div>

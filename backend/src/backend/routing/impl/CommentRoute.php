@@ -80,6 +80,11 @@ class CommentRoute extends BaseRoute {
 				$model->editedAt = DBUtil::currentTime();
 
 				$comment->edit($model);
+				$sess->data->commit();
+
+				$res->status(200)
+					->cors('all')
+					->json($model->toMap());
 			} else {
 				$postId = $body['postId'];
 				$content = $body['content'];
@@ -161,6 +166,7 @@ class CommentRoute extends BaseRoute {
 				return HttpResult::BadRequest('No ID provided');
 			}
 		} elseif ($method === RequestMethod::POST) {
+			$sess->routing->middlware('auth');
 			$body = $sess->jsonParams();
 
 			if (isset($body['id'])) {
@@ -170,9 +176,8 @@ class CommentRoute extends BaseRoute {
 					return $bodyValid;
 				}
 			}
-			$sess->applyMiddleware(new AuthenticationMiddleware());
 		} elseif ($method === RequestMethod::DELETE) {
-			$sess->applyMiddleware(new AuthenticationMiddleware());
+			$sess->routing->middlware('auth');
 
 			if (!isset($query['id'])) {
 				return HttpResult::BadRequest('No ID provided');

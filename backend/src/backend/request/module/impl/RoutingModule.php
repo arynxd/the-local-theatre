@@ -50,7 +50,7 @@ class RoutingModule extends BaseModule {
 		Logger::getInstance()->debug("Applying middleware $ware");
 
 		try {
-			$wareResult = $middleware->apply($this);
+			$wareResult = $middleware->apply($this->sess);
 		} catch (Exception $ex) {
 			Logger::getInstance()->error(
 				"An error occurred whilst applying middleware $ware"
