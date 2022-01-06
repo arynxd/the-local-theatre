@@ -8,13 +8,112 @@ info:
         email: you@your-company.com
     license:
         name: Apache 2.0
-        url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+        url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
     - name: users
       description: operations for users
     - name: posts
       description: operations for posts
+    - name: shows
+      description: operations for shows
 paths:
+    /user/@me:
+        get:
+            tags:
+                - users
+            summary: gets the self user
+            operationId: selfUser
+            description: gets the self user based on the token provided
+            security:
+                - TokenAuth: []
+            responses:
+                200:
+                    $ref: '#/components/schemas/User'
+                '401':
+                    $ref: '#/components/responses/Unauthorised'
+    /show/image:
+        get:
+            tags:
+                - shows
+            summary: gets an image for a show
+            operationId: showImage
+            description: gets an image for a show by its ID
+            responses:
+                200:
+                    description: the show image
+                    content:
+                        image/png:
+                            schema:
+                                type: string
+                                format: binary
+    /show/list:
+        get:
+            tags:
+                - shows
+            summary: lists all shows
+            operationId: listShows
+            description: list all shows that are showing soon
+            responses:
+                200:
+                    description: the show objects, maybe empty
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Show'
+    /signup:
+        post:
+            tags:
+                - users
+            summary: signs a user up to the site
+            operationId: signup
+            description: uses the provided data to add a user to the site
+            requestBody:
+                description: test
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SignupUser'
+            responses:
+                200:
+                    description: the user's credentials
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    token:
+                                        type: string
+                                        example: cd5d9483f707aef56760db463419bef2970b5cac82fb8f24f5c60d7e731b87bf
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                409:
+                    description: account already exists
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/list:
+        get:
+            tags:
+                - users
+            summary: gets all users
+            operationId: listUsers
+            description: gets all users registered to the site
+            security:
+                - TokenAuth: [ ]
+            responses:
+                200:
+                    description: the user objects, maybe empty
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/User'
+                '401':
+                    $ref: '#/components/responses/Unauthorised'
     /user:
         get:
             tags:
@@ -47,6 +146,8 @@ paths:
             summary: updates or creates a user
             operationId: updateOrCreateUser
             description: updates or creates a user using the provided data
+            security:
+                - TokenAuth: [ ]
             requestBody:
                 description: the user object to update or create with
                 required: true
@@ -93,6 +194,11 @@ paths:
                     $ref: '#/components/responses/NotFound'
 
 components:
+    securitySchemes:
+        TokenAuth:
+            type: apiKey
+            in: header
+            name: Authorisation
     responses:
         Unauthorised:
             description: the requested action could not be performed due to permission errors
@@ -119,6 +225,52 @@ components:
                     schema:
                         $ref: '#/components/schemas/Error'
     schemas:
+        Show:
+            type: object
+            required:
+                - id
+                - title
+                - showDate
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    example: d290f1ee-6c54-4b01-90e6-d701748f0851
+                title:
+                    type: string
+                    example: Grease
+                showDate:
+                    type: integer
+                    example: 1640817997
+
+        SignupUser:
+            type: object
+            required:
+                - firstName
+                - lastName
+                - dob
+                - username
+                - email
+                - password
+            properties:
+                firstName:
+                    type: string
+                    example: John
+                lastName:
+                    type: string
+                    example: Doe
+                dob:
+                    type: number
+                    example: 1640817997
+                username:
+                    type: string
+                    example: jdoe
+                email:
+                    type: string
+                    example: mail@example.com
+                password:
+                    type: string
+                    example: SuperS3cureP@ssw0rd!@
         Post:
             type: object
             required:
