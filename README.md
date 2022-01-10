@@ -62,6 +62,7 @@
 -   [ ] Handle token invalidation
 -   [ ] Check API (base endpoint) online when we launch
 -   [ ] Individual post page editing support
+-   [ ] Use RETURNING in INSERTS for Repositories
 
 ## Feature List
 
