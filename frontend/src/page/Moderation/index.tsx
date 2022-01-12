@@ -6,13 +6,17 @@ import Separator from '../../component/Separator'
 import { User } from '../../model/User'
 import { useAPI } from '../../backend/hook/useAPI'
 import { getBackend } from '../../backend/global-scope/util/getters'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { createPlaceholders } from '../../util/factory'
 import { Error, Warning } from '../../component/Factory'
 import Modal from '../../component/Modal'
+import { useReactiveCache, CacheUpdateFunction } from '../../util/cache'
+import { EntityIdentifier } from '../../model/EntityIdentifier'
 
 interface ModerationUserProps {
 	user: User
+	onDelete?: (oldUser: User) => void
+
 }
 
 type ModerationUserState = 'idle' | 'changing_permissions' | 'deletion'
@@ -89,6 +93,7 @@ function ModerationUser(props: ModerationUserProps) {
 		getBackend()
 			.http.deleteUser(user.id)
 			.then(() => setState('deletion'))
+		props.onDelete?.(user)
 	}
 
 	const handleCancel = () => {
@@ -142,11 +147,18 @@ function ModerationUser(props: ModerationUserProps) {
 
 function UserList() {
 	const [isError, setError] = useState(false)
-	let users = useAPI(
-		() => getBackend().http.loadUsers(),
-		() => setError(true)
-	)
+	const [users, updateCache] = useReactiveCache<EntityIdentifier, User>()
 	const selfUser = useSelfUser()
+
+	useEffect(() => {
+		getBackend()
+			.http.loadUsers()
+			.then((newUsers) => {
+				newUsers.forEach((u) => users.set(u.id, u))
+				updateCache()
+			})
+			.catch(() => setError(true))
+	}, [])
 
 	const UserPlaceholders = () =>
 		createPlaceholders((i) => (
@@ -168,9 +180,9 @@ function UserList() {
 		return <>{UserPlaceholders()}</>
 	}
 
-	//users = users.filter((u) => u.id !== selfUser.id)
+	const filtered = users.values().filter((u) => u.id !== selfUser.id)
 
-	if (!users.length) {
+	if (!filtered.length) {
 		return (
 			<div className="w-auto bg-gray-100 dark:bg-gray-500 shadow-xl rounded m-2 p-2 flex flex-col items-center">
 				<Warning>No users found</Warning>
@@ -179,8 +191,15 @@ function UserList() {
 	}
 	return (
 		<ul>
-			{users.map((u) => (
-				<ModerationUser key={u.id} user={u} />
+			{filtered.map((u) => (
+				<ModerationUser
+					onDelete={(d) => {
+						users.delete(d.id)
+						updateCache()
+					}}
+					key={u.id}
+					user={u}
+				/>
 			))}
 		</ul>
 	)
@@ -193,7 +212,6 @@ export default function Moderation() {
 		return <Redirect to={Paths.HOME} />
 	}
 
-	//TODO: change to a stateful cache and update when it's empty
 	return (
 		<div className="w-auto h-auto m-4 p-2 bg-gray-200 dark:bg-gray-500 rounded shadow-xl">
 			<div className="w-max">

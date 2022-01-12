@@ -188,15 +188,4 @@ class Session {
 
 		Logger::getInstance()->fatal("Unexpected ParamSource $source");
 	}
-
-	/**
-	 * Applies a middleware to the session
-	 *
-	 * If the middleware fails, the connection is terminated with an error
-	 *
-	 * @param BaseMiddleware $middleware The middlewares to apply
-	 */
-	public function applyMiddleware($middleware) {
-		Logger::getInstance()->fatal("Calling Session#applyMiddlware is an error, please use RoutingModule#middleware instead");
-	}
 }

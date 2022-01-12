@@ -1,4 +1,4 @@
-import { ChangeEvent, HTMLInputTypeAttribute, useState } from 'react'
+import { ChangeEvent, HTMLInputTypeAttribute, useState, KeyboardEvent } from 'react'
 
 interface ErrorProps {
 	errors: ErrorState
@@ -10,6 +10,7 @@ interface FormElementProps {
 	placeholder: string
 	type: HTMLInputTypeAttribute
 	initialState?: string
+	onKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void
 }
 
 export type ErrorState = {
@@ -67,6 +68,7 @@ export function FormElement(props: FormElementProps & ErrorProps) {
 				type={props.type}
 				value={state}
 				onChange={handleChange}
+				onKeyDownCapture={props.onKeyPress}
 			/>
 
 			<div className="flex flex-row">

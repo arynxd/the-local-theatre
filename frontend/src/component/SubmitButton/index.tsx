@@ -24,6 +24,17 @@ export default function SubmitButton<T>(props: SubmitButtonProps<T> & StylablePr
 			})
 	}
 
+	const handleTouch = () => {
+		props
+			.onSubmit()
+			.then((v) => {
+				props.onSuccess(v)
+			})
+			.catch((e) => {
+				props.onError(e)
+			})
+	}
+
 	const styles = `
 		p-2 m-2 inline-flex items-center justify-center 
 		text-gray-100 font-semibold text-md bg-blue-900 rounded-xl shadow-xl
@@ -35,6 +46,7 @@ export default function SubmitButton<T>(props: SubmitButtonProps<T> & StylablePr
 			className={styles}
 			type="submit"
 			onClick={handleClick}
+			onTouchStart={handleTouch}
 		>
 			{props.shouldDisplayLoading() ? (
 				<svg

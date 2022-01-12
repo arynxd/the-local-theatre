@@ -223,6 +223,22 @@ export class HttpManager extends Manager {
 		return BackendAction.new(route).toVoid()
 	}
 
+	updateSelfUser(newUser: SelfUser & { password?: string } ): BackendAction<void> {
+		const route = Routes.User.UPDATE.compile().withBody({
+			id: newUser.id,
+			firstName: newUser.firstName,
+			lastName: newUser.lastName,
+			permissions: newUser.permissions,
+			dob: newUser.dob,
+			email: newUser.email,
+			password: newUser.password,
+			joinDate: newUser.dob,
+			username: newUser.username,
+		})
+
+		return BackendAction.new(route).toVoid()
+	}
+
 	deleteUser(id: EntityIdentifier): BackendAction<void> {
 		const route = Routes.User.DELETE.compile().withQueryParam('id', id)
 

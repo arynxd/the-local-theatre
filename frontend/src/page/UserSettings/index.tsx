@@ -9,6 +9,7 @@ import { isStrongPassword } from '../../util/const'
 import { Redirect } from 'react-router'
 import { Paths } from '../../util/paths'
 import { useSelfUser } from '../../backend/hook/useSelfUser'
+import { getAuth, getBackend } from '../../backend/global-scope/util/getters'
 
 type SettingState =
 	| 'idle'
@@ -23,21 +24,20 @@ export default function UserSettings() {
 
 	const selfUser = useSelfUser()
 
-	const [firstName, setFirstName] = useState<string | undefined>(
-		selfUser?.firstName
+	const [firstName, setFirstName] = useState<string>(
+		selfUser?.firstName ?? ''
 	)
-	const [lastName, setLastName] = useState<string | undefined>(
-		selfUser?.lastName
-	)
-	const [username, setUsername] = useState<string | undefined>(
-		selfUser?.username
-	)
-	const [email, setEmail] = useState<string | undefined>(selfUser?.email)
+	const [lastName, setLastName] = useState<string>(selfUser?.lastName ?? '')
+	const [username, setUsername] = useState<string>(selfUser?.username ?? '')
+	const [email, setEmail] = useState<string>(selfUser?.email ?? '')
 	const [password, setPassword] = useState<string | undefined>()
+
+	if (!selfUser) {
+		return (<></>)
+	}
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		//TODO: submit API request here
 
 		const newErrors: ErrorState = {
 			password: [],
@@ -60,11 +60,20 @@ export default function UserSettings() {
 	}
 
 	if (state === 'attempting') {
-		throw new TypeError('Unimplemented')
-		// setState('success')
+		getBackend()
+			.http.updateSelfUser({
+				...selfUser,
+				firstName,
+				lastName,
+				email,
+				password,
+				username,
+			})
+			.then(() => setState('success'))
 	}
 
 	if (state === 'success') {
+		getAuth().loadSelfUser();
 		return <Redirect to={Paths.HOME} />
 	}
 

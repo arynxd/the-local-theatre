@@ -10,9 +10,9 @@ use TLT\Util\Polyfill\Polyfill;
 
 Polyfill::applyPollyfills();
 
-//Logger::getInstance()->enablePHPErrors();
+Logger::getInstance()->enablePHPErrors();
 Logger::getInstance()->setLogFile(sys_get_temp_dir() . '/php_log.log');
-Logger::getInstance()->setLevel(LogLevel::DISABLED);
+Logger::getInstance()->setLevel(LogLevel::INFO);
 Logger::getInstance()->setIncludeLoc(false);
 Logger::getInstance()->insertNewLine();
 
@@ -37,7 +37,7 @@ if (!$route->isMethodOk($sess)) {
 	Logger::getInstance()->error(
 		"Attempted to use unsupported method {$sess->http->method} on route {$route->path}"
 	);
-	$sess->res->status(400)->error('Unsupported method ' . $sess->http->method);
+	$sess->res->cors('all')->error('Unsupported method ' . $sess->http->method);
 }
 
 Logger::getInstance()->info('Validating route ' . $route->path);

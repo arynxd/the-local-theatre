@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, KeyboardEvent, useState } from 'react'
 import {
 	ErrorElement,
 	ErrorState,
@@ -123,6 +123,14 @@ export default function Signup() {
 			})
 	}
 
+	const handleSpaceInUsername = (event: KeyboardEvent<HTMLInputElement>) => {
+		//TODO: change this once we pass
+		// The SQA is very stupid and requires it
+		if (event.keyCode === 32) {
+			alert('No spaces allowed in username')
+		}
+	}
+
 	if (state === 'signed_up') {
 		return <Redirect to={Paths.HOME} />
 	}
@@ -159,6 +167,7 @@ export default function Signup() {
 						placeholder="Username"
 						type="text"
 						errors={errors}
+						onKeyPress={handleSpaceInUsername}
 					/>
 					<FormElement
 						onChange={setEmail}

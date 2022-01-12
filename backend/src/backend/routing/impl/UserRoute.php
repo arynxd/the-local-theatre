@@ -7,6 +7,7 @@ use TLT\Middleware\Impl\DatabaseMiddleware;
 use TLT\Middleware\Impl\ModelValidatorMiddleware;
 use TLT\Model\Impl\UserModel;
 use TLT\Model\ModelKeys;
+use TLT\Request\Response;
 use TLT\Routing\BaseRoute;
 use TLT\Util\Assert\Assertions;
 use TLT\Util\Data\Map;
@@ -21,7 +22,11 @@ use TLT\Util\StringUtil;
 
 class UserRoute extends BaseRoute {
 	public function __construct() {
-		parent::__construct('user', [RequestMethod::GET, RequestMethod::POST]);
+		parent::__construct('user', [
+			RequestMethod::GET,
+			RequestMethod::POST,
+			RequestMethod::DELETE,
+		]);
 	}
 
 	public function handle($sess, $res) {
@@ -108,6 +113,27 @@ class UserRoute extends BaseRoute {
 					->cors('all')
 					->json($newModel->toMap());
 			}
+		} elseif ($method == RequestMethod::DELETE) {
+			$id = $sess->queryParams()['id'];
+
+			Assertions::assertSet($id);
+
+			$sess->data->start();
+
+			$user = $sess->data->user->get($id);
+
+			if (!isset($user)) {
+				$res->status(404)
+					->cors('all')
+					->error('User not found');
+			}
+
+			$sess->data->user->delete($user->id);
+			$sess->data->commit();
+
+			$res->status(200)
+				->cors('all')
+				->json($user->toMap());
 		} else {
 			Logger::getInstance()->fatal("Unhandled method $method");
 		}
@@ -131,6 +157,15 @@ class UserRoute extends BaseRoute {
 			}
 
 			if (!isset($data['id'])) {
+				return HttpResult::BadRequest('No ID provided');
+			}
+
+			$sess->routing->middlware('auth');
+		}
+
+		if ($sess->http->method == RequestMethod::DELETE) {
+			$id = $sess->queryParams()['id'];
+			if (!isset($id)) {
 				return HttpResult::BadRequest('No ID provided');
 			}
 
