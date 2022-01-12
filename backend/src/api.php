@@ -1,5 +1,4 @@
 <?php
-
 // we must require the autoloader since namespace file resolution is dictated by it
 require_once 'autoloader.php';
 
@@ -11,9 +10,9 @@ use TLT\Util\Polyfill\Polyfill;
 
 Polyfill::applyPollyfills();
 
-Logger::getInstance()->enablePHPErrors();
+//Logger::getInstance()->enablePHPErrors();
 Logger::getInstance()->setLogFile(sys_get_temp_dir() . '/php_log.log');
-Logger::getInstance()->setLevel(LogLevel::INFO);
+Logger::getInstance()->setLevel(LogLevel::DISABLED);
 Logger::getInstance()->setIncludeLoc(false);
 Logger::getInstance()->insertNewLine();
 

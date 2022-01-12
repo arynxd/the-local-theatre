@@ -96,8 +96,8 @@ class DefaultLoggerImpl {
 			LogLevel::FATAL,
 			'The application has encountered a fatal error..'
 		);
-		
-		$this -> doLog(LogLevel::FATAL, new RuntimeException($message))
+
+		$this->doLog(LogLevel::FATAL, new RuntimeException($message));
 		(new Response())->internal();
 	}
 
